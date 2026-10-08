@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Torre dos Espíritos</string>
+    <string name="title_activity_main">Torre dos Espíritos</string>
+    <string name="package_name">br.com.brunodarwich.torredosespiritos</string>
+    <string name="custom_url_scheme">br.com.brunodarwich.torredosespiritos</string>
+</resources>
