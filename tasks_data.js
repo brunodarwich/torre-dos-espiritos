@@ -6,8 +6,8 @@ window.__TASKS_DATA__ = {
     "last_updated": "2026-10-08",
     "metrics": {
       "total_tasks": 20,
-      "completed_tasks": 7,
-      "progress_percentage": 35
+      "completed_tasks": 11,
+      "progress_percentage": 55
     }
   },
   "milestones": [
@@ -134,57 +134,61 @@ window.__TASKS_DATA__ = {
       "id": "TASK-008",
       "title": "Setup do Backend FastAPI com uv",
       "description": "Estruturação de backend/ com FastAPI, Pydantic, Uvicorn e CORS configurado.",
-      "status": "todo",
+      "status": "done",
       "milestone": "m3_backend_core",
       "tier": "tier2_fast",
       "indicators": [
         "Servidor rodando e documentação /docs acessível",
         "Ambiente gerenciado com uv"
       ],
-      "audit_confirmed": false,
-      "created_at": "2026-10-08"
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
     },
     {
       "id": "TASK-009",
       "title": "Modelos de Dados & Banco Postgres/SQLite",
       "description": "Criação de modelos SQLModel para Jogadores, Pontuações, Transações de Cristais e Telemetria.",
-      "status": "todo",
+      "status": "done",
       "milestone": "m3_backend_core",
       "tier": "tier2_fast",
       "indicators": [
         "Tabelas criadas e migradas",
         "Validações Pydantic ativas"
       ],
-      "audit_confirmed": false,
-      "created_at": "2026-10-08"
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
     },
     {
       "id": "TASK-010",
       "title": "Rotas de Ranking Semanal & Validação de Compras",
       "description": "Implementação das rotas /scores, /scores/weekly, /wallet e /purchases com validações de segurança.",
-      "status": "todo",
+      "status": "done",
       "milestone": "m3_backend_core",
       "tier": "tier2_fast",
       "indicators": [
         "Top 100 com ordenação correta",
         "Anti-fraude básico em submissão de pontuação"
       ],
-      "audit_confirmed": false,
-      "created_at": "2026-10-08"
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
     },
     {
       "id": "TASK-011",
       "title": "Testes Automatizados de Backend (pytest)",
       "description": "Bateria de testes de integração e rotas no backend com 100% de aprovação.",
-      "status": "todo",
+      "status": "done",
       "milestone": "m3_backend_core",
       "tier": "tier2_fast",
       "indicators": [
         "pytest passando com zero falhas",
         "Rotas críticas de pontuação e compras testadas"
       ],
-      "audit_confirmed": false,
-      "created_at": "2026-10-08"
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
     },
     {
       "id": "TASK-012",
@@ -313,5 +317,4 @@ window.__TASKS_DATA__ = {
       "created_at": "2026-10-08"
     }
   ]
-}
-;
+};
