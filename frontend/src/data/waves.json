@@ -1,0 +1,64 @@
+{
+  "waves": [
+    {
+      "wave": 1,
+      "title": "Horda 1: Os Primeiros Sussurros",
+      "description": "Larvas Astrais surgem pelo portal. Posicione o Mentor de Luz para purificá-las.",
+      "dialogue": [
+        "Sinto uma perturbação no ambiente astral...",
+        "Coloque um Mentor de Luz perto do caminho para abençoar estas larvas!",
+        "Lembre-se: nós purificamos os espíritos em luz, trazendo alívio e paz."
+      ],
+      "groups": [
+        { "spiritId": "larva", "count": 6, "interval": 1200, "delay": 500 },
+        { "spiritId": "larva", "count": 7, "interval": 1000, "delay": 10000 },
+        { "spiritId": "larva", "count": 7, "interval": 900, "delay": 20000 }
+      ]
+    },
+    {
+      "wave": 2,
+      "title": "Horda 2: Risos na Escuridão",
+      "description": "Zombeteiros saltitantes misturam-se com as larvas. Use a Benzedeira para desacelerá-los.",
+      "dialogue": [
+        "Atenção! Os Zombeteiros saltam velozmente pelo quarto!",
+        "Invoque a Benzedeira com seu ramo de arruda para acalmar o ímpeto deles."
+      ],
+      "groups": [
+        { "spiritId": "larva", "count": 10, "interval": 900, "delay": 500 },
+        { "spiritId": "zombeteiro", "count": 5, "interval": 1400, "delay": 4000 },
+        { "spiritId": "larva", "count": 15, "interval": 800, "delay": 14000 },
+        { "spiritId": "zombeteiro", "count": 5, "interval": 1200, "delay": 20000 }
+      ]
+    },
+    {
+      "wave": 3,
+      "title": "Horda 3: O Peso das Mágoas",
+      "description": "Obsessores pesados e Sombras imunes a lentidão avançam. Exige a sinergia dos 3 guias.",
+      "dialogue": [
+        "Sombras de mágoa não sentem a arruda! Use o Pajé e o Mentor para resgatá-las!",
+        "Mantenham o foco, a madrugada está quase no fim..."
+      ],
+      "groups": [
+        { "spiritId": "larva", "count": 10, "interval": 700, "delay": 500 },
+        { "spiritId": "zombeteiro", "count": 6, "interval": 1000, "delay": 5000 },
+        { "spiritId": "obsessor", "count": 3, "interval": 2500, "delay": 12000 },
+        { "spiritId": "sombra", "count": 3, "interval": 2000, "delay": 16000 },
+        { "spiritId": "larva", "count": 10, "interval": 600, "delay": 24000 },
+        { "spiritId": "obsessor", "count": 3, "interval": 2200, "delay": 30000 },
+        { "spiritId": "sombra", "count": 3, "interval": 1800, "delay": 34000 }
+      ]
+    },
+    {
+      "wave": 4,
+      "title": "O Clímax: O Obsessor-Mor",
+      "description": "A grande sombra de angústia surge pessoalmente. Purifique sua dor para que a luz do amanhecer triunfe.",
+      "dialogue": [
+        "É ele... O Obsessor-Mor! Ele carrega uma dor imensa que precisa de libertação.",
+        "Mantenham as preces e os círculos de luz ativos até o romper da aurora!"
+      ],
+      "groups": [
+        { "spiritId": "boss", "count": 1, "interval": 0, "delay": 1000 }
+      ]
+    }
+  ]
+}

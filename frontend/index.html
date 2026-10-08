@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Torre dos Espíritos — Tower Defense</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/src/style.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Container do Canvas Phaser -->
+    <div id="game-container"></div>
+
+    <!-- Camada de Interface DOM sobreposta (HUD & Modais) -->
+    <div id="ui-layer">
+      <!-- Barra Superior (Top HUD) -->
+      <header class="hud-top">
+        <div class="hud-stats">
+          <div class="stat-badge stat-light" id="stat-light" title="Luz da Pessoa Adormecida">
+            <span class="stat-icon">🕯️</span>
+            <span class="stat-value" id="val-light">20</span>
+            <span class="stat-label">Luz</span>
+          </div>
+
+          <div class="stat-badge stat-essence" id="stat-essence" title="Essência Sagrada da Partida">
+            <span class="stat-icon">💧</span>
+            <span class="stat-value" id="val-essence">250</span>
+            <span class="stat-label">Essência</span>
+          </div>
+
+          <div class="stat-badge stat-crystals" id="stat-crystals" title="Cristais Cósmicos">
+            <span class="stat-icon">💎</span>
+            <span class="stat-value" id="val-crystals">100</span>
+          </div>
+        </div>
+
+        <div class="hud-wave-center">
+          <div class="wave-info">
+            <span class="wave-title" id="wave-title">Horda 1 de 3</span>
+            <div class="wave-progress-bar">
+              <div class="wave-progress-fill" id="wave-progress-fill" style="width: 0%"></div>
+            </div>
+          </div>
+          <button class="btn-call-wave" id="btn-call-wave" title="Iniciar horda antes e ganhar +10% de Essência">
+            ⚡ Chamar Horda (+10%)
+          </button>
+        </div>
+
+        <div class="hud-controls">
+          <button class="btn-ctrl" id="btn-speed" title="Alternar velocidade (1x / 2x)">1×</button>
+          <button class="btn-ctrl" id="btn-pause" title="Pausar partida">⏸</button>
+          <button class="btn-ctrl" id="btn-audio" title="Ativar/Desativar som">🔊</button>
+          <button class="btn-ctrl btn-icon" id="btn-settings" title="Configurações e Acessibilidade">⚙️</button>
+          <button class="btn-ctrl btn-autoplay" id="btn-autoplay" title="Demonstração: Assistir à IA vencendo sem power-ups">🤖 Autoplay</button>
+        </div>
+      </header>
+
+      <!-- Balão Narrativo de HQ (Estilo Quadrinho) -->
+      <div class="comic-balloon" id="comic-balloon" style="display: none;">
+        <div class="balloon-avatar" id="balloon-avatar">✨</div>
+        <div class="balloon-body">
+          <div class="balloon-speaker" id="balloon-speaker">Mentor de Luz</div>
+          <p class="balloon-text" id="balloon-text">Sinto uma perturbação no ambiente astral...</p>
+        </div>
+        <button class="btn-close-balloon" id="btn-close-balloon">✕</button>
+      </div>
+
+      <!-- Notificação Flutuante de Onda / Chefe -->
+      <div class="wave-banner" id="wave-banner">
+        <h2 id="banner-text">HORDA 1 INICIADA</h2>
+      </div>
+
+      <!-- Painel de Inspeção do Guia Selecionado -->
+      <div class="guide-inspector" id="guide-inspector" style="display: none;">
+        <div class="inspector-header">
+          <div>
+            <h3 id="inspector-name">Mentor de Luz</h3>
+            <span class="inspector-role" id="inspector-role">Nível 1 • Dano Focado</span>
+          </div>
+          <button class="btn-close-inspector" id="btn-close-inspector">✕</button>
+        </div>
+        <p class="inspector-desc" id="inspector-desc">Raio de luz linear concentrado</p>
+        <div class="inspector-stats">
+          <div>Dano: <strong id="inspector-dmg">10</strong></div>
+          <div>Cadência: <strong id="inspector-rate">1.0/s</strong></div>
+          <div>Alcance: <strong id="inspector-range">2.5 cél.</strong></div>
+        </div>
+        <div class="inspector-actions">
+          <button class="btn-upgrade" id="btn-upgrade">
+            <span>Evoluir Nv.<span id="upgrade-lvl">2</span></span>
+            <span class="cost-tag"><span id="upgrade-cost">150</span> 💧</span>
+          </button>
+          <button class="btn-sell" id="btn-sell">
+            <span>Vender (70%)</span>
+            <span class="refund-tag">+<span id="sell-refund">70</span> 💧</span>
+          </button>
+          <button class="btn-target" id="btn-target-toggle">
+            Alvo: <strong id="target-mode">Primeiro</strong>
+          </button>
+        </div>
+      </div>
+
+      <!-- Barra Inferior (Bottom HUD: Invocação & Power-ups) -->
+      <footer class="hud-bottom">
+        <!-- Power-ups Circulares -->
+        <div class="powerup-bar">
+          <button class="btn-powerup" id="pw-shield" data-cost="30" title="Escudo do Anjo (+5 Luz) • 30 💎">
+            <span class="pw-icon">🛡️</span>
+            <span class="pw-cost">30</span>
+          </button>
+          <button class="btn-powerup" id="pw-light-rain" data-cost="40" title="Chuva de Luz (Dano global) • 40 💎">
+            <span class="pw-icon">✨</span>
+            <span class="pw-cost">40</span>
+          </button>
+          <button class="btn-powerup" id="pw-deep-sleep" data-cost="35" title="Sono Profundo (Congela inimigos) • 35 💎">
+            <span class="pw-icon">⏳</span>
+            <span class="pw-cost">35</span>
+          </button>
+          <button class="btn-powerup" id="pw-fervor" data-cost="35" title="Fervor Sagrado (2x Cadência) • 35 💎">
+            <span class="pw-icon">⚡</span>
+            <span class="pw-cost">35</span>
+          </button>
+        </div>
+
+        <!-- Cards de Invocação dos 3 Guias -->
+        <div class="guide-cards">
+          <div class="guide-card" id="card-mentor" data-guide="mentor" data-cost="100">
+            <div class="card-thumb" style="background-image: url('assets/guides/mentor_lvl1.jpg')"></div>
+            <div class="card-info">
+              <span class="card-title">Mentor de Luz</span>
+              <span class="card-role">Raio Solar</span>
+            </div>
+            <div class="card-cost">100 💧</div>
+          </div>
+
+          <div class="guide-card" id="card-benzedeira" data-guide="benzedeira" data-cost="125">
+            <div class="card-thumb" style="background-image: url('assets/guides/benzedeira_lvl1.jpg')"></div>
+            <div class="card-info">
+              <span class="card-title">Benzedeira</span>
+              <span class="card-role">Arruda / Lentidão</span>
+            </div>
+            <div class="card-cost">125 💧</div>
+          </div>
+
+          <div class="guide-card" id="card-paje" data-guide="paje" data-cost="150">
+            <div class="card-thumb" style="background-image: url('assets/guides/paje_lvl1.jpg')"></div>
+            <div class="card-info">
+              <span class="card-title">Pajé</span>
+              <span class="card-role">Fogo em Área</span>
+            </div>
+            <div class="card-cost">150 💧</div>
+          </div>
+        </div>
+
+        <!-- Botões de Acesso Rápido -->
+        <div class="quick-nav">
+          <button class="btn-nav" id="btn-open-store">🏪 Loja</button>
+          <button class="btn-nav" id="btn-open-ranking">🏆 Ranking</button>
+        </div>
+      </footer>
+
+      <!-- Modais Overlay -->
+      <div class="modal-backdrop" id="modal-backdrop" style="display: none;">
+        <!-- Modal da Loja de Cristais -->
+        <div class="modal-card" id="modal-store" style="display: none;">
+          <div class="modal-header">
+            <h2>🏪 Loja de Cristais Cósmicos</h2>
+            <button class="btn-close-modal" data-close>✕</button>
+          </div>
+          <p class="modal-subtitle">Adquira cristais para usar em power-ups divinos ou apoiar o projeto independente.</p>
+          <div class="store-packs">
+            <div class="pack-item">
+              <div class="pack-badge">Iniciante</div>
+              <div class="pack-crystals">120 💎</div>
+              <div class="pack-desc">Ideal para os primeiros desafios</div>
+              <button class="btn-buy-pack" data-pack="pack_small" data-price="R$ 4,90">R$ 4,90</button>
+            </div>
+            <div class="pack-item pack-featured">
+              <div class="pack-badge">Mais Popular</div>
+              <div class="pack-crystals">260 💎</div>
+              <div class="pack-desc">Equilíbrio perfeito de bônus</div>
+              <button class="btn-buy-pack btn-gold" data-pack="pack_medium" data-price="R$ 9,90">R$ 9,90</button>
+            </div>
+            <div class="pack-item">
+              <div class="pack-badge">Guardião</div>
+              <div class="pack-crystals">600 💎</div>
+              <div class="pack-desc">Suporte máximo à obra</div>
+              <button class="btn-buy-pack" data-pack="pack_large" data-price="R$ 19,90">R$ 19,90</button>
+            </div>
+          </div>
+          <div class="reward-ad-box">
+            <span>📺 Precisa de cristais grátis?</span>
+            <button class="btn-ad" id="btn-watch-ad">Assistir Anúncio (+25 💎)</button>
+          </div>
+        </div>
+
+        <!-- Modal de Ranking Semanal -->
+        <div class="modal-card" id="modal-ranking" style="display: none;">
+          <div class="modal-header">
+            <h2>🏆 Ranking Semanal Top 100</h2>
+            <button class="btn-close-modal" data-close>✕</button>
+          </div>
+          <p class="modal-subtitle">Pontuações da semana no Quarto Astral (Reset toda segunda-feira às 00h BRT).</p>
+          <div class="ranking-table-container">
+            <table class="ranking-table">
+              <thead>
+                <tr>
+                  <th>Pos.</th>
+                  <th>Jogador</th>
+                  <th>Luz</th>
+                  <th>Pontos</th>
+                </tr>
+              </thead>
+              <tbody id="ranking-list">
+                <tr><td colspan="4" class="text-center">Carregando ranking do backend...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Modal de Configurações & Acessibilidade -->
+        <div class="modal-card" id="modal-settings" style="display: none;">
+          <div class="modal-header">
+            <h2>⚙️ Configurações & Acessibilidade</h2>
+            <button class="btn-close-modal" data-close>✕</button>
+          </div>
+          <div class="settings-list">
+            <label class="setting-item">
+              <span>🔊 Efeitos Sonoros (Web Audio)</span>
+              <input type="checkbox" id="chk-audio" checked />
+            </label>
+            <label class="setting-item">
+              <span>✨ Redução de Partículas (Modo TDAH / Performance)</span>
+              <input type="checkbox" id="chk-reduce-particles" />
+            </label>
+            <label class="setting-item">
+              <span>🌐 API Backend Conectada</span>
+              <span class="badge-status" id="backend-status-badge">Verificando...</span>
+            </label>
+          </div>
+          <div class="settings-actions">
+            <button class="btn-secondary" id="btn-feedback">💬 Enviar Feedback</button>
+          </div>
+        </div>
+
+        <!-- Modal de Fim de Jogo (Vitória ou Derrota) -->
+        <div class="modal-card modal-gameover" id="modal-gameover" style="display: none;">
+          <div class="gameover-banner">
+            <h2 id="gameover-title">AURORA ALCANÇADA!</h2>
+            <p id="gameover-subtitle">O espírito foi purificado e a luz triunfou.</p>
+          </div>
+          <div class="gameover-stats">
+            <div>Pontuação Final: <strong id="go-score">0</strong></div>
+            <div>Luz Restante: <strong id="go-light">0</strong> / 20</div>
+            <div>Espíritos Purificados: <strong id="go-purified">0</strong></div>
+            <div>Cristais Ganhos: <strong id="go-reward">+30 💎</strong></div>
+          </div>
+          <div class="gameover-actions">
+            <button class="btn-gold" id="btn-restart-game">Jogar Novamente</button>
+            <button class="btn-secondary" id="btn-share-score">📤 Compartilhar Vitória</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+</html>

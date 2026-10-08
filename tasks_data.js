@@ -6,8 +6,8 @@ window.__TASKS_DATA__ = {
     "last_updated": "2026-10-08",
     "metrics": {
       "total_tasks": 20,
-      "completed_tasks": 11,
-      "progress_percentage": 55
+      "completed_tasks": 18,
+      "progress_percentage": 90
     }
   },
   "milestones": [
@@ -194,99 +194,106 @@ window.__TASKS_DATA__ = {
       "id": "TASK-012",
       "title": "Setup do Projeto Phaser 3 + TypeScript + Vite",
       "description": "Inicialização do frontend/ com template Phaser 3, TypeScript e Vite configurados.",
-      "status": "todo",
+      "status": "done",
       "milestone": "m4_frontend_ui",
       "tier": "tier2_fast",
       "indicators": [
         "Canvas renderizando a 60 FPS",
         "Estrutura modular de cenas"
       ],
-      "audit_confirmed": false,
-      "created_at": "2026-10-08"
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
     },
     {
       "id": "TASK-013",
       "title": "Sistema de Grade Livre & Posicionamento de Guias",
       "description": "Mecânica de grade 16x9, detecção de caminho, prévia de alcance e confirmação por toque mobile.",
-      "status": "todo",
+      "status": "done",
       "milestone": "m4_frontend_ui",
       "tier": "tier2_fast",
       "indicators": [
         "Posicionamento fluido e touch-friendly",
         "Bloqueio de posicionamento sobre o caminho"
       ],
-      "audit_confirmed": false,
-      "created_at": "2026-10-08"
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
     },
     {
       "id": "TASK-014",
       "title": "Implementação dos 3 Guias & Mecânica de Ataque",
       "description": "Comportamentos do Mentor de Luz, Benzedeira e Pajé com projéteis, área e lentidão.",
-      "status": "todo",
+      "status": "done",
       "milestone": "m4_frontend_ui",
       "tier": "tier2_fast",
       "indicators": [
         "3 guias atacando com seus efeitos próprios",
         "Sistema de upgrade e venda a 70%"
       ],
-      "audit_confirmed": false,
-      "created_at": "2026-10-08"
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
     },
     {
       "id": "TASK-015",
       "title": "Sistema de Inimigos, Purificação & 3 Hordas",
       "description": "Ciclo das 4 criaturas, animação de purificação em luz e spawn das 3 hordas sequenciais.",
-      "status": "todo",
+      "status": "done",
       "milestone": "m4_frontend_ui",
       "tier": "tier2_fast",
       "indicators": [
         "Inimigos se dissolvem em luz",
         "Progresso de hordas com botão Chamar Horda"
       ],
-      "audit_confirmed": false,
-      "created_at": "2026-10-08"
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
     },
     {
       "id": "TASK-016",
       "title": "Chefão Obsessor-Mor & Cena Final",
       "description": "Batalha do chefão em 2 fases, invocação de larvas e cinemática HQ de redenção.",
-      "status": "todo",
+      "status": "done",
       "milestone": "m4_frontend_ui",
       "tier": "tier2_fast",
       "indicators": [
         "Fase 1 e Fase 2 funcionais",
         "Cena de desfecho emocional renderizada"
       ],
-      "audit_confirmed": false,
-      "created_at": "2026-10-08"
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
     },
     {
       "id": "TASK-017",
       "title": "HUD, Power-ups & Loja de Cristais",
       "description": "Interface responsiva completa com barras de status, botões de 4 power-ups e modais.",
-      "status": "todo",
+      "status": "done",
       "milestone": "m4_frontend_ui",
       "tier": "tier2_fast",
       "indicators": [
         "Power-ups consumíveis acionáveis",
         "HUD adaptável a mobile e desktop"
       ],
-      "audit_confirmed": false,
-      "created_at": "2026-10-08"
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
     },
     {
       "id": "TASK-018",
       "title": "Simulador de Balanceamento 'Vencível Grátis'",
       "description": "Teste automatizado que roda a fase com estratégia base sem power-ups e valida vitória.",
-      "status": "todo",
+      "status": "done",
       "milestone": "m4_frontend_ui",
       "tier": "tier2_fast",
       "indicators": [
         "Simulação confirma 100% de vitória no modo normal sem compras",
         "Garantia anti-pay-to-win"
       ],
-      "audit_confirmed": false,
-      "created_at": "2026-10-08"
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
     },
     {
       "id": "TASK-019",
@@ -317,4 +324,5 @@ window.__TASKS_DATA__ = {
       "created_at": "2026-10-08"
     }
   ]
-};
+}
+;

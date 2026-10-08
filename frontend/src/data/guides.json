@@ -1,0 +1,139 @@
+{
+  "mentor": {
+    "id": "mentor",
+    "name": "Mentor de Luz",
+    "description": "Espírito de alta vibração que projeta raios concentrados de luz divina.",
+    "role": "Dano focado",
+    "color": "#F6E05E",
+    "levels": [
+      {
+        "level": 1,
+        "title": "Médium Sereno",
+        "cost": 100,
+        "damage": 10,
+        "attackRate": 1.0,
+        "range": 200,
+        "effect": "Raio de luz linear concentrado",
+        "sprite": "assets/guides/mentor_lvl1.jpg"
+      },
+      {
+        "level": 2,
+        "title": "Aura Luminosa",
+        "cost": 150,
+        "damage": 18,
+        "attackRate": 1.2,
+        "range": 240,
+        "effect": "Raio de luz ampliado com aura solar",
+        "sprite": "assets/guides/mentor_lvl1.jpg"
+      },
+      {
+        "level": 3,
+        "title": "Guardião Astral",
+        "cost": 250,
+        "damage": 26,
+        "attackRate": 1.4,
+        "range": 280,
+        "chainTargets": 3,
+        "chainFalloff": 0.3,
+        "effect": "Raio estelar que salta em até 3 alvos (-30% por salto)",
+        "sprite": "assets/guides/mentor_lvl3.jpg"
+      }
+    ]
+  },
+  "benzedeira": {
+    "id": "benzedeira",
+    "name": "Benzedeira",
+    "description": "Anciã acolhedora que espalha ramos de arruda, acalmando espíritos agressivos.",
+    "role": "Controle de grupo e desaceleração",
+    "color": "#48BB78",
+    "levels": [
+      {
+        "level": 1,
+        "title": "Senhora da Arruda",
+        "cost": 125,
+        "damage": 3,
+        "attackRate": 0.8,
+        "range": 160,
+        "slowPercent": 0.3,
+        "slowDuration": 2.0,
+        "effect": "Ramo de arruda: -30% velocidade por 2s",
+        "sprite": "assets/guides/benzedeira_lvl1.jpg"
+      },
+      {
+        "level": 2,
+        "title": "Aura Curadora",
+        "cost": 175,
+        "damage": 5,
+        "attackRate": 0.8,
+        "range": 200,
+        "areaOfEffect": 80,
+        "slowPercent": 0.4,
+        "slowDuration": 2.5,
+        "effect": "Lentidão em área (80px): -40% por 2.5s",
+        "sprite": "assets/guides/benzedeira_lvl1.jpg"
+      },
+      {
+        "level": 3,
+        "title": "Anciã da Cura Astral",
+        "cost": 275,
+        "damage": 8,
+        "attackRate": 0.8,
+        "range": 240,
+        "areaOfEffect": 100,
+        "slowPercent": 0.4,
+        "slowDuration": 3.0,
+        "paralyzeInterval": 6.0,
+        "paralyzeDuration": 1.0,
+        "damageAmplification": 0.25,
+        "effect": "Oração Sagrada: paralisa por 1s a cada 6s e +25% de dano recebido",
+        "sprite": "assets/guides/benzedeira_lvl3.jpg"
+      }
+    ]
+  },
+  "paje": {
+    "id": "paje",
+    "name": "Pajé",
+    "description": "Liderança ancestral que invoca o fogo sagrado e fumaça de ervas contra hordas.",
+    "role": "Dano em área",
+    "color": "#ED8936",
+    "levels": [
+      {
+        "level": 1,
+        "title": "Guardião da Floresta",
+        "cost": 150,
+        "damage": 14,
+        "attackRate": 0.5,
+        "range": 160,
+        "areaOfEffect": 80,
+        "effect": "Fumaça de ervas: dano em área de 80px",
+        "sprite": "assets/guides/paje_lvl1.jpg"
+      },
+      {
+        "level": 2,
+        "title": "Guardião do Fogo",
+        "cost": 200,
+        "damage": 22,
+        "attackRate": 0.55,
+        "range": 200,
+        "areaOfEffect": 100,
+        "dotDamage": 5,
+        "dotDuration": 2.0,
+        "effect": "Fumaça persistente no chão: dano contínuo de 5/s por 2s",
+        "sprite": "assets/guides/paje_lvl1.jpg"
+      },
+      {
+        "level": 3,
+        "title": "Xamã Cósmico Ancestral",
+        "cost": 300,
+        "damage": 34,
+        "attackRate": 0.6,
+        "range": 240,
+        "areaOfEffect": 120,
+        "dotDamage": 8,
+        "dotDuration": 3.0,
+        "effect": "Círculo de fogo ancestral em área de 120px com dano contínuo",
+        "sprite": "assets/guides/paje_lvl3.jpg"
+      }
+    ]
+  }
+}
