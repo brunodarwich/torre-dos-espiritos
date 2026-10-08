@@ -2,7 +2,7 @@
 
 Um kit operacional e metodológico desenhado sob medida para desenvolvimento ágil de projetos e produtos digitais com agentes de inteligência artificial (compatível com Google Antigravity, OpenAI Codex, Cursor, Claude Code e similares).
 
-Este repositório consolida **21 princípios práticos** de desenvolvimento orientados ao perfil multidisciplinar do operador (pensamento visual e narrativo, rigor conceitual e normativo, estratégia de negócios/startups e design cognitivo TDAH-friendly).
+Este repositório consolida **21 princípios práticos** de desenvolvimento orientados ao perfil multidisciplinar do criador (criativo/quadrinista, formação jurídica, analista de negócios Sebrae com startups e neurodivergência TDAH).
 
 ---
 
@@ -50,7 +50,7 @@ dev-ia-bd/
   3. `Marco 3`: Backend Core, Contratos de API & Testes (FastAPI + Pydantic + testes aprovados).
   4. `Marco 4`: Frontend UI & Integração (UI Tailwind consumindo APIs reais de ponta a ponta).
   5. `Marco 5`: Auditoria Tier 3, Métricas & Go-to-Market (Telemetria real, release e deploy).
-- **Checkpoint Estrito**: Ao concluir cada marco, a IA roda testes, atualiza o `tasks.json` e **PARA obrigatoriamente**, emitindo um Resumo Executivo para validação do operador antes de avançar.
+- **Checkpoint Estrito**: Ao concluir cada marco, a IA roda testes, atualiza o `tasks.json` e **PARA obrigatoriamente**, emitindo um Resumo Executivo para validação do Bruno antes de avançar.
 
 ### 2. Design UI/UX com Google Stitch & Direção de Arte Unificada para Imagens
 - **Nenhum front-end é codificado às cegas**: A IA gera as especificações visuais e o prompt pronto para o [Google Stitch](https://stitch.withgoogle.com) ou servidores MCP locais (`stitch` / `StitchMCP`).

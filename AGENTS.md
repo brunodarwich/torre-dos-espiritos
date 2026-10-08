@@ -4,22 +4,16 @@ Este documento é a diretriz suprema de trabalho para qualquer agente de IA (Goo
 
 ---
 
-## 1. Perfil do Operador & Princípios Cognitivos
+## 1. Perfil do Criador & Princípios Cognitivos
 
-Este framework foi desenhado para empoderar qualquer **operador**, estruturando um fluxo de trabalho orientado por pensamento multidisciplinar, clareza executiva e tração de produto:
-- **Matriz Cognitiva & Repertório Multidisciplinar**:
-  - **Pensamento Visual, Narrativo e Estrutural**: Abordagem que estrutura o produto como uma narrativa coesa e fluida, priorizando ritmo de jornada, clareza espacial, diagramação e hierarquia de informação rigorosa.
-  - **Rigor Conceitual, Normativo e Lógico**: Fixação por conformidade, regras bem delimitadas, consistência sistêmica estrita e eliminação de ambiguidades em fluxos, contratos de dados e regras de negócio.
-  - **Visão Estratégica de Negócios e Startups**: Foco obstinado em validação rápida de hipóteses, proposta de valor tangível, viabilidade econômica (*unit economics*), modelagem de crescimento (*growth*) e impacto prático real.
-- **Acessibilidade Técnica e Foco em Produto (Não-desenvolvedor tradicional)**:
-  - Não assuma familiaridade do operador com jargões técnicos herméticos ou abstrações desnecessárias de baixo nível.
-  - Sempre que conveniente, facilite e traduza a compreensão de decisões de arquitetura e conceitos técnicos complexos utilizando analogias visuais, de negócio ou estruturais.
-  - A tecnologia deve servir à clareza do produto e ao valor entregue, nunca à complexidade gratuita.
-- **Design Cognitivo de Alto Foco (Neurodivergente / TDAH-Friendly)**:
-  - **Sobrecarga Zero**: Evite paredes de texto caóticas, divagações ou múltiplos comandos misturados. A comunicação deve ser atômica, modular e sequencial.
-  - **Apresentação Executiva**: Sempre entregue resumos consolidados, objetivos, estruturados e escaneáveis.
-  - **Acompanhamento Visual Contínuo**: Toda evolução de tarefas, marcos e métricas deve ser refletida visualmente no `dashboard.html` para ancoragem cognitiva contínua.
-  - **Orientações Guiadas Passo a Passo ("Clique a Clique")**: Caso o operador precise realizar alguma etapa manual em qualquer plataforma ou ferramenta externa, forneça um roteiro minucioso de navegação e cliques, prevenindo qualquer atrito ou desorientação.
+O criador deste projeto é **Bruno**, profissional criativo com uma trajetória multidisciplinar que dita como o trabalho deve ser conduzido:
+- **Origem e Repertório**: Quadrinista profissional (pensamento visual, narrativo e estrutural), formado em Direito (rigor conceitual, conformidade, regras claras) e ex-analista de negócios no Sebrae com atuação direta em ecossistemas de startups (validação de produto, modelagem financeira, unit economics e growth).
+- **Não é desenvolvedor tradicional de formação**: Não assuma familiaridade com jargões técnicos herméticos de baixo nível. Sempre que conveniente, facilite a compreensão de conceitos técnicos complexos usando analogias visuais ou de negócios.
+- **Perfil Neurodivergente (TDAH)**:
+  - **Sobrecarga Zero**: Evite paredes de texto caóticas ou múltiplos comandos misturados.
+  - **Apresentação Executiva**: Sempre entregue resumos consolidados, claros e estruturados.
+  - **Acompanhamento Visual**: Toda evolução de tarefas e métricas deve ser refletida visualmente no `dashboard.html`.
+  - **Orientações "Clique a Clique"**: Caso o Bruno precise realizar alguma etapa manual em qualquer plataforma externa, forneça um roteiro minucioso de onde clicar, prevenindo qualquer chance de desorientação.
 
 ---
 
@@ -33,12 +27,12 @@ A postura da IA perante o desenvolvimento deve equilibrar autonomia técnica com
 
 ### O Ciclo dos 5 Marcos Sequenciais de Desenvolvimento:
 1. **Marco 1: Fundação, Narrativa & Planejamento Sistêmico**:
-   - **Etapa 1.0 (Linha Lógica & Narrativa do Projeto)**: Condução de `/grill-me` guiado passo a passo (uma pergunta por vez), processando respostas e áudios transcritos do operador para consolidar o `docs/NARRATIVE_STORYTELLING.md` (Contexto & Usuário Real, Gargalo/Dor Concreta, Tese da Solução, Impacto Prático e Posicionamento).
+   - **Etapa 1.0 (Linha Lógica & Narrativa do Projeto)**: Condução de `/grill-me` guiado passo a passo (uma pergunta por vez), processando respostas e áudios transcritos do Bruno para consolidar o `docs/NARRATIVE_STORYTELLING.md` (Contexto & Usuário Real, Gargalo/Dor Concreta, Tese da Solução, Impacto Prático e Posicionamento).
    - **Etapa 1.1 (Versionamento Imediato no GitHub via CLI)**: Inicialização do Git (`git init`), criação automática do repositório remoto privado via GitHub CLI (`gh repo create <nome> --private --source=. --remote=origin --push`) e primeiro push antes de avançar para código.
    - **Etapa 1.2 (Canvas da Proposta de Valor — Fit 1:1)**: Elaboração do `docs/VALUE_PROPOSITION_CANVAS.md`, garantindo correspondência estrita 1:1 entre Dores do Cliente e Aliviadores de Dor, e entre Ganhos Desejados e Criadores de Ganho. Nenhuma funcionalidade é inventada sem dor ou ganho correspondente.
-   - **Etapa 1.3 (Business Model Canvas Sistêmico & Integrado)**: Condução de `/grill-me` guiado passo a passo (uma pergunta por vez) baseado na linha lógica de negócios do operador (Segmentos/Momento ➔ Oferta/Moat ➔ Relacionamento Antes/Durante/Depois amarrado a Canais ➔ Monetização Dupla ➔ Desdobramento compulsório de 100% dos compromissos em Atividades Principais ➔ Mapeamento de Atividades para Recursos ➔ Deslocamento de Atividades/Recursos para Parcerias Estratégicas ➔ Custos) para consolidar o `docs/BUSINESS_MODEL_CANVAS.md`.
+   - **Etapa 1.3 (Business Model Canvas Sistêmico & Integrado)**: Condução de `/grill-me` guiado passo a passo (uma pergunta por vez) baseado na linha lógica de negócios do Bruno (Segmentos/Momento ➔ Oferta/Moat ➔ Relacionamento Antes/Durante/Depois amarrado a Canais ➔ Monetização Dupla ➔ Desdobramento compulsório de 100% dos compromissos em Atividades Principais ➔ Mapeamento de Atividades para Recursos ➔ Deslocamento de Atividades/Recursos para Parcerias Estratégicas ➔ Custos) para consolidar o `docs/BUSINESS_MODEL_CANVAS.md`.
    - **Etapa 1.4 (PRD & Modelagem Técnica/Financeira Derivada)**: Elaboração e consolidação do `PRD.md` (cujos requisitos funcionais derivam compulsoriamente das Atividades Principais e da Proposta de Valor do Canvas), `TECH_STACK.md`, `FINANCIAL_MODEL.md`, `SUMMARY.md` e preenchimento inicial do `tasks.json`.
-   - *Ponto de Parada*: Validação dos requisitos de negócio, arquitetura e narrativa com o operador.
+   - *Ponto de Parada*: Validação dos requisitos de negócio, arquitetura e narrativa com o Bruno.
 2. **Marco 2: Design UI/UX, Direção de Arte & Imagens**:
    - Criação do `docs/DESIGN_SYSTEM_STITCH.md`, prompts do Google Stitch, definição da Direção de Arte e geração unificada de ativos visuais (imagens/ícones).
    - *Ponto de Parada*: Validação estética no Stitch e aprovação da coerência visual dos ativos gerados.
@@ -60,7 +54,7 @@ A postura da IA perante o desenvolvimento deve equilibrar autonomia técnica com
    - 📊 Estado atual das tarefas e métricas.
    - 🎯 O que está planejado para o próximo marco.
    - ❓ Pergunta explícita de autorização para iniciar o próximo marco.
-4. A IA **jamais** inicia tarefas de um marco futuro sem o comando explícito do operador.
+4. A IA **jamais** inicia tarefas de um marco futuro sem o comando explícito do Bruno.
 
 ---
 
@@ -92,7 +86,7 @@ O desenvolvimento de qualquer projeto deve respeitar a divisão de responsabilid
 
 ### Mecânica Operacional no Antigravity:
 1. **Tier 1 (Arquiteto Principal)**:
-   - Conduz o `/grill-me` com o operador, desenha a arquitetura, cria os planos de implementação (`/plan`) e atualiza o `tasks.json`.
+   - Conduz o `/grill-me` com o Bruno, desenha a arquitetura, cria os planos de implementação (`/plan`) e atualiza o `tasks.json`.
 2. **Handoff Autônomo para Tier 2 (Execução Ágil)**:
    - O agente principal invoca sub-agentes com modelos rápidos via ferramenta `invoke_subagent` com parâmetro `Model: 'flash'` e prompt atômico contendo as tarefas a implementar.
    - O sub-agente Flash gera o código, arquivos e testes de forma rápida e com menor custo computacional, reportando a conclusão ao agente pai.
@@ -101,7 +95,7 @@ O desenvolvimento de qualquer projeto deve respeitar a divisão de responsabilid
    - Confere ausência de vulnerabilidades, conformidade com os 21 princípios e valida se não houve regressão.
    - Dá o parecer formal e marca `audit_confirmed: true` e `status: "done"` no `tasks.json`.
 4. **Alternância Manual Opcional pelo Usuário**:
-   - Caso o operador prefira controlar a troca de modelos na barra da interface:
+   - Caso o Bruno prefira controlar a troca de modelos na barra da interface:
      - Use modelos Frontier (ex: Gemini Pro / Sonnet) para `/plan` e `/grill-me`.
      - Alterne para modelos Fast (ex: Gemini Flash) para gerar grandes volumes de código.
      - Alterne para modelos intermediários para pedir uma revisão detalhada do código antes de comitar.
@@ -110,7 +104,7 @@ O desenvolvimento de qualquer projeto deve respeitar a divisão de responsabilid
 
 ## 4. Etapa de Prototipagem, Design UI/UX com Google Stitch e Direção de Arte para Imagens
 
-Em atendimento ao perfil visual, narrativo e estrutural do operador, **nenhum código front-end deve ser iniciado às cegas e nenhum ativo visual deve ser gerado de forma desconexa**.
+Em atendimento ao perfil visual e narrativo do criador (quadrinista e designer), **nenhum código front-end deve ser iniciado às cegas e nenhum ativo visual deve ser gerado de forma desconexa**.
 Logo após a aprovação do planejamento (`/plan`) e do `PRD.md`, a IA deve obrigatoriamente executar a **Etapa de Design UI/UX com Google Stitch e Direção de Arte** (Marco 2):
 
 1. **Geração do Documento de Design e Direção de Arte (`docs/DESIGN_SYSTEM_STITCH.md`)**:
@@ -130,9 +124,9 @@ Logo após a aprovação do planejamento (`/plan`) e do `PRD.md`, a IA deve obri
        ```
      - **Protocolo Híbrido de Criação**:
        - *Geração Nativa Autônoma*: No Antigravity, utilizar a ferramenta `generate_image` para gerar os ativos diretamente no projeto (ex: em `frontend/public/assets/` ou diretório de mídia).
-       - *Prompts Externos Refinados*: A IA documenta prompts de alta fidelidade prontos para copiar e colar em ferramentas externas (Midjourney, Flux, Ideogram, DALL-E) caso o operador queira gerar ou refinar ilustrações externamente.
+       - *Prompts Externos Refinados*: A IA documenta prompts de alta fidelidade prontos para copiar e colar em ferramentas externas (Midjourney, Flux, Ideogram, DALL-E) caso o Bruno queira gerar ou refinar ilustrações externamente.
 4. **Validação Visual (Ponto de Parada do Marco 2)**:
-   - O operador valida ou ajusta o visual no Stitch e a harmonia estética das imagens geradas.
+   - O Bruno valida ou ajusta o visual no Stitch e a harmonia estética das imagens geradas.
    - Uma vez aprovado este marco, o código do front-end (`frontend/`) poderá ser construído espelhando com fidelidade absoluta o protótipo e os ativos.
 
 ---
@@ -178,10 +172,10 @@ Se em algum projeto específico a IA identificar que **Python NÃO é a melhor o
 | **Poder de IA / Processamento** | Máximo (ecossistema Python nativo) | Suficiente para chamadas de API simples |
 
 - **Recomendação da IA**: [Recomendação objetiva fundamentada no momento do projeto]
-- **Decisão do Operador**: Você aprova utilizar a alternativa proposta ou prefere mantermos a arquitetura padrão em Python?
+- **Decisão do Bruno**: Você aprova utilizar a alternativa proposta ou prefere mantermos a arquitetura padrão em Python?
 ```
 
-A IA só poderá prosseguir com uma stack diferente de Python após a aprovação expressa do operador.
+A IA só poderá prosseguir com uma stack diferente de Python após a aprovação expressa do Bruno.
 
 ---
 
@@ -190,7 +184,7 @@ A IA só poderá prosseguir com uma stack diferente de Python após a aprovaçã
 Em atendimento estrito aos Princípios 1, 10, 13, 20 e 21:
 > *"Tudo o que a IA puder desenvolver, fazer e configurar por mim com CLIs, MCPs e browser, faça. Quando for para configurar dados sensíveis, me chame com orientações detalhadas."*
 
-A IA não deve esperar passivamente que as ferramentas existam no computador do operador; ela deve executar um **Ciclo Ativo de Provisionamento** logo após a definição da stack no `TECH_STACK.md` ou ao detectar dependências no repositório.
+A IA não deve esperar passivamente que as ferramentas existam no computador do Bruno; ela deve executar um **Ciclo Ativo de Provisionamento** logo após a definição da stack no `TECH_STACK.md` ou ao detectar dependências no repositório.
 
 ```
 ┌────────────────────────────────────────────────────────┐
@@ -238,7 +232,7 @@ A IA não deve esperar passivamente que as ferramentas existam no computador do 
      ```
    - O projeto já nasce com backup na nuvem e esteira de branches/PRs pronta, sem postergar o GitHub para o final.
 5. **Passo 5 (Autenticação Segura Assistida)**:
-   - **Login via Browser (OAuth)**: Para ferramentas com suporte a login web (ex: `gh auth login --web`, `supabase login`, `stripe login`), a IA dispara o comando e avisa o operador com instruções diretas: *"Abri o login do [Serviço] no navegador. Código de pareamento: `XXXX-XXXX`. Confirme e me avise."*
+   - **Login via Browser (OAuth)**: Para ferramentas com suporte a login web (ex: `gh auth login --web`, `supabase login`, `stripe login`), a IA dispara o comando e avisa o Bruno com instruções diretas: *"Abri o login do [Serviço] no navegador. Código de pareamento: `XXXX-XXXX`. Confirme e me avise."*
    - **Login via Chaves/Tokens (Sensíveis)**: Se exigir token ou chave privada, a IA **jamais** pede no chat; ela emite o **Cartão de Configuração Guiada** (Seção 8) para preenchimento no `.env` local.
 6. **Passo 6 (Servidores MCP)**:
    - Mapear os servidores MCP disponíveis no ambiente (ex: `stitch`, `filesystem`, `postgres`, `github`).
@@ -341,4 +335,4 @@ Todo projeto que utilize este framework deve conter os seguintes documentos na r
 - [ ] A tarefa foi executada de forma autônoma sem vazamento de dados sensíveis?
 - [ ] O `tasks.json` e o espelho `tasks_data.js` foram devidamente atualizados com o marco (`milestone`), status e indicadores?
 - [ ] O `dashboard.html` reflete o progresso real do projeto e do marco ativo (testável via `abrir_dashboard.bat` ou duplo-clique)?
-- [ ] O resumo final apresentado ao operador é executivo, direto, visual e sem sobrecarga cognitiva?
+- [ ] O resumo final apresentado ao Bruno é executivo, direto, visual e sem sobrecarga cognitiva?

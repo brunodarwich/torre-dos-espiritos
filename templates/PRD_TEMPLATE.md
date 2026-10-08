@@ -2,13 +2,13 @@
 
 > **Status**: Rascunho / Em Revisão / Aprovado  
 > **Versão**: 1.1.0  
-> **Autor/Responsável**: Operador / Agente de IA  
+> **Autor/Responsável**: Bruno / Agente de IA  
 > **Última Atualização**: AAAA-MM-DD  
 
 ---
 
 ## 🎙️ Roteiro de Entrevista `/grill-me` (Obrigatório Antes de Preencher)
-*A IA deve acionar o comando de perguntas interativas e consultar o operador sobre estes 4 eixos estruturantes antes de escrever o documento:*
+*A IA deve acionar o comando de perguntas interativas e consultar o Bruno sobre estes 4 eixos estruturantes antes de escrever o documento:*
 
 1. **Problema Central & Dor Aguda**: Qual problema este produto elimina que mais irrita ou custa dinheiro ao usuário?
    - *(Recomendado)*: Economizar horas de trabalho manual repetitivo gerando resultados estruturados com IA em segundos.

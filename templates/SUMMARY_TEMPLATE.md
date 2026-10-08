@@ -7,7 +7,7 @@
 ---
 
 ## 🎙️ Roteiro de Entrevista `/grill-me` (Obrigatório Antes de Preencher)
-*A IA deve fazer as seguintes perguntas de sintetização ao operador:*
+*A IA deve fazer as seguintes perguntas de sintetização ao Bruno:*
 
 1. **Definição em 1 Frase**: Como você descreveria o projeto se tivesse apenas 10 segundos no elevador?
    - *(Recomendado)*: "É uma plataforma que permite a [público] alcançar [resultado extraordinário] sem [maior dor atual] usando IA."

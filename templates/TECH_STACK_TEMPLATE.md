@@ -7,7 +7,7 @@
 ---
 
 ## 🎙️ Roteiro de Entrevista `/grill-me` (Obrigatório Antes de Preencher)
-*A IA deve questionar o operador sobre as decisões tecnológicas centrais antes de redigir a arquitetura:*
+*A IA deve questionar o Bruno sobre as decisões tecnológicas centrais antes de redigir a arquitetura:*
 
 1. **Stack de Front-end**: Qual ambiente garante maior velocidade de entrega e interface amigável?
    - *(Recomendado)*: Next.js (App Router) + Tailwind CSS + Lucide Icons (ecossistema maduro, consumo de API assíncrona e deploy instantâneo na Vercel).
@@ -101,7 +101,7 @@ O projeto adota uma separação rigorosa e modular entre **Front-end** e **Back-
 | **Poder de IA / Processamento** | Máximo (ecossistema Python nativo) | Suficiente para chamadas de API simples |
 
 - **Recomendação da IA**: [Recomendação clara e fundamentada]
-- **Decisão do Operador**: Você aprova utilizar a alternativa proposta ou prefere mantermos a arquitetura padrão em Python?
+- **Decisão do Bruno**: Você aprova utilizar a alternativa proposta ou prefere mantermos a arquitetura padrão em Python?
 ```
 
 ---

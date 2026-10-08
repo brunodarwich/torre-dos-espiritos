@@ -7,7 +7,7 @@
 ---
 
 ## 🎙️ Roteiro de Entrevista `/grill-me` (Obrigatório Antes de Preencher)
-*A IA deve alinhar os parâmetros financeiros essenciais com o operador através das seguintes perguntas:*
+*A IA deve alinhar os parâmetros financeiros essenciais com o Bruno através das seguintes perguntas:*
 
 1. **Modelo de Cobrança Principal**: Como o usuário pagará pelo valor entregue?
    - *(Recomendado)*: Assinatura mensal recorrente (SaaS) com plano Free de degustação controlada.

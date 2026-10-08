@@ -116,7 +116,7 @@ Key Screens to Generate:
 ---
 
 ## 5. Geração Automatizada via Servidor MCP Stitch (IDE)
-*Quando a IA ou o operador utilizar o servidor MCP `stitch` configurado na IDE, a IA executa o seguinte comando:*
+*Quando a IA ou o Bruno utilizar o servidor MCP `stitch` configurado na IDE, a IA executa o seguinte comando:*
 
 ```json
 {
