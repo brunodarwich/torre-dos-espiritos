@@ -6,54 +6,22 @@ window.__TASKS_DATA__ = {
     "last_updated": "2026-10-08",
     "metrics": {
       "total_tasks": 20,
-      "completed_tasks": 4,
-      "progress_percentage": 20
+      "completed_tasks": 7,
+      "progress_percentage": 35
     }
   },
   "milestones": [
-    {
-      "id": "m1_fundacao",
-      "title": "Marco 1: Fundação, Narrativa & Planejamento Sistêmico",
-      "order": 1
-    },
-    {
-      "id": "m2_design_arte",
-      "title": "Marco 2: Design UI/UX & Direção de Arte",
-      "order": 2
-    },
-    {
-      "id": "m3_backend_core",
-      "title": "Marco 3: Backend Core, APIs & Testes",
-      "order": 3
-    },
-    {
-      "id": "m4_frontend_ui",
-      "title": "Marco 4: Frontend Phaser, Jogo & Integração",
-      "order": 4
-    },
-    {
-      "id": "m5_auditoria_growth",
-      "title": "Marco 5: Auditoria Tier 3 & Publicação Play Store",
-      "order": 5
-    }
+    { "id": "m1_fundacao", "title": "Marco 1: Fundação, Narrativa & Planejamento Sistêmico", "order": 1 },
+    { "id": "m2_design_arte", "title": "Marco 2: Design UI/UX & Direção de Arte", "order": 2 },
+    { "id": "m3_backend_core", "title": "Marco 3: Backend Core, APIs & Testes", "order": 3 },
+    { "id": "m4_frontend_ui", "title": "Marco 4: Frontend Phaser, Jogo & Integração", "order": 4 },
+    { "id": "m5_auditoria_growth", "title": "Marco 5: Auditoria Tier 3 & Publicação Play Store", "order": 5 }
   ],
   "columns": [
-    {
-      "id": "todo",
-      "title": "Backlog / A Fazer"
-    },
-    {
-      "id": "in_progress",
-      "title": "Em Desenvolvimento"
-    },
-    {
-      "id": "review",
-      "title": "Em Revisão & Auditoria"
-    },
-    {
-      "id": "done",
-      "title": "Concluído / Entregue"
-    }
+    { "id": "todo", "title": "Backlog / A Fazer" },
+    { "id": "in_progress", "title": "Em Desenvolvimento" },
+    { "id": "review", "title": "Em Revisão & Auditoria" },
+    { "id": "done", "title": "Concluído / Entregue" }
   ],
   "tasks": [
     {
@@ -121,43 +89,46 @@ window.__TASKS_DATA__ = {
       "id": "TASK-005",
       "title": "Design System Stitch & Prompts de UI",
       "description": "Criação do docs/DESIGN_SYSTEM_STITCH.md com tokens visuais, paleta de cores e prompts de interface.",
-      "status": "todo",
+      "status": "done",
       "milestone": "m2_design_arte",
       "tier": "tier1_frontier",
       "indicators": [
         "Design tokens definidos para o HUD",
         "Prompts prontos para o Stitch"
       ],
-      "audit_confirmed": false,
-      "created_at": "2026-10-08"
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
     },
     {
       "id": "TASK-006",
       "title": "Direção de Arte & Geração de Ativos dos 3 Guias",
       "description": "Geração das ilustrações conceituais dos guias (Mentor, Benzedeira, Pajé) nos 3 níveis visuais em estilo HQ aquarela.",
-      "status": "todo",
+      "status": "done",
       "milestone": "m2_design_arte",
       "tier": "tier2_fast",
       "indicators": [
         "Imagens dos guias com identidade coesa",
         "Arquivos salvos em diretório de assets"
       ],
-      "audit_confirmed": false,
-      "created_at": "2026-10-08"
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
     },
     {
       "id": "TASK-007",
       "title": "Geração de Ativos dos Espíritos & Chefão",
       "description": "Ilustrações de Larva Astral, Zombeteiro, Obsessor, Sombra de Mágoa e do Obsessor-Mor (Fases 1 e 2).",
-      "status": "todo",
+      "status": "done",
       "milestone": "m2_design_arte",
       "tier": "tier2_fast",
       "indicators": [
         "Todos os 5 tipos de inimigos ilustrados",
         "Cena final do espírito arrependido ilustrada"
       ],
-      "audit_confirmed": false,
-      "created_at": "2026-10-08"
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
     },
     {
       "id": "TASK-008",
@@ -342,4 +313,5 @@ window.__TASKS_DATA__ = {
       "created_at": "2026-10-08"
     }
   ]
-};
+}
+;
