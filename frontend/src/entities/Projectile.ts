@@ -68,13 +68,13 @@ export class Projectile extends Phaser.GameObjects.Container {
       this.gfx.fillStyle(0xFFFFFF, 0.9);
       this.gfx.fillCircle(0, 0, 3);
     } else if (this.projectileType === 'herbs') {
-      // Ramo de arruda com folhas verdes
+      // Faixa de energia da aurora
       this.gfx.fillStyle(color, 0.9);
       this.gfx.fillEllipse(0, 0, 10, 6);
       this.gfx.fillStyle(0x9AE6B4, 1);
       this.gfx.fillCircle(-2, -1, 3);
     } else {
-      // Brasa de fogo sagrado ancestral
+      // Plasma âmbar do guardião
       this.gfx.fillStyle(color, 0.95);
       this.gfx.fillCircle(0, 0, 8);
       this.gfx.fillStyle(0xFBD38D, 0.9);
@@ -118,9 +118,20 @@ export class Projectile extends Phaser.GameObjects.Container {
       }
     }
 
-    // Se houver área de efeito (Pajé ou Benzedeira Nv2+)
+    const scene = this.scene as any;
+
+    // Efeitos de impacto estelar e onda de choque em área
+    if (scene && scene.combatFX) {
+      const sparkColor = this.projectileType === 'fire' ? 0xED8936 : (this.projectileType === 'herbs' ? 0x4FD1C5 : 0xF6E05E);
+      scene.combatFX.createImpactSparks(this.x, this.y, sparkColor, this.areaOfEffect ? 8 : 4);
+
+      if (this.areaOfEffect) {
+        scene.combatFX.createShockwave(this.x, this.y, sparkColor, this.areaOfEffect);
+      }
+    }
+
+    // Se houver área de efeito (Núcleo de Brasa ou Véu de Aurora Nv2+)
     if (this.areaOfEffect) {
-      const scene = this.scene as any;
       if (scene && scene.getSpiritsInRange) {
         const others = scene.getSpiritsInRange(this.x, this.y, this.areaOfEffect);
         others.forEach((spirit: any) => {

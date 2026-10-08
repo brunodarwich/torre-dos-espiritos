@@ -3,61 +3,448 @@
     {
       "wave": 1,
       "title": "Horda 1: Os Primeiros Sussurros",
-      "description": "Larvas Astrais surgem pelo portal. Posicione o Mentor de Luz para purificá-las.",
+      "description": "Larvas Astrais surgem pela fenda em levas ritmadas. Posicione o Prisma Solar para purificá-las.",
       "dialogue": [
-        "Sinto uma perturbação no ambiente astral...",
-        "Coloque um Mentor de Luz perto do caminho para abençoar estas larvas!",
-        "Lembre-se: nós purificamos os espíritos em luz, trazendo alívio e paz."
+        "A fenda do eclipse começou a se abrir...",
+        "Coloque um Prisma Solar perto do caminho para proteger o núcleo!",
+        "As criaturas podem recuperar sua luz. Mantenha o santuário em equilíbrio."
       ],
       "groups": [
-        { "spiritId": "larva", "count": 6, "interval": 1200, "delay": 500 },
-        { "spiritId": "larva", "count": 7, "interval": 1000, "delay": 10000 },
-        { "spiritId": "larva", "count": 7, "interval": 900, "delay": 20000 }
+        {
+          "spiritId": "larva",
+          "count": 6,
+          "interval": 1200,
+          "delay": 500
+        },
+        {
+          "spiritId": "larva",
+          "count": 6,
+          "interval": 1000,
+          "delay": 9000
+        },
+        {
+          "spiritId": "larva",
+          "count": 6,
+          "interval": 900,
+          "delay": 17000
+        }
       ]
     },
     {
       "wave": 2,
       "title": "Horda 2: Risos na Escuridão",
-      "description": "Zombeteiros saltitantes misturam-se com as larvas. Use a Benzedeira para desacelerá-los.",
+      "description": "Zombeteiros saltitantes misturam-se com as larvas. Use o Véu de Aurora para conter seus saltos velozes.",
       "dialogue": [
-        "Atenção! Os Zombeteiros saltam velozmente pelo quarto!",
-        "Invoque a Benzedeira com seu ramo de arruda para acalmar o ímpeto deles."
+        "Atenção! Os Zombeteiros saltam velozmente pelo santuário!",
+        "Invoque o Véu de Aurora para conter o avanço com suas faixas de energia."
       ],
       "groups": [
-        { "spiritId": "larva", "count": 10, "interval": 900, "delay": 500 },
-        { "spiritId": "zombeteiro", "count": 5, "interval": 1400, "delay": 4000 },
-        { "spiritId": "larva", "count": 15, "interval": 800, "delay": 14000 },
-        { "spiritId": "zombeteiro", "count": 5, "interval": 1200, "delay": 20000 }
+        {
+          "spiritId": "larva",
+          "count": 8,
+          "interval": 900,
+          "delay": 500
+        },
+        {
+          "spiritId": "zombeteiro",
+          "count": 3,
+          "interval": 1400,
+          "delay": 3000
+        },
+        {
+          "spiritId": "larva",
+          "count": 8,
+          "interval": 800,
+          "delay": 10000
+        },
+        {
+          "spiritId": "zombeteiro",
+          "count": 3,
+          "interval": 1200,
+          "delay": 15000
+        }
       ]
     },
     {
       "wave": 3,
-      "title": "Horda 3: O Peso das Mágoas",
-      "description": "Obsessores pesados e Sombras imunes a lentidão avançam. Exige a sinergia dos 3 guias.",
+      "title": "Horda 3: Vanguarda do Vazio",
+      "description": "Sentinelas do Vazio avançam com carapaças densas. Combine dano concentrado com desaceleração.",
       "dialogue": [
-        "Sombras de mágoa não sentem a arruda! Use o Pajé e o Mentor para resgatá-las!",
-        "Mantenham o foco, a madrugada está quase no fim..."
+        "Sentinelas do Vazio aproximam-se com carapaça pesada!",
+        "Combine o dano direto do Prisma Solar com a contenção da Aurora."
       ],
       "groups": [
-        { "spiritId": "larva", "count": 10, "interval": 700, "delay": 500 },
-        { "spiritId": "zombeteiro", "count": 6, "interval": 1000, "delay": 5000 },
-        { "spiritId": "obsessor", "count": 3, "interval": 2500, "delay": 12000 },
-        { "spiritId": "sombra", "count": 3, "interval": 2000, "delay": 16000 },
-        { "spiritId": "larva", "count": 10, "interval": 600, "delay": 24000 },
-        { "spiritId": "obsessor", "count": 3, "interval": 2200, "delay": 30000 },
-        { "spiritId": "sombra", "count": 3, "interval": 1800, "delay": 34000 }
+        {
+          "spiritId": "larva",
+          "count": 7,
+          "interval": 800,
+          "delay": 500
+        },
+        {
+          "spiritId": "zombeteiro",
+          "count": 3,
+          "interval": 1100,
+          "delay": 4000
+        },
+        {
+          "spiritId": "obsessor",
+          "count": 1,
+          "interval": 0,
+          "delay": 9000
+        },
+        {
+          "spiritId": "larva",
+          "count": 7,
+          "interval": 700,
+          "delay": 14000
+        },
+        {
+          "spiritId": "zombeteiro",
+          "count": 3,
+          "interval": 1000,
+          "delay": 18000
+        },
+        {
+          "spiritId": "obsessor",
+          "count": 2,
+          "interval": 2400,
+          "delay": 22000
+        }
       ]
     },
     {
       "wave": 4,
-      "title": "O Clímax: O Obsessor-Mor",
-      "description": "A grande sombra de angústia surge pessoalmente. Purifique sua dor para que a luz do amanhecer triunfe.",
+      "title": "Horda 4: Espectros da Penumbra",
+      "description": "Espectros da Névoa imunes à lentidão avançam. Evolua seus guardiões para o Nível 2 e use o Núcleo de Brasa.",
       "dialogue": [
-        "É ele... O Obsessor-Mor! Ele carrega uma dor imensa que precisa de libertação.",
-        "Mantenham as preces e os círculos de luz ativos até o romper da aurora!"
+        "Espectros da Névoa não sofrem lentidão! Foco no fogo do Núcleo de Brasa!",
+        "Evolua seus guardiões para o Nível 2 antes que a pressão aumente."
       ],
       "groups": [
-        { "spiritId": "boss", "count": 1, "interval": 0, "delay": 1000 }
+        {
+          "spiritId": "larva",
+          "count": 7,
+          "interval": 600,
+          "delay": 500
+        },
+        {
+          "spiritId": "sombra",
+          "count": 3,
+          "interval": 1600,
+          "delay": 3000
+        },
+        {
+          "spiritId": "zombeteiro",
+          "count": 4,
+          "interval": 900,
+          "delay": 9000
+        },
+        {
+          "spiritId": "obsessor",
+          "count": 2,
+          "interval": 2200,
+          "delay": 14000
+        },
+        {
+          "spiritId": "larva",
+          "count": 7,
+          "interval": 600,
+          "delay": 19000
+        },
+        {
+          "spiritId": "sombra",
+          "count": 3,
+          "interval": 1500,
+          "delay": 23000
+        }
+      ]
+    },
+    {
+      "wave": 5,
+      "title": "Horda 5: O Despertar do Arauto",
+      "description": "Mini-Chefe: O Arauto do Eclipse emerge com marcha pesada e alta resistência. Teste definitivo de DPS intermediário.",
+      "dialogue": [
+        "Uma presença titânica emerge... É o Arauto do Eclipse!",
+        "Concentre todo o poder de fogo antes que sua marcha rompa o leito astral!"
+      ],
+      "groups": [
+        {
+          "spiritId": "larva",
+          "count": 6,
+          "interval": 700,
+          "delay": 500
+        },
+        {
+          "spiritId": "zombeteiro",
+          "count": 3,
+          "interval": 1000,
+          "delay": 3500
+        },
+        {
+          "spiritId": "obsessor",
+          "count": 2,
+          "interval": 2200,
+          "delay": 8000
+        },
+        {
+          "spiritId": "arauto",
+          "count": 1,
+          "interval": 0,
+          "delay": 14000
+        },
+        {
+          "spiritId": "larva",
+          "count": 6,
+          "interval": 600,
+          "delay": 18000
+        },
+        {
+          "spiritId": "zombeteiro",
+          "count": 3,
+          "interval": 900,
+          "delay": 22000
+        }
+      ]
+    },
+    {
+      "wave": 6,
+      "title": "Horda 6: Tempestade de Saltos",
+      "description": "Enxame veloz de Zombeteiros e Espectros em ritmo frenético. Exige controle de área refinado.",
+      "dialogue": [
+        "Uma revoada frenética de saltos e névoa! Mantenham as barreiras erguidas!",
+        "Guardiões Nível 2 em pontos de curva são cruciais para conter o enxame."
+      ],
+      "groups": [
+        {
+          "spiritId": "larva",
+          "count": 10,
+          "interval": 500,
+          "delay": 500
+        },
+        {
+          "spiritId": "zombeteiro",
+          "count": 6,
+          "interval": 800,
+          "delay": 4000
+        },
+        {
+          "spiritId": "sombra",
+          "count": 4,
+          "interval": 1400,
+          "delay": 10000
+        },
+        {
+          "spiritId": "larva",
+          "count": 10,
+          "interval": 500,
+          "delay": 16000
+        },
+        {
+          "spiritId": "zombeteiro",
+          "count": 6,
+          "interval": 800,
+          "delay": 20000
+        },
+        {
+          "spiritId": "sombra",
+          "count": 4,
+          "interval": 1300,
+          "delay": 24000
+        }
+      ]
+    },
+    {
+      "wave": 7,
+      "title": "Horda 7: A Muralha das Sombras",
+      "description": "Linha de frente compacta de Sentinelas blindadas escoltando Espectros. Exige dano contínuo e queima concentrada.",
+      "dialogue": [
+        "A vanguarda blindada do eclipse avança! Carapaças pesadas protegendo espectros!",
+        "Usem o poder penetrante dos guardiões para quebrar a carapaça das sentinelas."
+      ],
+      "groups": [
+        {
+          "spiritId": "larva",
+          "count": 8,
+          "interval": 500,
+          "delay": 500
+        },
+        {
+          "spiritId": "obsessor",
+          "count": 3,
+          "interval": 1800,
+          "delay": 3500
+        },
+        {
+          "spiritId": "sombra",
+          "count": 4,
+          "interval": 1300,
+          "delay": 9500
+        },
+        {
+          "spiritId": "larva",
+          "count": 7,
+          "interval": 500,
+          "delay": 15000
+        },
+        {
+          "spiritId": "obsessor",
+          "count": 3,
+          "interval": 1600,
+          "delay": 18000
+        },
+        {
+          "spiritId": "sombra",
+          "count": 4,
+          "interval": 1200,
+          "delay": 23000
+        }
+      ]
+    },
+    {
+      "wave": 8,
+      "title": "Horda 8: A Noite Sem Fim",
+      "description": "Enxame maciço com todas as criaturas atacando em pinça coordenada. Momento chave para guardiões Nível 3.",
+      "dialogue": [
+        "A noite sem fim consome o horizonte astral! Todos os tipos de espíritos atacam juntos!",
+        "Chegou a hora de despertar a maestria dos guardiões no Nível 3!"
+      ],
+      "groups": [
+        {
+          "spiritId": "larva",
+          "count": 12,
+          "interval": 400,
+          "delay": 500
+        },
+        {
+          "spiritId": "zombeteiro",
+          "count": 5,
+          "interval": 700,
+          "delay": 4000
+        },
+        {
+          "spiritId": "obsessor",
+          "count": 2,
+          "interval": 1800,
+          "delay": 8000
+        },
+        {
+          "spiritId": "sombra",
+          "count": 4,
+          "interval": 1200,
+          "delay": 12000
+        },
+        {
+          "spiritId": "larva",
+          "count": 13,
+          "interval": 400,
+          "delay": 17000
+        },
+        {
+          "spiritId": "zombeteiro",
+          "count": 5,
+          "interval": 700,
+          "delay": 21000
+        },
+        {
+          "spiritId": "obsessor",
+          "count": 3,
+          "interval": 1600,
+          "delay": 24000
+        },
+        {
+          "spiritId": "sombra",
+          "count": 4,
+          "interval": 1100,
+          "delay": 28000
+        }
+      ]
+    },
+    {
+      "wave": 9,
+      "title": "Horda 9: O Olho da Tormenta",
+      "description": "Dois Arautos do Eclipse marcham na vanguarda, escoltados por esquadrões velozes. O teste de resistência final.",
+      "dialogue": [
+        "Dois Arautos do Eclipse marcham na tempestade! A terra astral treme!",
+        "Protejam o leito com todas as forças! A convergência final se aproxima!"
+      ],
+      "groups": [
+        {
+          "spiritId": "zombeteiro",
+          "count": 6,
+          "interval": 700,
+          "delay": 500
+        },
+        {
+          "spiritId": "arauto",
+          "count": 1,
+          "interval": 0,
+          "delay": 4000
+        },
+        {
+          "spiritId": "sombra",
+          "count": 5,
+          "interval": 1100,
+          "delay": 8000
+        },
+        {
+          "spiritId": "obsessor",
+          "count": 2,
+          "interval": 1800,
+          "delay": 14000
+        },
+        {
+          "spiritId": "arauto",
+          "count": 1,
+          "interval": 0,
+          "delay": 19000
+        },
+        {
+          "spiritId": "zombeteiro",
+          "count": 6,
+          "interval": 700,
+          "delay": 23000
+        },
+        {
+          "spiritId": "obsessor",
+          "count": 2,
+          "interval": 1600,
+          "delay": 27000
+        },
+        {
+          "spiritId": "sombra",
+          "count": 5,
+          "interval": 1000,
+          "delay": 30000
+        }
+      ]
+    },
+    {
+      "wave": 10,
+      "title": "Horda 10: O Colosso do Eclipse",
+      "description": "O clímax épico da jornada. O Colosso do Eclipse atravessa a fenda em uma batalha dinâmica de 3 fases.",
+      "dialogue": [
+        "O Colosso do Eclipse atravessa a fenda! Sua carapaça é ancestral e implacável!",
+        "Mantenham os protetores e os círculos de luz ativos até a aurora!"
+      ],
+      "groups": [
+        {
+          "spiritId": "larva",
+          "count": 8,
+          "interval": 600,
+          "delay": 500
+        },
+        {
+          "spiritId": "obsessor",
+          "count": 2,
+          "interval": 2000,
+          "delay": 4000
+        },
+        {
+          "spiritId": "boss",
+          "count": 1,
+          "interval": 0,
+          "delay": 10000
+        }
       ]
     }
   ]

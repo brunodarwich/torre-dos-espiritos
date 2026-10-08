@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { GAME_WIDTH, GAME_HEIGHT } from '../config';
 import { PixelPoint } from '../systems/GridSystem';
 import { audioSynth } from '../systems/AudioSynth';
 
@@ -15,6 +16,7 @@ export interface SpiritConfig {
   jumpInterval?: number;
   jumpDistance?: number;
   slowImmune?: boolean;
+  maxSlow?: number;
   areaDamageReduction?: number;
 }
 
@@ -28,6 +30,7 @@ export class Spirit extends Phaser.GameObjects.Container {
   public essenceReward: number;
   public lightDamage: number;
   public slowImmune: boolean;
+  public maxSlow?: number;
   public areaDamageReduction: number;
 
   private waypoints: PixelPoint[];
@@ -51,6 +54,10 @@ export class Spirit extends Phaser.GameObjects.Container {
   protected gfx: Phaser.GameObjects.Graphics;
   protected sprite?: Phaser.GameObjects.Sprite;
   protected healthBar: Phaser.GameObjects.Graphics;
+  protected visualSize = 64;
+  protected visualOffsetX = 0;
+  protected visualOffsetY = 0;
+  protected shadow: Phaser.GameObjects.Ellipse;
 
   constructor(scene: Phaser.Scene, config: SpiritConfig) {
     const startPt = config.waypoints[0] || { x: 0, y: 0 };
@@ -65,17 +72,23 @@ export class Spirit extends Phaser.GameObjects.Container {
     this.essenceReward = config.essenceReward;
     this.lightDamage = config.lightDamage;
     this.slowImmune = !!config.slowImmune;
+    this.maxSlow = config.maxSlow;
     this.areaDamageReduction = config.areaDamageReduction || 0;
     this.waypoints = config.waypoints;
     this.jumpInterval = config.jumpInterval;
     this.jumpDistance = config.jumpDistance;
     this.jumpCooldown = this.jumpInterval || 0;
 
+    const size = config.id === 'boss' ? 128 : (config.id === 'arauto' ? 88 : 64);
+    this.visualSize = size;
+    this.shadow = scene.add.ellipse(0, size * 0.3, size * 0.55, size * 0.16, 0x050811, 0.4);
+    this.add(this.shadow);
     this.gfx = scene.add.graphics();
     this.healthBar = scene.add.graphics();
     this.add([this.gfx, this.healthBar]);
 
     this.initVisuals(config);
+    this.bringToTop(this.healthBar);
     scene.add.existing(this);
     this.setDepth(6);
   }
@@ -86,7 +99,10 @@ export class Spirit extends Phaser.GameObjects.Container {
     // Se houver sprite carregado no cache da cena
     if (config.spriteKey && this.scene.textures.exists(config.spriteKey)) {
       this.sprite = this.scene.add.sprite(0, 0, config.spriteKey);
-      this.sprite.setDisplaySize(52, 52);
+      this.sprite.setScale(this.visualSize / Math.max(this.sprite.width, this.sprite.height));
+      if (this.spiritId === 'arauto') {
+        this.sprite.setTint(0xF6AD55);
+      }
       this.add(this.sprite);
     } else {
       // Representação procedural etérea
@@ -97,7 +113,28 @@ export class Spirit extends Phaser.GameObjects.Container {
       this.gfx.fillCircle(4, -4, 5);
     }
 
+    this.updateVisualPosition();
     this.updateHealthBar();
+  }
+
+  protected updateVisualPosition() {
+    const half = this.visualSize / 2 + 2;
+    this.visualOffsetX = Phaser.Math.Clamp(this.x, half, GAME_WIDTH - half) - this.x;
+    this.visualOffsetY = Phaser.Math.Clamp(this.y, half + 8, GAME_HEIGHT - half) - this.y;
+    this.sprite?.setPosition(this.visualOffsetX, this.visualOffsetY - 2 + Math.sin(this.scene.time.now / 600) * 2);
+    this.healthBar.setPosition(this.visualOffsetX, this.visualOffsetY);
+    this.gfx.setPosition(this.visualOffsetX, this.visualOffsetY);
+    this.shadow.setPosition(this.visualOffsetX, this.visualOffsetY + this.visualSize * 0.3);
+  }
+
+  public getTextureKey(): string | undefined { return this.sprite?.texture.key; }
+
+  public getCurrentWaypointIndex(): number {
+    return this.currentWaypointIndex;
+  }
+
+  public getSlowMultiplier(): number {
+    return this.slowMultiplier;
   }
 
   public isPurified(): boolean {
@@ -108,7 +145,7 @@ export class Spirit extends Phaser.GameObjects.Container {
     return this.reachedBed;
   }
 
-  public takeDamage(amount: number, type: 'direct' | 'area' = 'direct') {
+  public takeDamage(amount: number, type: 'direct' | 'area' | 'dot' = 'direct') {
     if (this.purified || this.reachedBed) return;
 
     let finalDamage = amount;
@@ -119,11 +156,22 @@ export class Spirit extends Phaser.GameObjects.Container {
     this.currentHealth = Math.max(0, this.currentHealth - finalDamage);
     this.updateHealthBar();
 
+    // Floating Combat Text e faíscas via CombatFXSystem
+    const scene = this.scene as any;
+    if (scene && scene.combatFX) {
+      scene.combatFX.createDamageNumber(this.x, this.y, finalDamage, type);
+      scene.combatFX.createImpactSparks(
+        this.x,
+        this.y,
+        type === 'area' ? 0xED8936 : (type === 'dot' ? 0xFC8181 : 0xF6E05E),
+        type === 'area' ? 7 : 5
+      );
+    }
+
     // Flash sutil de impacto
     this.scene.tweens.add({
-      targets: this,
-      scaleX: 1.15,
-      scaleY: 1.15,
+      targets: this.sprite ?? this.gfx,
+      alpha: 0.6,
       duration: 60,
       yoyo: true,
       ease: 'Quad.easeInOut',
@@ -136,8 +184,15 @@ export class Spirit extends Phaser.GameObjects.Container {
 
   public applySlow(percent: number, duration: number) {
     if (this.slowImmune || this.purified) return;
-    this.slowMultiplier = Math.max(0.2, 1 - percent);
+    const effectiveSlow = this.maxSlow !== undefined ? Math.min(percent, this.maxSlow) : percent;
+    this.slowMultiplier = Math.max(0.2, 1 - effectiveSlow);
     this.slowTimer = Math.max(this.slowTimer, duration);
+    this.currentSpeed = this.baseSpeed * this.slowMultiplier;
+
+    const scene = this.scene as any;
+    if (scene && scene.combatFX) {
+      scene.combatFX.createStatusText(this.x, this.y, 'LENTIDÃO', '#4FD1C5');
+    }
   }
 
   public applyDot(damagePerSec: number, duration: number) {
@@ -156,6 +211,7 @@ export class Spirit extends Phaser.GameObjects.Container {
       this.slowTimer -= deltaSec;
       if (this.slowTimer <= 0) {
         this.slowMultiplier = 1;
+        this.currentSpeed = this.baseSpeed;
       }
     }
 
@@ -164,7 +220,7 @@ export class Spirit extends Phaser.GameObjects.Container {
       this.dotTimer -= deltaSec;
       this.dotAccumulator += deltaSec;
       if (this.dotAccumulator >= 0.5) {
-        this.takeDamage(this.dotDamagePerSec * 0.5, 'area');
+        this.takeDamage(this.dotDamagePerSec * 0.5, 'dot');
         this.dotAccumulator = 0;
       }
     }
@@ -182,6 +238,7 @@ export class Spirit extends Phaser.GameObjects.Container {
 
     // Movimentação pelos waypoints
     this.moveAlongPath(deltaSec);
+    if (this.active) this.updateVisualPosition();
   }
 
   private jumpForward(distance: number) {
@@ -243,13 +300,23 @@ export class Spirit extends Phaser.GameObjects.Container {
 
     audioSynth.playPurify();
 
-    // Notifica a cena para conceder essência
+    // FX celestial de purificação
     const scene = this.scene as any;
+    if (scene && scene.combatFX) {
+      scene.combatFX.createPurifyBurst(this.x, this.y);
+      scene.combatFX.triggerScreenShake(0.002, 100);
+    }
+
+    // Notifica a cena para conceder essência
     if (scene && scene.onSpiritPurified) {
       scene.onSpiritPurified(this);
     }
 
     this.healthBar.clear();
+    if (this.sprite && this.scene.textures.exists('spirit_redeemed')) {
+      this.sprite.setTexture('spirit_redeemed');
+      this.sprite.setScale(64 / Math.max(this.sprite.width, this.sprite.height));
+    }
 
     // Efeito visual de iluminação estelar
     this.gfx.clear();
@@ -294,10 +361,10 @@ export class Spirit extends Phaser.GameObjects.Container {
     this.healthBar.clear();
     if (this.purified || this.reachedBed) return;
 
-    const width = 36;
-    const height = 4;
+    const width = this.spiritId === 'arauto' ? 52 : 36;
+    const height = this.spiritId === 'arauto' ? 5 : 4;
     const x = -width / 2;
-    const y = -30;
+    const y = -this.visualSize / 2 + 2;
 
     const pct = Math.max(0, this.currentHealth / this.maxHealth);
 

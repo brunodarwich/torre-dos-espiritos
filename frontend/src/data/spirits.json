@@ -2,67 +2,99 @@
   "larva": {
     "id": "larva",
     "name": "Larva Astral",
-    "description": "Espírito miúdo perturbado que se move rapidamente em bando.",
+    "description": "Pequena criatura de névoa segmentada que se move rapidamente em bando.",
     "health": 30,
     "speed": 128,
     "essenceReward": 5,
     "lightDamage": 1,
-    "sprite": "assets/spirits/larva_astral.jpg",
+    "sprite": "assets/astral/spirit_larva.png",
     "color": "#81E6D9",
-    "traits": ["Vem em bando", "Rápido"]
+    "traits": [
+      "Vem em bando",
+      "Rápido"
+    ]
   },
   "zombeteiro": {
     "id": "zombeteiro",
     "name": "Zombeteiro",
-    "description": "Espírito brincalhão e inquieto que salta para a frente a cada 4 segundos.",
+    "description": "Criatura angular inquieta que salta para a frente a cada 4 segundos.",
     "health": 70,
     "speed": 88,
     "essenceReward": 10,
     "lightDamage": 1,
     "jumpInterval": 4.0,
     "jumpDistance": 80,
-    "sprite": "assets/spirits/larva_astral.jpg",
+    "sprite": "assets/astral/spirit_zombeteiro.png",
     "color": "#F6AD55",
-    "traits": ["Salto de 1 célula a cada 4s"]
+    "traits": [
+      "Salto de 1 célula a cada 4s"
+    ]
   },
   "obsessor": {
     "id": "obsessor",
-    "name": "Obsessor",
-    "description": "Espírito denso e teimoso, resistente a explosões e dano em área.",
+    "name": "Sentinela do Vazio",
+    "description": "Criatura pesada de carapaça escura, resistente a explosões e dano em área.",
     "health": 220,
     "speed": 48,
     "essenceReward": 25,
     "lightDamage": 2,
     "areaDamageReduction": 0.2,
-    "sprite": "assets/spirits/obsessor_spirit.jpg",
+    "sprite": "assets/astral/spirit_obsessor.png",
     "color": "#9B2C2C",
-    "traits": ["Resistência a área (-20%)", "Dano de 2 na Luz"]
+    "traits": [
+      "Resistência a área (-20%)",
+      "Dano de 2 na Luz"
+    ]
   },
   "sombra": {
     "id": "sombra",
-    "name": "Sombra de Mágoa",
-    "description": "Nuvem escura de ressentimento, totalmente imune a lentidão de arruda.",
+    "name": "Espectro da Névoa",
+    "description": "Criatura alongada de névoa, totalmente imune à desaceleração da aurora.",
     "health": 140,
     "speed": 72,
     "essenceReward": 20,
     "lightDamage": 2,
     "slowImmune": true,
-    "sprite": "assets/spirits/obsessor_spirit.jpg",
+    "sprite": "assets/astral/spirit_sombra.png",
     "color": "#4A5568",
-    "traits": ["Imune a lentidão", "Dano de 2 na Luz"]
+    "traits": [
+      "Imune a lentidão",
+      "Dano de 2 na Luz"
+    ]
+  },
+  "arauto": {
+    "id": "arauto",
+    "name": "Arauto do Eclipse",
+    "description": "Guardião corrompido de grande porte que precede a manifestação do Colosso.",
+    "health": 1200,
+    "speed": 40,
+    "essenceReward": 80,
+    "lightDamage": 4,
+    "maxSlow": 0.25,
+    "sprite": "assets/astral/spirit_obsessor.png",
+    "color": "#D69E2E",
+    "traits": [
+      "Mini-Chefe intermediário",
+      "Resistência a lentidão (máx 25%)",
+      "Dano de 4 na Luz"
+    ]
   },
   "boss": {
     "id": "boss",
-    "name": "O Obsessor-Mor",
-    "description": "O núcleo de toda a perturbação astral do quarto. Possui duas fases dramáticas.",
-    "health": 3000,
-    "speed": 32,
+    "name": "Colosso do Eclipse",
+    "description": "Colosso de carapaça astral que ameaça o núcleo do sonho. Batalha dinâmica em 3 fases.",
+    "health": 3500,
+    "speed": 28,
     "essenceReward": 150,
     "lightDamage": 20,
     "maxSlow": 0.2,
     "paralyzeImmune": true,
-    "sprite": "assets/spirits/boss_obsessor_mor.jpg",
+    "sprite": "assets/astral/spirit_boss.png",
     "color": "#553C9A",
-    "traits": ["Fase 1: Invoca 6 Larvas a cada 25% de vida perdida", "Fase 2: Aura apagadora e velocidade +50%"]
+    "traits": [
+      "Fase 1: Carapaça (-20% dano) e invoca Larvas aos 85% e 75% HP",
+      "Fase 2: Silêncio a cada 7s, +30% vel e invoca 3 Espectros",
+      "Fase 3: Fúria total (+60% vel), sem carapaça e invoca 8 Larvas"
+    ]
   }
 }

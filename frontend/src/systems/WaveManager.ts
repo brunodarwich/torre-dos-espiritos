@@ -157,10 +157,19 @@ export class WaveManager {
           this.onAllWavesCompleteCallback();
         }
       } else {
-        // Inicia contagem regressiva de 15s para a próxima horda
+        // Ritmo híbrido: intervalo de 8s entre hordas nas hordas 1 a 4, e 15s da horda 5 em diante.
+        const completedWave = this.currentWaveIndex + 1;
         this.isIntermission = true;
-        this.intermissionTimer = 15.0;
+        this.intermissionTimer = completedWave < 5 ? 8.0 : 15.0;
       }
     }
+  }
+
+  public getIntermissionTimer(): number {
+    return this.intermissionTimer;
+  }
+
+  public getIsIntermission(): boolean {
+    return this.isIntermission;
   }
 }

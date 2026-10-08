@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Santuário do Sonho · Prova de arte</title>
+  <style>
+    :root{color-scheme:dark;font-family:Segoe UI,Arial,sans-serif;background:#0b0f19;color:#eef2f7}
+    *{box-sizing:border-box}body{margin:0}main{max-width:1480px;margin:auto;padding:32px 24px}
+    h1{font-size:32px;margin:8px 0}h2{font-size:20px}p{color:#aab6c9;line-height:1.6;max-width:900px}
+    .tag{font-size:12px;text-transform:uppercase;letter-spacing:.12em;color:#4fd1c5}
+    .notice{padding:16px;border:1px solid #493963;border-radius:12px;background:#211c30;color:#d3c4ee}
+    .toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:22px 0}
+    button,a{color:#e7efff}button{background:#171d2e;border:1px solid #35405a;border-radius:8px;padding:10px 14px;cursor:pointer}
+    button[aria-pressed=true]{border-color:#4fd1c5;color:#4fd1c5}button:focus-visible,a:focus-visible{outline:2px solid #f6e05e;outline-offset:4px}
+    .viewport{overflow:auto;border:1px solid #35405a;border-radius:14px;background:#080b12}
+    .board{position:relative;margin:auto}.board img{display:block;width:100%;height:auto}.grid{position:absolute;inset:0;display:none;pointer-events:none;background-image:linear-gradient(to right,#4fd1c54a 1px,transparent 1px),linear-gradient(to bottom,#4fd1c54a 1px,transparent 1px);background-size:6.25% 11.111111%}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin:20px 0}
+    .card{background:#171d2e;border:1px solid #2d3748;border-radius:12px;padding:20px}.card h3{margin:12px 0}
+    .cutout{display:flex;align-items:center;justify-content:center;height:220px;background:#0b0f19;border-radius:8px}.cutout img{width:200px;height:200px;object-fit:contain}
+    body.light .cutout{background:#e7eef3}body.checker .cutout{background-color:#e3e6ec;background-image:linear-gradient(45deg,#abb3bd 25%,transparent 25%),linear-gradient(-45deg,#abb3bd 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#abb3bd 75%),linear-gradient(-45deg,transparent 75%,#abb3bd 75%);background-size:24px 24px;background-position:0 0,0 12px,12px -12px,-12px 0}
+    small{color:#aab6c9}.mini{display:flex;gap:12px;align-items:center;margin-top:15px}.mini img{width:80px;height:80px;object-fit:contain}
+    table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:12px;border-bottom:1px solid #2d3748}th{color:#aab6c9}.table-scroll{overflow:auto}
+    .pending{color:#f6bd78}footer{margin-top:30px;color:#aab6c9;font-size:13px}
+  </style>
+</head>
+<body><main>
+  <div class="tag">Torre dos Espíritos · Marco 2 · Direção de arte</div>
+  <h1>Santuário do Sonho</h1>
+  <p>Entidades de energia protegem um mundo de sonhos. Esta composição reúne as primeiras oito imagens com a rota real do jogo, para avaliar proporção, transparência e unidade visual.</p>
+  <div class="notice">Prova de arte aguardando avaliação. Portal, núcleo do sonho, inimigos e interface funcional entram na próxima etapa. O jogo atual ainda não usa estas imagens.</div>
+  <div class="toolbar" aria-label="Escala da composição">
+    <button data-size="fit" aria-pressed="true">Ajustar à janela</button><button data-size="1280" aria-pressed="false">1280 × 720</button><button data-size="1920" aria-pressed="false">1920 × 1080</button><button id="grid-toggle" aria-pressed="false">Mostrar grade real</button>
+    <a href="composition-1280.png" download>Baixar composição</a>
+  </div>
+  <div class="viewport"><div id="board" class="board"><img id="composition" src="composition-1280.png" width="1280" height="720" alt="Piso astral com caminho modular e três protetores abstratos posicionados fora da rota"><div id="grid" class="grid"></div></div></div>
+  <h2>Protetores · detalhes e escala de jogo</h2>
+  <p>Compare as silhuetas e confira as bordas sobre fundos diferentes. A miniatura abaixo de cada detalhe mostra o canvas de 80 pixels usado na prova.</p>
+  <div class="toolbar"><button data-bg="dark" aria-pressed="true">Fundo escuro</button><button data-bg="light" aria-pressed="false">Fundo claro</button><button data-bg="checker" aria-pressed="false">Quadriculado de inspeção</button></div>
+  <div id="protectors" class="cards"></div>
+  <h2>Arquivos e resolução real</h2>
+  <p>Os sprites possuem transparência real. As fontes do cenário abaixo de 2560 × 1440 ficam identificadas; não foram ampliadas artificialmente para atingir o tamanho prometido. A composição de 1920 × 1080 simula a escala de exibição.</p>
+  <div class="table-scroll"><table><thead><tr><th>Imagem</th><th>Fonte nativa</th><th>Arquivo entregue</th><th>Alvo final</th><th>Verificação</th></tr></thead><tbody id="assets"></tbody></table></div>
+  <footer>Oito ativos nesta prova / quarenta no catálogo. Gerados com image_gen; fontes e prompts preservados no projeto. <a href="manifest.json">Manifesto e prompts</a> · <a href="quality-report.json">Verificação técnica</a></footer>
+</main>
+<script src="manifest_data.js"></script>
+<script>
+  const manifest=window.__ART_MANIFEST__;
+  const dims=value=>value.join(' × ');
+  function img(file,alt){const el=document.createElement('img');el.src=file;el.alt=alt;return el}
+  for(const asset of manifest.assets){
+    const row=document.createElement('tr');
+    [asset.title,dims(asset.native_size),dims(asset.delivered_size),dims(asset.target_size),asset.native_resolution_met?'Resolução atendida':'Resolução final pendente'].forEach((value,index)=>{const td=document.createElement('td');if(index===0){const link=document.createElement('a');link.href=asset.file;link.textContent=value;td.append(link)}else td.textContent=value;if(index===4&&!asset.native_resolution_met)td.className='pending';row.append(td)});
+    document.querySelector('#assets').append(row);
+    if(['mentor','benzedeira','paje'].includes(asset.id)){
+      const card=document.createElement('article');card.className='card';const box=document.createElement('div');box.className='cutout';box.append(img(asset.file,asset.title));const title=document.createElement('h3');title.textContent=asset.title;const mini=document.createElement('div');mini.className='mini';mini.append(img(asset.file,'Escala de jogo: '+asset.title));const note=document.createElement('small');note.textContent='80 × 80 · PNG com alfa';mini.append(note);card.append(box,title,mini);document.querySelector('#protectors').append(card);
+    }
+  }
+  document.querySelectorAll('[data-size]').forEach(button=>button.onclick=()=>{document.querySelectorAll('[data-size]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)));const size=button.dataset.size;document.querySelector('#board').style.width=size==='fit'?'100%':size+'px';document.querySelector('#composition').src=size==='1920'?'composition-1920.png':'composition-1280.png'});
+  document.querySelector('#grid-toggle').onclick=event=>{const on=event.currentTarget.getAttribute('aria-pressed')!=='true';event.currentTarget.setAttribute('aria-pressed',String(on));document.querySelector('#grid').style.display=on?'block':'none'};
+  document.querySelectorAll('[data-bg]').forEach(button=>button.onclick=()=>{document.body.className=button.dataset.bg;document.querySelectorAll('[data-bg]').forEach(b=>b.setAttribute('aria-pressed',String(b===button)))});
+</script>
+</body></html>

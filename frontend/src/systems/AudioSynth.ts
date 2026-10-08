@@ -61,7 +61,7 @@ export class AudioSynth {
   }
 
   /**
-   * Som de Disparo do Mentor de Luz (Feixe cristalino)
+   * Som de Disparo do Prisma Solar (Feixe cristalino)
    */
   public playLaser() {
     if (!this.enabled) return;
@@ -87,7 +87,7 @@ export class AudioSynth {
   }
 
   /**
-   * Som da Benzedeira (Sussurro suave de folhas e oração)
+   * Som da Véu de Aurora (Ressonância suave da aurora)
    */
   public playHerbs() {
     if (!this.enabled) return;
@@ -113,7 +113,7 @@ export class AudioSynth {
   }
 
   /**
-   * Som do Pajé (Fogo Sagrado e Tambor grave)
+   * Som do Núcleo de Brasa (Plasma e ressonância grave)
    */
   public playFire() {
     if (!this.enabled) return;
@@ -161,6 +161,32 @@ export class AudioSynth {
 
     osc.start(now);
     osc.stop(now + 1.3);
+  }
+
+  /**
+   * Som de Vento Astral / Silêncio / Habilidade de Chefe
+   */
+  public playWhoosh() {
+    if (!this.enabled) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(220, now);
+    osc.frequency.exponentialRampToValueAtTime(110, now + 0.35);
+
+    gain.gain.setValueAtTime(0.08, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.36);
   }
 
   /**

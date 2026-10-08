@@ -116,3 +116,23 @@ Cada um será solicitado com um **Cartão de Configuração Guiada** quando cheg
 ## 7. Servidores MCP úteis
 - **stitch** (já disponível): prototipação de telas no Marco 2.
 - **chrome-devtools** (plugin já instalado): inspeção de desempenho e console no Marco 4.
+
+## 8. Integração de arte astral (08/10/2026)
+
+Fluxo de telas: `ScreenFlow` controla menu e carregamento no DOM; Phaser é criado no clique Jogar. `BootScene` carrega artes e texturas, informa progresso real e impede entrada em caso de erro; quando pronto, Entrar no sonho inicia `GameScene`. `MenuScene` oferece retorno ao início. `UIManager` compõe resultados com números reais e navegação; banners e dicas são cancelados ao sair. Logo em `public/assets/brand/`, telas em `public/assets/screens/{home,loading,results}/`, sem alterar backend ou balanceamento. Testes de estados e recuperação em `frontend/tests/screenFlow.test.ts`.
+
+O frontend consome os ativos em `public/assets/astral/`: 18 sprites novos, 3 retratos derivados e 5 camadas de ambiente. `BootScene` carrega cada nível e inimigo separadamente; `Boss` troca a textura na segunda fase existente. `GridSystem` consome `environment_manifest.json` para peças, rota e ancoragens. `art_manifest.json` registra fontes, prompts, dimensões e transparência. Sombras e flutuação são independentes; ajustes nas bordas deslocam somente os visuais, preservando coordenadas lógicas e combate.
+
+PNG RGBA: sprites comuns de 512 × 512 e chefe de 1024 × 1024; retratos derivados de 512 × 512. Cosmos WebP e piso PNG permanecem em 1672 × 941 nativos; a meta de 2560 × 1440 está pendente. A escala do motor preserva as proporções.
+
+- Partida: http://localhost:5173/; iniciar com `npm run dev -- --host 127.0.0.1 --port 5173` em `frontend/`.
+- Somente `import.meta.env.DEV`: `?artPreview=1` para prova estática e `?qa=1` para testes com botões. `#qa-state` e o getter `window.__ASTRAL_QA__` expõem snapshots observáveis; os controles QA não existem na build de produção.
+- Modos de prova não enviam pontuações ao ranking; recursos de teste ficam isolados da partida normal.
+- `UIManager` usa `AbortController` e `dispose()` no shutdown da cena, evitando listeners duplicados ao reiniciar.
+- Build e 2 testes de balanceamento aprovados; QA interativo concluído e aprovação estética final pendente.
+
+### Resultado do QA local
+
+QA técnico concluído com compras, 9 texturas/evoluções, venda, chefe nas duas fases e invocações, purificação, telas de vitória/derrota, reinícios e passagem pelas 5 hordas. Visual conferido em 1280 × 720 e 1920 × 1080. Evidências: `docs/GUARDIAN_ART_AUDIT.md` e capturas `public/guardian-art/guardioes-jogo-1920.jpg` / `public/guardian-art/partida-guardioes.jpg`.
+
+Build final aprovado com 5 hordas estruturadas (Wave 4: 'A Noite Mais Escura' e Wave 5: 'Colosso do Eclipse' com escolta). Os testes do simulador de balanceamento confirmam vitória 100/100 sem power-ups pagos. Aprovação estética final do Bruno permanece pendente.

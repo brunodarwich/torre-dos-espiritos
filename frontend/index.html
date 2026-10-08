@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Torre dos Espíritos — Tower Defense</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,21 +11,67 @@
 </head>
 <body>
   <div id="app">
+    <!-- Abertura e preparação do sonho -->
+    <section id="home-screen" class="cinematic-screen home-screen" aria-labelledby="home-title">
+      <img class="cinematic-art home-art" src="/assets/screens/home/sonho-guardioes-inicial-v1.png" alt="Uma pessoa dorme enquanto seus guardiões astrais protegem o mundo dos sonhos." fetchpriority="high" />
+      <div class="cinematic-shade"></div>
+      <div class="home-topline"><span class="world-label">Uma jornada além do despertar</span><button id="btn-home-audio" class="screen-audio" aria-label="Alternar efeitos sonoros" aria-pressed="true">Som ligado</button></div>
+      <div class="home-content">
+        <img class="home-logo" src="/assets/brand/torre-dos-espiritos-logo-v1.png" alt="Torre dos Espíritos" />
+        <p class="screen-eyebrow">Defenda a luz. Proteja o sonho.</p>
+        <h1 id="home-title">Enquanto você dorme,<br>eles lutam por você.</h1>
+        <p class="home-description">Convoque guardiões astrais, detenha as sombras e mantenha a luz do santuário acesa até a aurora.</p>
+        <div class="home-actions"><button id="btn-start-game" class="screen-primary">Jogar <span aria-hidden="true">↗</span></button><button id="btn-how-to-play" class="screen-secondary" aria-expanded="false" aria-controls="how-to-play">Como jogar</button></div>
+        <div class="home-meta"><span>3 guardiões astrais</span><i aria-hidden="true"></i><span>5 hordas para vencer</span></div>
+      </div>
+      <div class="home-footer"><span>O sonho precisa de um guardião.</span><span>Estratégia • Fantasia astral</span></div>
+      <div id="how-to-play" class="help-overlay" hidden>
+        <section class="help-card" role="dialog" aria-modal="true" aria-labelledby="help-title" tabindex="-1">
+          <div class="help-header"><span class="screen-eyebrow">Seu primeiro sonho</span><button id="btn-close-help" class="help-close" aria-label="Fechar instruções">✕</button></div>
+          <h2 id="help-title">Como proteger o santuário</h2>
+          <ol class="help-steps">
+            <li><strong>Convoque seus guardiões</strong><p>Escolha um card na barra inferior e toque em um espaço livre ao lado do caminho. Cada guardião custa Essência.</p></li>
+            <li><strong>Combine seus poderes</strong><p>Prisma Solar concentra dano, Véu de Aurora desacelera as sombras e Núcleo de Brasa atinge uma área.</p></li>
+            <li><strong>Prepare a próxima horda</strong><p>Selecione um guardião para evoluí-lo. Chamar a horda antes concede Essência extra, mas exige uma defesa pronta.</p></li>
+            <li><strong>Preserve a luz até a aurora</strong><p>Sombras que chegam ao núcleo consomem Luz. Sobreviva às hordas e purifique o Colosso do Eclipse para vencer; quando a Luz acaba, o sonho se perde.</p></li>
+          </ol>
+          <p class="help-note">Use os controles de pausa e velocidade para pensar sua estratégia com calma.</p>
+        </section>
+      </div>
+    </section>
+
+    <section id="loading-screen" class="cinematic-screen loading-screen" aria-labelledby="loading-title" hidden>
+      <img class="cinematic-art loading-art" src="/assets/screens/loading/carregamento-astral-v1.png" alt="Uma ponte iluminada leva ao portal do mundo astral." />
+      <div class="cinematic-shade"></div>
+      <div class="loading-content">
+        <img class="loading-logo" src="/assets/brand/torre-dos-espiritos-logo-v1.png" alt="Torre dos Espíritos" />
+        <p class="screen-eyebrow">O portal está se abrindo</p>
+        <h1 id="loading-title" tabindex="-1">Preparando seu sonho</h1>
+        <div class="loading-status"><span>Travessia astral</span><strong id="loading-percent">0%</strong></div>
+        <div id="loading-progress" class="loading-progress" role="progressbar" aria-label="Carregamento do jogo" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="loading-progress-fill"></div></div>
+        <div class="loading-tip-card"><span class="tip-label">Dica do santuário</span><p id="loading-tip" aria-live="polite">Combine guardiões: desacelerar as sombras dá mais tempo para seus ataques.</p></div>
+        <p id="loading-error" class="loading-error" role="alert" hidden></p>
+        <button id="btn-retry-loading" class="screen-secondary" hidden>Tentar novamente</button>
+        <button id="btn-enter-dream" class="screen-primary" hidden>Entrar no sonho <span aria-hidden="true">↗</span></button>
+      </div>
+    </section>
+
     <!-- Container do Canvas Phaser -->
     <div id="game-container"></div>
 
     <!-- Camada de Interface DOM sobreposta (HUD & Modais) -->
-    <div id="ui-layer">
+    <div id="ui-layer" hidden>
       <!-- Barra Superior (Top HUD) -->
       <header class="hud-top">
         <div class="hud-stats">
-          <div class="stat-badge stat-light" id="stat-light" title="Luz da Pessoa Adormecida">
+          <img class="hud-logo" src="/assets/brand/torre-dos-espiritos-logo-v1.png" alt="Torre dos Espíritos" />
+          <div class="stat-badge stat-light" id="stat-light" title="Luz do Núcleo do Sonho">
             <span class="stat-icon">🕯️</span>
             <span class="stat-value" id="val-light">20</span>
             <span class="stat-label">Luz</span>
           </div>
 
-          <div class="stat-badge stat-essence" id="stat-essence" title="Essência Sagrada da Partida">
+          <div class="stat-badge stat-essence" id="stat-essence" title="Essência Astral da Partida">
             <span class="stat-icon">💧</span>
             <span class="stat-value" id="val-essence">250</span>
             <span class="stat-label">Essência</span>
@@ -54,18 +100,19 @@
           <button class="btn-ctrl" id="btn-pause" title="Pausar partida">⏸</button>
           <button class="btn-ctrl" id="btn-audio" title="Ativar/Desativar som">🔊</button>
           <button class="btn-ctrl btn-icon" id="btn-settings" title="Configurações e Acessibilidade">⚙️</button>
-          <button class="btn-ctrl btn-autoplay" id="btn-autoplay" title="Demonstração: Assistir à IA vencendo sem power-ups">🤖 Autoplay</button>
+          <button class="btn-ctrl btn-autoplay" id="btn-autoplay" title="Demonstração automática da partida">🤖 Autoplay</button>
         </div>
       </header>
 
       <!-- Balão Narrativo de HQ (Estilo Quadrinho) -->
-      <div class="comic-balloon" id="comic-balloon" style="display: none;">
+      <div class="comic-balloon" id="comic-balloon" style="display: none;" role="status" aria-live="polite">
         <div class="balloon-avatar" id="balloon-avatar">✨</div>
         <div class="balloon-body">
-          <div class="balloon-speaker" id="balloon-speaker">Mentor de Luz</div>
+          <div class="balloon-speaker" id="balloon-speaker">Prisma Solar</div>
           <p class="balloon-text" id="balloon-text">Sinto uma perturbação no ambiente astral...</p>
         </div>
-        <button class="btn-close-balloon" id="btn-close-balloon">✕</button>
+        <button class="btn-close-balloon" id="btn-close-balloon" aria-label="Fechar notificação">✕</button>
+        <div class="balloon-timer-bar" id="balloon-timer-bar"></div>
       </div>
 
       <!-- Notificação Flutuante de Onda / Chefe -->
@@ -75,31 +122,48 @@
 
       <!-- Painel de Inspeção do Guia Selecionado -->
       <div class="guide-inspector" id="guide-inspector" style="display: none;">
-        <div class="inspector-header">
-          <div>
-            <h3 id="inspector-name">Mentor de Luz</h3>
-            <span class="inspector-role" id="inspector-role">Nível 1 • Dano Focado</span>
+        <div class="inspector-art-backdrop" id="inspector-art-backdrop"></div>
+        <div class="inspector-content">
+          <div class="inspector-header">
+            <div>
+              <h3 id="inspector-name">Prisma Solar</h3>
+              <span class="inspector-role" id="inspector-role">Nível 1 • Centelha</span>
+            </div>
+            <button class="btn-close-inspector" id="btn-close-inspector" aria-label="Fechar painel">✕</button>
           </div>
-          <button class="btn-close-inspector" id="btn-close-inspector">✕</button>
-        </div>
-        <p class="inspector-desc" id="inspector-desc">Raio de luz linear concentrado</p>
-        <div class="inspector-stats">
-          <div>Dano: <strong id="inspector-dmg">10</strong></div>
-          <div>Cadência: <strong id="inspector-rate">1.0/s</strong></div>
-          <div>Alcance: <strong id="inspector-range">2.5 cél.</strong></div>
-        </div>
-        <div class="inspector-actions">
-          <button class="btn-upgrade" id="btn-upgrade">
-            <span>Evoluir Nv.<span id="upgrade-lvl">2</span></span>
-            <span class="cost-tag"><span id="upgrade-cost">150</span> 💧</span>
-          </button>
-          <button class="btn-sell" id="btn-sell">
-            <span>Vender (70%)</span>
-            <span class="refund-tag">+<span id="sell-refund">70</span> 💧</span>
-          </button>
-          <button class="btn-target" id="btn-target-toggle">
-            Alvo: <strong id="target-mode">Primeiro</strong>
-          </button>
+          <p class="inspector-desc" id="inspector-desc">Raio de luz linear concentrado</p>
+          <div class="inspector-stats">
+            <div class="inspector-stat-row" title="Dano">
+              <span class="stat-name">⚔️</span>
+              <div class="stat-bar-track"><div class="stat-bar-fill stat-fill-dmg" id="bar-dmg" style="width: 40%"></div></div>
+              <strong id="inspector-dmg">10</strong>
+            </div>
+            <div class="inspector-stat-row" title="Cadência">
+              <span class="stat-name">⚡</span>
+              <div class="stat-bar-track"><div class="stat-bar-fill stat-fill-rate" id="bar-rate" style="width: 50%"></div></div>
+              <strong id="inspector-rate">1.0/s</strong>
+            </div>
+            <div class="inspector-stat-row" title="Alcance">
+              <span class="stat-name">🎯</span>
+              <div class="stat-bar-track"><div class="stat-bar-fill stat-fill-range" id="bar-range" style="width: 60%"></div></div>
+              <strong id="inspector-range">2.5</strong>
+            </div>
+          </div>
+          <div class="inspector-actions">
+            <button class="btn-upgrade" id="btn-upgrade">
+              <span>Evoluir Nv.<span id="upgrade-lvl">2</span></span>
+              <span class="cost-tag"><span id="upgrade-cost">150</span> 💧</span>
+            </button>
+            <div class="inspector-actions-row">
+              <button class="btn-sell" id="btn-sell">
+                <span>Vender</span>
+                <span class="refund-tag">+<span id="sell-refund">70</span> 💧</span>
+              </button>
+              <button class="btn-target" id="btn-target-toggle">
+                Alvo: <strong id="target-mode">Primeiro</strong>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -107,51 +171,48 @@
       <footer class="hud-bottom">
         <!-- Power-ups Circulares -->
         <div class="powerup-bar">
-          <button class="btn-powerup" id="pw-shield" data-cost="30" title="Escudo do Anjo (+5 Luz) • 30 💎">
+          <button class="btn-powerup" id="pw-shield" data-cost="30" title="Barreira Astral (+5 Luz) • 30 💎">
             <span class="pw-icon">🛡️</span>
             <span class="pw-cost">30</span>
           </button>
-          <button class="btn-powerup" id="pw-light-rain" data-cost="40" title="Chuva de Luz (Dano global) • 40 💎">
+          <button class="btn-powerup" id="pw-lightRain" data-cost="40" title="Cascata de Luz (Dano global) • 40 💎">
             <span class="pw-icon">✨</span>
             <span class="pw-cost">40</span>
           </button>
-          <button class="btn-powerup" id="pw-deep-sleep" data-cost="35" title="Sono Profundo (Congela inimigos) • 35 💎">
+          <button class="btn-powerup" id="pw-deepSleep" data-cost="35" title="Estase Onírica (Congela inimigos) • 35 💎">
             <span class="pw-icon">⏳</span>
             <span class="pw-cost">35</span>
           </button>
-          <button class="btn-powerup" id="pw-fervor" data-cost="35" title="Fervor Sagrado (2x Cadência) • 35 💎">
+          <button class="btn-powerup" id="pw-fervor" data-cost="35" title="Pulso Astral (2x Cadência) • 35 💎">
             <span class="pw-icon">⚡</span>
             <span class="pw-cost">35</span>
           </button>
         </div>
 
-        <!-- Cards de Invocação dos 3 Guias -->
+        <!-- Cards de Invocação dos 3 Guias (Formato Vertical com Imagens Maiores) -->
         <div class="guide-cards">
           <div class="guide-card" id="card-mentor" data-guide="mentor" data-cost="100">
-            <div class="card-thumb" style="background-image: url('assets/guides/mentor_lvl1.jpg')"></div>
-            <div class="card-info">
-              <span class="card-title">Mentor de Luz</span>
-              <span class="card-role">Raio Solar</span>
+            <div class="card-thumb" style="background-image: url('/assets/astral/portrait_mentor.png')"></div>
+            <div class="card-meta">
+              <span class="card-title">Prisma Solar</span>
+              <span class="card-cost">100 💧</span>
             </div>
-            <div class="card-cost">100 💧</div>
           </div>
 
           <div class="guide-card" id="card-benzedeira" data-guide="benzedeira" data-cost="125">
-            <div class="card-thumb" style="background-image: url('assets/guides/benzedeira_lvl1.jpg')"></div>
-            <div class="card-info">
-              <span class="card-title">Benzedeira</span>
-              <span class="card-role">Arruda / Lentidão</span>
+            <div class="card-thumb" style="background-image: url('/assets/astral/portrait_benzedeira.png')"></div>
+            <div class="card-meta">
+              <span class="card-title">Véu de Aurora</span>
+              <span class="card-cost">125 💧</span>
             </div>
-            <div class="card-cost">125 💧</div>
           </div>
 
           <div class="guide-card" id="card-paje" data-guide="paje" data-cost="150">
-            <div class="card-thumb" style="background-image: url('assets/guides/paje_lvl1.jpg')"></div>
-            <div class="card-info">
-              <span class="card-title">Pajé</span>
-              <span class="card-role">Fogo em Área</span>
+            <div class="card-thumb" style="background-image: url('/assets/astral/portrait_paje.png')"></div>
+            <div class="card-meta">
+              <span class="card-title">Núcleo de Brasa</span>
+              <span class="card-cost">150 💧</span>
             </div>
-            <div class="card-cost">150 💧</div>
           </div>
         </div>
 
@@ -170,7 +231,7 @@
             <h2>🏪 Loja de Cristais Cósmicos</h2>
             <button class="btn-close-modal" data-close>✕</button>
           </div>
-          <p class="modal-subtitle">Adquira cristais para usar em power-ups divinos ou apoiar o projeto independente.</p>
+          <p class="modal-subtitle">Adquira cristais para usar em poderes astrais ou apoiar o projeto independente.</p>
           <div class="store-packs">
             <div class="pack-item">
               <div class="pack-badge">Iniciante</div>
@@ -203,7 +264,7 @@
             <h2>🏆 Ranking Semanal Top 100</h2>
             <button class="btn-close-modal" data-close>✕</button>
           </div>
-          <p class="modal-subtitle">Pontuações da semana no Quarto Astral (Reset toda segunda-feira às 00h BRT).</p>
+          <p class="modal-subtitle">Pontuações da semana no Santuário do Sonho (Reset toda segunda-feira às 00h BRT).</p>
           <div class="ranking-table-container">
             <table class="ranking-table">
               <thead>
@@ -246,22 +307,30 @@
           </div>
         </div>
 
-        <!-- Modal de Fim de Jogo (Vitória ou Derrota) -->
-        <div class="modal-card modal-gameover" id="modal-gameover" style="display: none;">
-          <div class="gameover-banner">
-            <h2 id="gameover-title">AURORA ALCANÇADA!</h2>
-            <p id="gameover-subtitle">O espírito foi purificado e a luz triunfou.</p>
+        <!-- Resultado da jornada -->
+        <div class="modal-card modal-gameover" id="modal-gameover" data-outcome="win" role="dialog" aria-modal="true" aria-labelledby="gameover-title" tabindex="-1" style="display: none;">
+          <div class="result-art-panel"><img id="gameover-art" src="/assets/screens/results/vitoria-sonho-v1.png" alt="O sonho protegido pelos guardiões astrais." /><div class="result-art-shade"></div><span class="result-art-caption">Santuário do Sonho</span></div>
+          <div class="result-content">
+            <img class="result-logo" src="/assets/brand/torre-dos-espiritos-logo-v1.png" alt="Torre dos Espíritos" />
+            <div class="gameover-banner"><p id="gameover-eyebrow" class="screen-eyebrow">A aurora chegou</p><h2 id="gameover-title">Sonho protegido</h2><p id="gameover-subtitle">Seus guardiões preservaram a luz até o despertar.</p></div>
+            <div class="gameover-stats">
+              <div><span>Pontuação</span><strong id="go-score">0</strong></div>
+              <div><span>Luz restante</span><strong><span id="go-light">0</span><small> / 20</small></strong></div>
+              <div><span>Espíritos purificados</span><strong id="go-purified">0</strong></div>
+              <div class="result-reward"><span>Recompensa</span><strong id="go-reward">Sem recompensa de Cristais nesta partida</strong></div>
+            </div>
+            <div class="gameover-actions"><button class="screen-primary" id="btn-restart-game">Jogar novamente <span aria-hidden="true">↗</span></button><button class="screen-secondary" id="btn-result-home">Voltar ao início</button></div>
           </div>
-          <div class="gameover-stats">
-            <div>Pontuação Final: <strong id="go-score">0</strong></div>
-            <div>Luz Restante: <strong id="go-light">0</strong> / 20</div>
-            <div>Espíritos Purificados: <strong id="go-purified">0</strong></div>
-            <div>Cristais Ganhos: <strong id="go-reward">+30 💎</strong></div>
-          </div>
-          <div class="gameover-actions">
-            <button class="btn-gold" id="btn-restart-game">Jogar Novamente</button>
-            <button class="btn-secondary" id="btn-share-score">📤 Compartilhar Vitória</button>
-          </div>
+        </div>
+      </div>
+
+      <!-- Aviso Não-Intrusivo de Orientação de Tela (Mobile Portrait) -->
+      <div id="rotate-device-prompt" class="rotate-prompt" style="display: none;">
+        <div class="rotate-content">
+          <div class="rotate-icon">📱 ➔ 🔄</div>
+          <h3>Experiência Astral Otimizada</h3>
+          <p>Recomendamos girar seu aparelho para o modo <strong>horizontal (paisagem)</strong> para melhor visão tática do caminho e dos guias.</p>
+          <button id="btn-dismiss-rotate" class="btn-dismiss-rotate">Continuar em Retrato</button>
         </div>
       </div>
     </div>

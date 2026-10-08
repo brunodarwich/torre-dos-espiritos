@@ -1,27 +1,59 @@
 window.__TASKS_DATA__ = {
   "project": {
     "name": "Torre dos Espíritos — Tower Defense",
-    "summary": "Tower defense 2D no mundo astral com identidade cultural brasileira. 3 guias espirituais protegem uma pessoa adormecida contra hordas de espíritos perturbados que são purificados pela luz.",
+    "summary": "10 hordas dinâmicas, Mini-Chefe Arauto e Boss em 3 fases implementados e balanceados com ritmo híbrido (8s/15s). Build e 16 testes Vitest 100% aprovados.",
     "version": "1.0.0",
     "last_updated": "2026-10-08",
     "metrics": {
-      "total_tasks": 20,
-      "completed_tasks": 18,
-      "progress_percentage": 90
+      "total_tasks": 31,
+      "completed_tasks": 27,
+      "progress_percentage": 87.1
     }
   },
   "milestones": [
-    { "id": "m1_fundacao", "title": "Marco 1: Fundação, Narrativa & Planejamento Sistêmico", "order": 1 },
-    { "id": "m2_design_arte", "title": "Marco 2: Design UI/UX & Direção de Arte", "order": 2 },
-    { "id": "m3_backend_core", "title": "Marco 3: Backend Core, APIs & Testes", "order": 3 },
-    { "id": "m4_frontend_ui", "title": "Marco 4: Frontend Phaser, Jogo & Integração", "order": 4 },
-    { "id": "m5_auditoria_growth", "title": "Marco 5: Auditoria Tier 3 & Publicação Play Store", "order": 5 }
+    {
+      "id": "m1_fundacao",
+      "title": "Marco 1: Fundação, Narrativa & Planejamento Sistêmico",
+      "order": 1
+    },
+    {
+      "id": "m2_design_arte",
+      "title": "Marco 2: Design UI/UX & Direção de Arte",
+      "order": 2
+    },
+    {
+      "id": "m3_backend_core",
+      "title": "Marco 3: Backend Core, APIs & Testes",
+      "order": 3
+    },
+    {
+      "id": "m4_frontend_ui",
+      "title": "Marco 4: Frontend Phaser, Jogo & Integração",
+      "order": 4
+    },
+    {
+      "id": "m5_auditoria_growth",
+      "title": "Marco 5: Auditoria Tier 3 & Publicação Play Store",
+      "order": 5
+    }
   ],
   "columns": [
-    { "id": "todo", "title": "Backlog / A Fazer" },
-    { "id": "in_progress", "title": "Em Desenvolvimento" },
-    { "id": "review", "title": "Em Revisão & Auditoria" },
-    { "id": "done", "title": "Concluído / Entregue" }
+    {
+      "id": "todo",
+      "title": "Backlog / A Fazer"
+    },
+    {
+      "id": "in_progress",
+      "title": "Em Desenvolvimento"
+    },
+    {
+      "id": "review",
+      "title": "Em Revisão & Auditoria"
+    },
+    {
+      "id": "done",
+      "title": "Concluído / Entregue"
+    }
   ],
   "tasks": [
     {
@@ -102,8 +134,8 @@ window.__TASKS_DATA__ = {
     },
     {
       "id": "TASK-006",
-      "title": "Direção de Arte & Geração de Ativos dos 3 Guias",
-      "description": "Geração das ilustrações conceituais dos guias (Mentor, Benzedeira, Pajé) nos 3 níveis visuais em estilo HQ aquarela.",
+      "title": "Histórico: primeira arte dos três protetores",
+      "description": "Primeiro conjunto visual preservado como histórico. Substituído pelos nove guardiões épicos da TASK-025.",
       "status": "done",
       "milestone": "m2_design_arte",
       "tier": "tier2_fast",
@@ -117,8 +149,8 @@ window.__TASKS_DATA__ = {
     },
     {
       "id": "TASK-007",
-      "title": "Geração de Ativos dos Espíritos & Chefão",
-      "description": "Ilustrações de Larva Astral, Zombeteiro, Obsessor, Sombra de Mágoa e do Obsessor-Mor (Fases 1 e 2).",
+      "title": "Histórico: primeira arte das criaturas e chefe",
+      "description": "Primeiro conjunto de inimigos preservado como histórico. A rodada épica da TASK-025 entrega quatro criaturas e duas fases do Colosso do Eclipse.",
       "status": "done",
       "milestone": "m2_design_arte",
       "tier": "tier2_fast",
@@ -223,7 +255,7 @@ window.__TASKS_DATA__ = {
     {
       "id": "TASK-014",
       "title": "Implementação dos 3 Guias & Mecânica de Ataque",
-      "description": "Comportamentos do Mentor de Luz, Benzedeira e Pajé com projéteis, área e lentidão.",
+      "description": "Comportamentos do Prisma Solar, Véu de Aurora e Núcleo de Brasa com projéteis, dano em área e lentidão.",
       "status": "done",
       "milestone": "m4_frontend_ui",
       "tier": "tier2_fast",
@@ -252,8 +284,8 @@ window.__TASKS_DATA__ = {
     },
     {
       "id": "TASK-016",
-      "title": "Chefão Obsessor-Mor & Cena Final",
-      "description": "Batalha do chefão em 2 fases, invocação de larvas e cinemática HQ de redenção.",
+      "title": "Colosso do Eclipse e cena final",
+      "description": "Batalha do chefe em duas fases, invocação de larvas e purificação. Arte atual integrada na TASK-024.",
       "status": "done",
       "milestone": "m4_frontend_ui",
       "tier": "tier2_fast",
@@ -322,7 +354,187 @@ window.__TASKS_DATA__ = {
       ],
       "audit_confirmed": false,
       "created_at": "2026-10-08"
+    },
+    {
+      "id": "TASK-021",
+      "title": "Direção de arte: Santuário e guardiões épicos",
+      "description": "Direção atual de humanoides fantásticos sólidos, sem referências religiosas; geração seguida de integração autorizada por Bruno.",
+      "status": "done",
+      "milestone": "m2_design_arte",
+      "tier": "tier1_frontier",
+      "indicators": [
+        "Armaduras inventadas e três famílias com silhuetas próprias",
+        "Narrativa, PRD e direção sincronizados",
+        "Escopo desta rodada: 18 imagens novas, 3 retratos e 5 camadas reutilizadas"
+      ],
+      "audit_confirmed": true,
+      "created_at": "2026-10-08"
+    },
+    {
+      "id": "TASK-022",
+      "title": "Primeira prova visual — histórico encerrado",
+      "description": "Oito ativos iniciais preservados. Bruno pediu corpos sólidos; os protetores abstratos foram substituídos nesta rodada. Ambiente reaproveitado com pendência de resolução registrada separadamente.",
+      "status": "done",
+      "milestone": "m2_design_arte",
+      "tier": "tier3_reviewer",
+      "indicators": [
+        "Fontes e prompts históricos preservados",
+        "Caminho de 34 células e alfa verificados",
+        "Revisão solicitada por Bruno incorporada; não equivale a aprovação estética final"
+      ],
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
+    },
+    {
+      "id": "TASK-023",
+      "title": "Expansão opcional: ícones e efeitos ilustrados",
+      "description": "Itens restantes do catálogo anterior ficam fora da rodada atual. Não bloqueiam o teste local dos guardiões épicos.",
+      "status": "todo",
+      "milestone": "m2_design_arte",
+      "tier": "tier2_fast",
+      "indicators": [
+        "Escopo e autorização de nova rodada definidos",
+        "Ícones, efeitos e materiais adicionais produzidos sob a direção atual"
+      ],
+      "audit_confirmed": false,
+      "created_at": "2026-10-08"
+    },
+    {
+      "id": "TASK-024",
+      "title": "Integrar guardiões épicos na partida",
+      "description": "18 sprites, retratos, ambiente e caminho integrados por autorização direta. IDs e valores de balanceamento preservados.",
+      "status": "done",
+      "milestone": "m4_frontend_ui",
+      "tier": "tier2_fast",
+      "indicators": [
+        "Nove níveis e quatro inimigos usam texturas próprias",
+        "Chefe muda de imagem na fase 2; vitória usa espírito purificado",
+        "Rota, proporções, sombras e textos públicos atualizados",
+        "Build aprovado e regras numéricas iguais ao HEAD"
+      ],
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
+    },
+    {
+      "id": "TASK-025",
+      "title": "Gerar 18 sprites épicos e 3 retratos",
+      "description": "Guardiões N1/N2/N3, quatro criaturas, duas fases do chefe, purificado, fenda e núcleo. Fontes, prompts, dimensões, alfa e ancoragens registrados.",
+      "status": "done",
+      "milestone": "m2_design_arte",
+      "tier": "tier2_fast",
+      "indicators": [
+        "18 PNGs com alfa real e cantos transparentes",
+        "Protetores e evoluções mantêm identidade e escala",
+        "512×512; chefe 1024×1024; retratos derivados",
+        "Manifesto e folhas de comparação preservados"
+      ],
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
+    },
+    {
+      "id": "TASK-026",
+      "title": "QA do jogo local e auditoria da nova arte",
+      "description": "Build, balanceamento e revisão Tier 3 aprovados. Fluxos interativos, capturas e limitações na auditoria: Autoplay normal perdeu na horda 3; quatro hordas percorridas com recursos extras apenas no QA.",
+      "status": "done",
+      "milestone": "m4_frontend_ui",
+      "tier": "tier3_reviewer",
+      "indicators": [
+        "Build e 2 testes de balanceamento aprovados",
+        "Seleção, três níveis, venda e reinícios testados",
+        "Fases do chefe, invocações, purificação, vitória e derrota testadas",
+        "Hordas e layout em 1280×720 e 1920×1080 conferidos",
+        "Captura e endereço local entregues"
+      ],
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
+    },
+    {
+      "id": "TASK-027",
+      "title": "Resolução nativa final de cosmos e piso",
+      "description": "Cenários atuais têm 1672×941 nativos. Regenerar futuramente no alvo 2560×1440; não ampliar para simular detalhe.",
+      "status": "todo",
+      "milestone": "m2_design_arte",
+      "tier": "tier2_fast",
+      "indicators": [
+        "Cosmos e piso gerados nativamente no alvo",
+        "Encaixe e contraste preservados na substituição"
+      ],
+      "audit_confirmed": false,
+      "created_at": "2026-10-08"
+    },
+    {
+      "id": "TASK-028",
+      "title": "Logo e arte profissional da tela inicial",
+      "description": "Logo e abertura criados; aplicação ao jogo solicitada por Bruno em 08/10/2026. Arquivos reorganizados em assets/brand e assets/screens/home. Transparência e dimensões conferidas.",
+      "status": "done",
+      "milestone": "m2_design_arte",
+      "tier": "tier1_frontier",
+      "indicators": [
+        "Nome e transparência conferidos",
+        "Fontes e prompts preservados",
+        "Aplicação autorizada por Bruno"
+      ],
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
+    },
+    {
+      "id": "TASK-029",
+      "title": "Artes de vitória, derrota e carregamento",
+      "description": "Três artes geradas e revisadas visualmente, com aplicação ao jogo solicitada por Bruno em 08/10/2026. PNGs organizados em assets/screens/loading e assets/screens/results.",
+      "status": "done",
+      "milestone": "m2_design_arte",
+      "tier": "tier1_frontier",
+      "indicators": [
+        "Três PNGs nativos legíveis, identidade coerente",
+        "Prompts registrados",
+        "Aplicação autorizada por Bruno"
+      ],
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
+    },
+    {
+      "id": "TASK-030",
+      "title": "Menu, carregamento com dicas e cards de resultado",
+      "description": "Logo, home, carregamento com dicas e cards de resultado integrados. Cinco artes organizadas por finalidade. Build e 8 testes aprovados; QA desktop/retrato/paisagem, replay/home e falha/retry concluídos; auditoria Tier 3 aprovada.",
+      "status": "done",
+      "milestone": "m4_frontend_ui",
+      "tier": "tier2_fast",
+      "indicators": [
+        "Home com logo, som e instruções; cinco artes organizadas",
+        "Loader real com dicas, entrada após processamento e recuperação de erro",
+        "Vitória/derrota com arte e números reais da partida",
+        "Replay e retorno ao menu sem callbacks antigos; velocidade alterna uma vez",
+        "Build e 8 testes aprovados; QA nos viewports 1904×985,390×844,844×390",
+        "Auditoria independente Tier 3 aprovada; docs/SCREEN_FLOW_AUDIT.md"
+      ],
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
+    },
+    {
+      "id": "TASK-031",
+      "title": "Expansão para 10 Hordas, Mini-Chefe Arauto e Colosso em 3 Fases",
+      "description": "Progressão em 3 Atos com 10 hordas dinâmicas, ritmo híbrido (8s nas hordas 1-4, 15s nas 5-10), Mini-Chefe Arauto (1200 HP) nas hordas 5 e 9, e Colosso do Eclipse (3500 HP) em 3 fases dinâmicas (Carapaça 20%, Fúria de Silêncio +30% vel, e Corrida Crítica +60% vel). Balanceamento 100% vencível grátis comprovado.",
+      "status": "done",
+      "milestone": "m4_frontend_ui",
+      "tier": "tier2_fast",
+      "indicators": [
+        "10 hordas configuradas no waves.json com diálogos narrativos e pacing por atos",
+        "Arauto implementado no spirits.json e GameScene.ts com 1200 HP e maxSlow 0.25",
+        "Colosso calibrado com 3500 HP e mecânicas das 3 fases no Boss.ts e GameScene.ts",
+        "WaveManager com ritmo híbrido (8s nas hordas 1-4 e 15s a partir da horda 5)",
+        "Simulação de balanceamento 100/100 vitórias no modo normal sem compras (16 testes verdes em 4 arquivos)",
+        "Build TypeScript/Vite compilando com 100% de sucesso"
+      ],
+      "audit_confirmed": true,
+      "created_at": "2026-10-08",
+      "completed_at": "2026-10-08"
     }
   ]
-}
-;
+};

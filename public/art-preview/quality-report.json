@@ -1,0 +1,40 @@
+{
+  "generated": 8,
+  "route_cells": 34,
+  "alpha_passed": true,
+  "connector_centers_at_320px": {
+    "path_straight": {
+      "W": 157.0,
+      "E": 157.5
+    },
+    "path_corner": {
+      "W": 135.0,
+      "S": 176.0
+    },
+    "path_terminal": {
+      "W": 160.5
+    }
+  },
+  "raw_connectors_centered": false,
+  "path_anchors": {
+    "path_straight": [
+      0.5,
+      0.49140625
+    ],
+    "path_corner": [
+      0.55,
+      0.421875
+    ],
+    "path_terminal": [
+      0.5,
+      0.5015625
+    ]
+  },
+  "alignment_method": "Measured connector axes anchored to actual game waypoints; no repainting of textures",
+  "connectors_within_4_logical_pixels": true,
+  "resolution_pending": [
+    "cosmos",
+    "floor"
+  ],
+  "visual_approval": "pending"
+}

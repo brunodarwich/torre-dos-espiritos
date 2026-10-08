@@ -65,6 +65,8 @@ export class Guide extends Phaser.GameObjects.Container {
     this.currentLevelData = typeData.levels[0];
     this.totalInvested = this.currentLevelData.cost;
 
+    const shadow = scene.add.ellipse(0, 25, 44, 14, 0x050811, 0.35);
+    this.add(shadow);
     this.gfx = scene.add.graphics();
     this.auraGfx = scene.add.graphics();
     this.add([this.auraGfx, this.gfx]);
@@ -73,6 +75,8 @@ export class Guide extends Phaser.GameObjects.Container {
     scene.add.existing(this);
     this.setDepth(4);
   }
+
+  public getTextureKey(): string | undefined { return this.sprite?.texture.key; }
 
   public getLevel(): number {
     return this.level;
@@ -146,7 +150,7 @@ export class Guide extends Phaser.GameObjects.Container {
     }
 
     // Sprite ou representação artística
-    const spriteKey = `${this.guideId}_lvl${this.level === 3 ? 3 : 1}`;
+    const spriteKey = `${this.guideId}_lvl${this.level}`;
     if (this.scene.textures.exists(spriteKey)) {
       if (!this.sprite) {
         this.sprite = this.scene.add.sprite(0, 0, spriteKey);
@@ -154,7 +158,7 @@ export class Guide extends Phaser.GameObjects.Container {
       } else {
         this.sprite.setTexture(spriteKey);
       }
-      this.sprite.setDisplaySize(60, 60);
+      this.sprite.setScale(80 / Math.max(this.sprite.width, this.sprite.height));
     } else {
       // Fallback procedural estético
       this.gfx.fillStyle(hexColor, 0.95);
@@ -171,6 +175,7 @@ export class Guide extends Phaser.GameObjects.Container {
   }
 
   public update(time: number, delta: number) {
+    this.sprite?.setY(Math.sin(time / 650 + this.col) * 2);
     const deltaSec = delta / 1000;
 
     if (this.silencedTimer > 0) {
@@ -245,14 +250,25 @@ export class Guide extends Phaser.GameObjects.Container {
       });
     }
 
-    // Leve rotação ou pulso no disparo
+    // Recoil dinâmico na direção oposta ao alvo e pulso estelar
+    const angleToTarget = Phaser.Math.Angle.Between(this.x, this.y, target.x, target.y);
+    const recoilDist = 3;
+    const recoilTarget = this.sprite ?? this.gfx;
+    const originalLocalX = recoilTarget.x;
+    const originalLocalY = recoilTarget.y;
+
     this.scene.tweens.add({
-      targets: this,
-      scaleX: 1.1,
-      scaleY: 1.1,
-      duration: 80,
+      targets: recoilTarget,
+      x: originalLocalX - Math.cos(angleToTarget) * recoilDist,
+      y: originalLocalY - Math.sin(angleToTarget) * recoilDist,
+      scaleX: (this.sprite?.scaleX ?? 1) * 1.12,
+      scaleY: (this.sprite?.scaleY ?? 1) * 1.12,
+      duration: 70,
       yoyo: true,
       ease: 'Quad.easeOut',
+      onComplete: () => {
+        recoilTarget.setPosition(originalLocalX, originalLocalY);
+      },
     });
   }
 }

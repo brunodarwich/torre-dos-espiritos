@@ -29,7 +29,7 @@ export class GridSystem {
   }
 
   /**
-   * Define o caminho sinuoso do Quarto Astral (Portal no canto superior esquerdo -> Cama no canto inferior direito)
+   * Define o caminho sinuoso do Santuário do Sonho (fenda de entrada -> núcleo)
    */
   private initPath() {
     // Caminho em coordenadas de grade [col, row]
@@ -44,7 +44,7 @@ export class GridSystem {
       { col: 12, row: 6 },
       { col: 12, row: 3 },
       { col: 15, row: 3 },
-      { col: 15, row: 6 }, // Cama astral
+      { col: 15, row: 6 }, // Núcleo do sonho
     ];
 
     // Registra todas as células intermediárias ao longo do trajeto
@@ -132,23 +132,21 @@ export class GridSystem {
   public drawPathOverlay() {
     this.gridGraphics.clear();
 
-    // Faixa mística do caminho astral
-    this.gridGraphics.lineStyle(48, 0x1A233D, 0.6);
-    this.gridGraphics.beginPath();
-    this.gridGraphics.moveTo(this.waypoints[0].x, this.waypoints[0].y);
-    for (let i = 1; i < this.waypoints.length; i++) {
-      this.gridGraphics.lineTo(this.waypoints[i].x, this.waypoints[i].y);
+    const manifest = this.scene.cache.json.get('environment_manifest');
+    const pieces = manifest?.path_pieces as { col: number; row: number; asset: string; clockwise_degrees: number }[] | undefined;
+    if (!pieces) return;
+    for (const piece of pieces) {
+      if (!this.scene.textures.exists(piece.asset)) continue;
+      const asset = manifest.assets?.find((entry: { id: string }) => entry.id === piece.asset);
+      const fallback: Record<string, [number, number]> = {
+        path_corner: [0.55, 0.421875], path_straight: [0.5, 0.49140625], path_terminal: [0.5, 0.5015625],
+      };
+      const anchor = asset?.anchor ?? fallback[piece.asset] ?? [0.5, 0.5];
+      const point = this.gridToWorld(piece.col, piece.row);
+      this.scene.add.image(point.x, point.y, piece.asset)
+        .setOrigin(anchor[0], anchor[1]).setDisplaySize(CELL_SIZE, CELL_SIZE)
+        .setAngle(piece.clockwise_degrees).setDepth(2);
     }
-    this.gridGraphics.strokePath();
-
-    // Linha de energia central no caminho
-    this.gridGraphics.lineStyle(4, 0x4FD1C5, 0.4);
-    this.gridGraphics.beginPath();
-    this.gridGraphics.moveTo(this.waypoints[0].x, this.waypoints[0].y);
-    for (let i = 1; i < this.waypoints.length; i++) {
-      this.gridGraphics.lineTo(this.waypoints[i].x, this.waypoints[i].y);
-    }
-    this.gridGraphics.strokePath();
   }
 
   /**

@@ -1,0 +1,581 @@
+window.__ART_MANIFEST__ = {
+  "version": 1,
+  "phase": "Primeira prova visual · Marco 2",
+  "approval": "pending",
+  "planned_assets": 40,
+  "produced_assets": 8,
+  "logical_size": [
+    1280,
+    720
+  ],
+  "waypoints": [
+    [
+      0,
+      2
+    ],
+    [
+      3,
+      2
+    ],
+    [
+      3,
+      5
+    ],
+    [
+      6,
+      5
+    ],
+    [
+      6,
+      1
+    ],
+    [
+      9,
+      1
+    ],
+    [
+      9,
+      6
+    ],
+    [
+      12,
+      6
+    ],
+    [
+      12,
+      3
+    ],
+    [
+      15,
+      3
+    ],
+    [
+      15,
+      6
+    ]
+  ],
+  "path_pieces": [
+    {
+      "col": 0,
+      "row": 2,
+      "asset": "path_terminal",
+      "clockwise_degrees": 180
+    },
+    {
+      "col": 1,
+      "row": 2,
+      "asset": "path_straight",
+      "clockwise_degrees": 0
+    },
+    {
+      "col": 2,
+      "row": 2,
+      "asset": "path_straight",
+      "clockwise_degrees": 0
+    },
+    {
+      "col": 3,
+      "row": 2,
+      "asset": "path_corner",
+      "clockwise_degrees": 0
+    },
+    {
+      "col": 3,
+      "row": 3,
+      "asset": "path_straight",
+      "clockwise_degrees": 90
+    },
+    {
+      "col": 3,
+      "row": 4,
+      "asset": "path_straight",
+      "clockwise_degrees": 90
+    },
+    {
+      "col": 3,
+      "row": 5,
+      "asset": "path_corner",
+      "clockwise_degrees": 180
+    },
+    {
+      "col": 4,
+      "row": 5,
+      "asset": "path_straight",
+      "clockwise_degrees": 0
+    },
+    {
+      "col": 5,
+      "row": 5,
+      "asset": "path_straight",
+      "clockwise_degrees": 0
+    },
+    {
+      "col": 6,
+      "row": 5,
+      "asset": "path_corner",
+      "clockwise_degrees": 90
+    },
+    {
+      "col": 6,
+      "row": 4,
+      "asset": "path_straight",
+      "clockwise_degrees": 90
+    },
+    {
+      "col": 6,
+      "row": 3,
+      "asset": "path_straight",
+      "clockwise_degrees": 90
+    },
+    {
+      "col": 6,
+      "row": 2,
+      "asset": "path_straight",
+      "clockwise_degrees": 90
+    },
+    {
+      "col": 6,
+      "row": 1,
+      "asset": "path_corner",
+      "clockwise_degrees": 270
+    },
+    {
+      "col": 7,
+      "row": 1,
+      "asset": "path_straight",
+      "clockwise_degrees": 0
+    },
+    {
+      "col": 8,
+      "row": 1,
+      "asset": "path_straight",
+      "clockwise_degrees": 0
+    },
+    {
+      "col": 9,
+      "row": 1,
+      "asset": "path_corner",
+      "clockwise_degrees": 0
+    },
+    {
+      "col": 9,
+      "row": 2,
+      "asset": "path_straight",
+      "clockwise_degrees": 90
+    },
+    {
+      "col": 9,
+      "row": 3,
+      "asset": "path_straight",
+      "clockwise_degrees": 90
+    },
+    {
+      "col": 9,
+      "row": 4,
+      "asset": "path_straight",
+      "clockwise_degrees": 90
+    },
+    {
+      "col": 9,
+      "row": 5,
+      "asset": "path_straight",
+      "clockwise_degrees": 90
+    },
+    {
+      "col": 9,
+      "row": 6,
+      "asset": "path_corner",
+      "clockwise_degrees": 180
+    },
+    {
+      "col": 10,
+      "row": 6,
+      "asset": "path_straight",
+      "clockwise_degrees": 0
+    },
+    {
+      "col": 11,
+      "row": 6,
+      "asset": "path_straight",
+      "clockwise_degrees": 0
+    },
+    {
+      "col": 12,
+      "row": 6,
+      "asset": "path_corner",
+      "clockwise_degrees": 90
+    },
+    {
+      "col": 12,
+      "row": 5,
+      "asset": "path_straight",
+      "clockwise_degrees": 90
+    },
+    {
+      "col": 12,
+      "row": 4,
+      "asset": "path_straight",
+      "clockwise_degrees": 90
+    },
+    {
+      "col": 12,
+      "row": 3,
+      "asset": "path_corner",
+      "clockwise_degrees": 270
+    },
+    {
+      "col": 13,
+      "row": 3,
+      "asset": "path_straight",
+      "clockwise_degrees": 0
+    },
+    {
+      "col": 14,
+      "row": 3,
+      "asset": "path_straight",
+      "clockwise_degrees": 0
+    },
+    {
+      "col": 15,
+      "row": 3,
+      "asset": "path_corner",
+      "clockwise_degrees": 0
+    },
+    {
+      "col": 15,
+      "row": 4,
+      "asset": "path_straight",
+      "clockwise_degrees": 90
+    },
+    {
+      "col": 15,
+      "row": 5,
+      "asset": "path_straight",
+      "clockwise_degrees": 90
+    },
+    {
+      "col": 15,
+      "row": 6,
+      "asset": "path_terminal",
+      "clockwise_degrees": 90
+    }
+  ],
+  "limitations": [
+    "Portal, núcleo, inimigos e HUD funcional ainda não produzidos.",
+    "Fontes de cenário abaixo de 2560×1440 permanecem na resolução nativa; não foram ampliadas."
+  ],
+  "assets": [
+    {
+      "id": "cosmos",
+      "title": "Cosmos distante",
+      "file": "assets/cosmos.webp",
+      "source": "source/cosmos.png",
+      "native_size": [
+        1672,
+        941
+      ],
+      "target_size": [
+        2560,
+        1440
+      ],
+      "delivered_size": [
+        1672,
+        941
+      ],
+      "display_size": [
+        1280,
+        720
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "transparent": false,
+      "source_alpha_extrema": [
+        255,
+        255
+      ],
+      "alpha_extrema": [
+        255,
+        255
+      ],
+      "native_resolution_met": false,
+      "status": "awaiting_visual_review",
+      "prompt": "Use case: stylized-concept. Create ONE production game background asset for Sanctuary of Dreams, landscape 16:9, target 2560x1440. Distant quiet astral cosmos, deep navy #0B0F19 and indigo #171D2E, very subtle violet #9F7AEA wisps near edges, sparse small stars. Center and whole play area must stay low contrast and almost dark navy. Unified clean 2D fantasy illustration with restrained painterly texture, no photorealism, no pixel art. No floor, platform, characters, path, crystals, UI, text, watermark or religious imagery. Full bleed opaque background. This is the backdrop layer behind a readable tower defense board.",
+      "generator": "built-in image_gen"
+    },
+    {
+      "id": "floor",
+      "title": "Piso do santuário",
+      "file": "assets/floor.png",
+      "source": "source/floor.png",
+      "native_size": [
+        1672,
+        941
+      ],
+      "target_size": [
+        2560,
+        1440
+      ],
+      "delivered_size": [
+        1672,
+        941
+      ],
+      "display_size": [
+        1280,
+        720
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "transparent": true,
+      "source_alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "native_resolution_met": false,
+      "status": "awaiting_visual_review",
+      "prompt": "Use case: stylized-concept. Create ONE transparent terrain layer for Sanctuary of Dreams 2D tower defense, landscape 16:9 target 2560x1440. Orthographic DIRECT OVERHEAD view, NO isometric tilt or perspective convergence. A broad rectangular continuous slab of deep slate astral stone, very understated illustrated joints, matte dark #171D2E and #202940, clean painted 2D comic contours. The slab fills the entire canvas edge to edge horizontally, its playable upper surface covers y=3% through y=94% and x=0% through x=100%. Only a slim irregular floating-rock lip at bottom outer edge with transparent space behind it. Almost flat quiet surface, evenly low contrast, very subtle upper-left lighting and muted cyan edge accents. Keep every gameplay cell free: no islands or holes. No path, no tiles of glowing route, no stairs, props, walls, furnishings, crystals, portal, core, characters, UI, letters, religious symbols. Transparent OUTSIDE stone slab, real alpha, not a black matte or painted checkerboard. Wide board should make room for a route running within 40px of left and right edges of a 1280x720 game.",
+      "generator": "built-in image_gen"
+    },
+    {
+      "id": "path_straight",
+      "title": "Caminho reto",
+      "file": "assets/path_straight.png",
+      "source": "source/path_straight.png",
+      "native_size": [
+        1254,
+        1254
+      ],
+      "target_size": [
+        320,
+        320
+      ],
+      "delivered_size": [
+        320,
+        320
+      ],
+      "display_size": [
+        80,
+        80
+      ],
+      "anchor": [
+        0.5,
+        0.49140625
+      ],
+      "transparent": true,
+      "source_alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "native_resolution_met": true,
+      "status": "awaiting_visual_review",
+      "prompt": "Use case: stylized-concept. Generate ONE isolated straight horizontal modular PATH TILE for a 2D overhead tower defense called Sanctuary of Dreams. Reference is style/material only; create a new asset. Perfect square canvas. A narrow strip of pale slate astral stepping stone, cyan #4FD1C5 glowing cracks and restrained thin edge, dark ink contours and simplified painterly stone matching reference, light upper left, exact orthographic top-down. CRITICAL TILE GEOMETRY: horizontal walkable strip centered at y=50%, runs flush from LEFT EDGE to RIGHT EDGE of canvas, width/thickness 52% of canvas height; top/bottom background transparent. At left and right edge the matching stone cross-section and cyan line MUST extend right to canvas boundary to connect to repeated neighboring tiles. Cyan central vein on y=50% connecting both edges, narrow not a large bloom. No oblique/isometric perspective, no square plate surrounding the strip, no separate floating objects, no letters or symbols, no UI. Actual transparent background. Output high resolution square, for delivery 320x320 and display80x80.",
+      "generator": "built-in image_gen"
+    },
+    {
+      "id": "path_corner",
+      "title": "Curva do caminho",
+      "file": "assets/path_corner.png",
+      "source": "source/path_corner.png",
+      "native_size": [
+        1254,
+        1254
+      ],
+      "target_size": [
+        320,
+        320
+      ],
+      "delivered_size": [
+        320,
+        320
+      ],
+      "display_size": [
+        80,
+        80
+      ],
+      "anchor": [
+        0.55,
+        0.421875
+      ],
+      "transparent": true,
+      "source_alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "native_resolution_met": true,
+      "status": "awaiting_visual_review",
+      "prompt": "Edit target: attached L-shaped game tile. Preserve its slate stone/cyan seam illustrated material, upper-left lighting, true alpha and exact SQUARE canvas. CORRECT GEOMETRY ONLY. The current corner is offset. Move horizontal branch DOWN and vertical branch LEFT until their CENTERLINES intersect at exact canvas CENTER (50% width,50% height). Horizontal connector center at LEFT EDGE y50%, vertical connector center at BOTTOM EDGE x50%. Use strip thickness36% of canvas dimension for BOTH branches. Equivalent pixel diagram for320square: horizontal rect from(x=0,y=102) to(x=218,y=218), vertical rect from(x=102,y=160) to(x=218,y=320), connected rounded outer elbow. Thus at left edge opaque range y102..218 and bottom edge opaque range x102..218. Fill only this centered bent strip with existing slate material; everything else alpha0. No labels, diagram outlines or text; final should be painted stone not diagram. No extra border rocks that move connector center. Native highresolution square output. Important midpoint connectors must be EXACTLY halfway across each edge, not x65% or y30%.",
+      "generator": "built-in image_gen"
+    },
+    {
+      "id": "path_terminal",
+      "title": "Terminal do caminho",
+      "file": "assets/path_terminal.png",
+      "source": "source/path_terminal.png",
+      "native_size": [
+        1254,
+        1254
+      ],
+      "target_size": [
+        320,
+        320
+      ],
+      "delivered_size": [
+        320,
+        320
+      ],
+      "display_size": [
+        80,
+        80
+      ],
+      "anchor": [
+        0.5,
+        0.5015625
+      ],
+      "transparent": true,
+      "source_alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "native_resolution_met": true,
+      "status": "awaiting_visual_review",
+      "prompt": "Edit target: attached horizontal slate ENDPOINT path tile. Keep identical painted 2D stone/cyan materials, direct overhead perspective, upper-left lighting, TRUE transparent background and SQUARE canvas. CORRECT GEOMETRY ONLY: SHORTEN stone so it enters flush at LEFT EDGE with connector CENTER at y50% and has its rounded endpoint CENTER at exact canvas CENTER x50%,y50%. Current tip stretches almost all the way right, that's wrong. Stone strip thickness36% of canvasheight. Equivalent320pixel geometry: rectangle(x0,y102)-(x160,y218) ending in round semicircle radius58 centered(160,160), furthest right stone atx218. CanvasRIGHT quarter must be completely empty/alpha0. No border rocks outside that shape. Match connector thickness of new curve. No letters, text, diagrams, floor, shadow or symbols. Native highresolution square output, then delivery320x320.",
+      "generator": "built-in image_gen"
+    },
+    {
+      "id": "mentor",
+      "title": "Prisma Solar · Nível 1",
+      "file": "assets/mentor.png",
+      "source": "source/mentor.png",
+      "native_size": [
+        1254,
+        1254
+      ],
+      "target_size": [
+        512,
+        512
+      ],
+      "delivered_size": [
+        512,
+        512
+      ],
+      "display_size": [
+        80,
+        80
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "transparent": true,
+      "source_alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "native_resolution_met": true,
+      "status": "awaiting_visual_review",
+      "prompt": "Use case: stylized-concept. ONE isolated production game sprite, Prisma Solar level 1 for Sanctuary of Dreams. Abstract nonhuman floating golden energy core encircled by THREE large angular crystal fragments, open asymmetrical radial silhouette, no creature anatomy. Clean ink contours and simplified painterly 2D fantasy volumes, not photoreal, not pixel art, no 3D render. Light from upper left. #F6E05E gold with ivory focal core and muted amber shaded faces. Entire object centered on square canvas with 15% fully transparent margin, body occupying 70% width/height. True transparent background, smooth alpha, restrained close glow, no floor, no shadow, no environment, no face, eyes, limbs, clothes, religious symbols, text or frame. Designed to remain recognizable at 60 pixels. Target output square 1024x1024 or larger for native quality; delivery downsampled to 512x512.",
+      "generator": "built-in image_gen"
+    },
+    {
+      "id": "benzedeira",
+      "title": "Véu de Aurora · Nível 1",
+      "file": "assets/benzedeira.png",
+      "source": "source/benzedeira.png",
+      "native_size": [
+        1254,
+        1254
+      ],
+      "target_size": [
+        512,
+        512
+      ],
+      "delivered_size": [
+        512,
+        512
+      ],
+      "display_size": [
+        80,
+        80
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "transparent": true,
+      "source_alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "native_resolution_met": true,
+      "status": "awaiting_visual_review",
+      "prompt": "Use case: stylized-concept. Generate ONE new square isolated game sprite Veu de Aurora level 1. Reference image is STYLE ONLY (clean painted 2D fantasy contours and soft upper-left light), not an edit target. Make a DIFFERENT abstract nonhuman entity: TWO broad emerald and mint luminous ribbons forming an open airy spiral around a small teal light, asymmetrical horizontal silhouette, hollow center and fluid broad folds. No gold crystals; no rocks; no creature anatomy. #48BB78 green and soft cyan #4FD1C5 highlights, muted deep jade shadows. Simplified shapes readable at 60px, subtle painterly texture and thin dark ink contours, NOT photoreal, pixel art or 3D render. Entire object centered, body contained within central 70% of square, 15% transparent margin. Actual alpha transparency with clean edges and restrained nearby glow. No floor, shadow, background, face, eyes, limbs, clothes, sacred/religious symbols, text or frame. Native square high resolution, delivery 512x512.",
+      "generator": "built-in image_gen"
+    },
+    {
+      "id": "paje",
+      "title": "Núcleo de Brasa · Nível 1",
+      "file": "assets/paje.png",
+      "source": "source/paje.png",
+      "native_size": [
+        1254,
+        1254
+      ],
+      "target_size": [
+        512,
+        512
+      ],
+      "delivered_size": [
+        512,
+        512
+      ],
+      "display_size": [
+        80,
+        80
+      ],
+      "anchor": [
+        0.5,
+        0.5
+      ],
+      "transparent": true,
+      "source_alpha_extrema": [
+        0,
+        255
+      ],
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "native_resolution_met": true,
+      "status": "awaiting_visual_review",
+      "prompt": "Edit target: the attached Nucleo de Brasa game sprite. Keep the same clean painted 2D illustration style, charcoal material, amber palette, upper-left lighting and TRUE transparent background. CHANGE the silhouette completely: remove ALL long pointed triangular crystal-like fragments. Replace them with FOUR chunky rounded charcoal basalt shell sections closely enclosing a SMALL compact round orange plasma nucleus, like an incomplete cracked spherical meteor with a short broad flame crest emerging at the top. Compact almost circular outer shape; no pointed wings or orbiting spikes. Shell dominates 60% of body, flame core40%. Only a short orange open arc and few broad fissures. No tall tips. The sphere must look substantially different from a spiky crystalline solar sprite. Entire object centered with15% transparent margin, restrained glow. No face, eyes, limbs, human anatomy, floor, shadow, text, frame, pixel art, photorealism or religious symbols. Square high resolution transparent production sprite, final delivery512x512.",
+      "generator": "built-in image_gen"
+    }
+  ]
+};

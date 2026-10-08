@@ -1,0 +1,10 @@
+{
+  "generated_count": 18,
+  "alpha_passed": true,
+  "transparent_corners_passed": true,
+  "delivered_sizes_passed": true,
+  "environment_resolution_pending": [
+    "cosmos",
+    "floor"
+  ]
+}

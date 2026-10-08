@@ -1,64 +1,39 @@
-# Torre dos Espíritos — Narrativa do Projeto & Tese de Produto
+# Torre dos Espíritos — Narrativa do Santuário do Sonho
 
-> **Diretriz de Narrativa**: linha lógica real do produto — quem joga, o que falta no mercado, por que esta solução e o impacto que ela gera.
-> Fonte: entrevista `/grill-me` de 08/10/2026 (13 decisões registradas no plano de implementação).
+**Revisão de 08/10/2026:** Bruno escolheu guardiões épicos de fantasia astral, com corpos sólidos, armaduras inventadas e personalidade, preservando a ausência de associação religiosa. A revisão está integrada à partida local. Narrativa anterior em `docs/archive/`; aprovação estética final do usuário ainda pendente e QA interativo concluído.
 
----
+## Premissa
 
-## 0. A Premissa do Jogo (em uma frase)
+No plano astral, um núcleo guarda a luz de um sonho. Perturbações atravessam uma fenda e percorrem o santuário para alcançá-lo. Prisma Solar, Véu de Aurora e Núcleo de Brasa transformam essas sombras em centelhas serenas, preservando o sonho.
 
-> *Enquanto uma pessoa dorme, seu espírito se desprende no mundo astral — e espíritos perturbados, atraídos por sua luz, tentam alcançá-la. Três guias espirituais — o **Mentor de Luz**, a **Benzedeira** e o **Pajé** — vigiam seu sono e, em vez de destruir, **purificam** cada espírito, devolvendo-o à luz.*
+## Contexto e usuário
 
-- **Gênero**: Tower Defense 2D em grade livre (estilo Bloons / Plants vs Zombies).
-- **Plataformas**: navegador desktop, navegador mobile e app Android (Play Store).
-- **Escopo v1**: 1 fase · 3 guias × 3 níveis · 3 hordas · 1 chefão (O Obsessor-Mor).
-- **Classificação pretendida**: Livre / 10+.
+Tower defense casual-midcore para navegador desktop, celular e Android, com sessões curtas e pausa disponível. A direção atual prioriza jogadores que apreciam fantasia sobrenatural, personagens originais e uma experiência acolhedora.
 
----
+## Dor e tese da solução
 
-## 1. Contexto & Usuário Real
+A revisão responde ao problema concreto observado no protótipo: sprites opacos, cenário incompatível com a rota, unidades repetidas e falta de coesão. Um conjunto de camadas e entidades produzido sob a mesma direção de arte permite ler o combate e reconhecer o universo.
 
-- **Perfil Real**: Jogador(a) brasileiro(a) casual-midcore, 16–45 anos, que joga no celular em micro-pausas (ônibus, fila, antes de dormir) e no navegador do PC em momentos de descanso. Parte relevante tem afinidade com espiritualidade (espiritismo, espiritualismo, religiosidade popular, esoterismo) ou com cultura brasileira (folclore, benzedeiras, saberes indígenas).
-- **Rotina & Cenário**: Sessões de 5 a 15 minutos; joga com uma mão no celular; quer algo que "dê para pausar".
-- **Objetivo Prático**: Relaxar com um desafio estratégico rápido e satisfatório, com um tema que tenha significado e identidade.
+Purificar significa converter perturbações em energia luminosa, sem violência gráfica. O clímax mostra o Colosso do Eclipse dissolvendo-se em uma pequena criatura perolada enquanto o núcleo recupera a luz. Sem revelação de pessoa humana realista ou representação de prática religiosa.
 
----
+## Impacto e posicionamento
 
-## 2. O Gargalo Real & A Dor Concreta
+Fantasia astral autoral, acolhedora, misteriosa e esperançosa. Protetores com identidade por forma, cor e função. Mantêm-se três protetores, três níveis, hordas e chefão, monetização opcional e compromisso de vitória sem compras.
 
-- **O Problema Real**: O catálogo de tower defense é dominado por temas genéricos (fantasia medieval, militar, zumbis), estrangeiros e baseados em violência/destruição. Quase não existem jogos com **identidade espiritual brasileira** tratada com respeito.
-- **O Custo da Ineficiência**: Quem busca um jogo com significado, tom acolhedor e representatividade cultural não encontra; acaba em jogos que não dialogam com sua visão de mundo, ou abandona rapidamente por excesso de anúncios intrusivos e "pay-to-win".
-- **Por que as alternativas falham**:
-  - Jogos espirituais existentes tendem a ser apps contemplativos sem jogabilidade.
-  - Tower defenses de qualidade não têm tema brasileiro e são monetizados de forma agressiva.
+## Vocabulário público
 
----
+- Mentor de Luz → Prisma Solar; Benzedeira → Véu de Aurora; Pajé → Núcleo de Brasa.
+- Obsessor → Sentinela do Vazio; Sombra de Mágoa → Espectro da Névoa; Obsessor-Mor → Colosso do Eclipse.
+- Cama e pessoa adormecida como objetivo → núcleo do sonho.
+- Escudo do Anjo → Barreira Astral; Chuva de Luz → Cascata de Luz; Sono Profundo → Estase Onírica; Fervor Sagrado → Pulso Astral.
+- Arruda, oração e fumaça ritualística → onda de aurora, pulso de estase e plasma.
 
-## 3. A Linha Lógica da Solução (A Tese do Produto)
+IDs internos podem ser preservados para compatibilidade. Textos públicos já foram alterados na integração autorizada pelo Bruno. Custos, dano, cadência e regras de combate permanecem os mesmos.
 
-- **A Abordagem Central**: Um tower defense **completo, curto e polido**, onde a mecânica (lutar contra hordas) é ressignificada pelo tema (**resgate e purificação**, não morte).
-- **O Ponto de Virada Prático**: O momento em que o primeiro espírito "derrotado" se dissolve em luz e sobe — e, no final, quando o Obsessor-Mor é purificado e revela um espírito humano arrependido. A satisfação de vencer vira **emoção**.
-- **Diferencial Real**:
-  1. Guias espirituais brasileiros como personagens que evoluem de **humano → aura → forma astral**.
-  2. Direção de arte autoral 2D estilo HQ/aquarela etérea (traço de quadrinista).
-  3. Monetização justa: anúncios **apenas opcionais** e compra única de apoio.
+## Protetores e entrega visual
 
----
+Prisma Solar é esguio, com armadura dourada e máscara facetada; Véu de Aurora tem placas de jade e faixas de energia ligadas ao corpo; Núcleo de Brasa é robusto, de basalto com plasma âmbar no peito. Evoluções acrescentam armadura e modificam a silhueta. As criaturas das hordas e o chefe possuem corpos próprios, sem feições realistas, roupas culturais ou símbolos religiosos.
 
-## 4. O Impacto Prático & Resultado Tangível
+Foram integrados 18 sprites novos, 3 retratos derivados e 5 camadas de ambiente. Sprites comuns: PNG RGBA de 512 × 512; chefe nas duas fases: 1024 × 1024. Cosmos e piso permanecem em resolução nativa de 1672 × 941; a meta de 2560 × 1440 continua pendente.
 
-- **Antes vs. Depois**:
-  - *Antes*: jogos genéricos, violentos, estrangeiros, com anúncios forçados.
-  - *Depois*: uma partida de ~10 minutos com significado, identidade brasileira e final emocional — sem interrupções forçadas.
-- **Benefício Tangível**: Diversão estratégica + sensação de paz e pertencimento. Para o criador: uma IP (propriedade intelectual) própria, expansível em novas fases, guias e até HQ.
-
----
-
-## 5. Posicionamento, Tom de Voz & Estilo
-
-- **Tom de Comunicação**: Acolhedor, místico e esperançoso; leve humor nos espíritos zombeteiros; **nunca** pregação ou crítica a qualquer religião. Espiritualidade **universal**, com sabor brasileiro.
-- **Estilo Visual e Percepção**: Mundo astral noturno em aquarela, brilhos e partículas de luz, contraste entre a névoa sombria dos espíritos e a luz quente dos guias. Interface limpa, toques grandes (mobile-first) e textos curtos.
-- **Cuidados de Respeito Cultural**:
-  - Benzedeira e Pajé representados com dignidade, sem caricatura.
-  - Evitar o uso de entidades sagradas específicas de religiões (ex.: Orixás) como unidades de combate.
-  - Revisar os textos do Pajé com fontes e, idealmente, com consultoria indígena antes do lançamento.
+Teste local em http://localhost:5173/. Modos exclusivos do servidor de desenvolvimento: `?artPreview=1` apresenta a arte estática e `?qa=1` permite ensaios observáveis por botões. Esses modos não enviam pontuações ao ranking.

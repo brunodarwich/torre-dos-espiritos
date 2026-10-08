@@ -1,8 +1,8 @@
 {
   "shield": {
     "id": "shield",
-    "name": "Escudo do Anjo da Guarda",
-    "description": "Restaura imediatamente +5 de Luz à pessoa adormecida (máximo de 20).",
+    "name": "Barreira Astral",
+    "description": "Restaura imediatamente +5 de Luz à núcleo do sonho (máximo de 20).",
     "cost": 30,
     "effectType": "heal",
     "amount": 5,
@@ -11,8 +11,8 @@
   },
   "lightRain": {
     "id": "lightRain",
-    "name": "Chuva de Luz",
-    "description": "Desce uma cascata dourada causando 80 de dano sagrado em todos os espíritos na tela (300 no chefe).",
+    "name": "Cascata de Luz",
+    "description": "Desce uma cascata dourada causando 80 de dano astral em todos os espíritos na tela (300 no chefe).",
     "cost": 40,
     "effectType": "damageAll",
     "damage": 80,
@@ -22,7 +22,7 @@
   },
   "deepSleep": {
     "id": "deepSleep",
-    "name": "Sono Profundo",
+    "name": "Estase Onírica",
     "description": "O ambiente se aquieta, congelando todos os espíritos no lugar por 5 segundos (2s no chefe).",
     "cost": 35,
     "effectType": "freezeAll",
@@ -33,8 +33,8 @@
   },
   "fervor": {
     "id": "fervor",
-    "name": "Fervor Sagrado",
-    "description": "Aumenta a velocidade de ataque de todos os guias em 2x por 10 segundos.",
+    "name": "Pulso Astral",
+    "description": "Aumenta a velocidade de ataque de todos os protetores em 2x por 10 segundos.",
     "cost": 35,
     "effectType": "buffAttackRate",
     "multiplier": 2.0,
