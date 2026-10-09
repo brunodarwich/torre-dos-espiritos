@@ -18,6 +18,8 @@ export interface SpiritConfig {
   slowImmune?: boolean;
   maxSlow?: number;
   areaDamageReduction?: number;
+  /** Tamanho visual em px (maior HP = maior criatura). Definido em spirits.json. */
+  size?: number;
 }
 
 export class Spirit extends Phaser.GameObjects.Container {
@@ -79,7 +81,7 @@ export class Spirit extends Phaser.GameObjects.Container {
     this.jumpDistance = config.jumpDistance;
     this.jumpCooldown = this.jumpInterval || 0;
 
-    const size = config.id === 'boss' ? 128 : (config.id === 'arauto' ? 88 : 64);
+    const size = config.size ?? (config.id === 'boss' ? 200 : (config.id === 'arauto' ? 104 : 64));
     this.visualSize = size;
     this.shadow = scene.add.ellipse(0, size * 0.3, size * 0.55, size * 0.16, 0x050811, 0.4);
     this.add(this.shadow);
@@ -106,11 +108,12 @@ export class Spirit extends Phaser.GameObjects.Container {
       this.add(this.sprite);
     } else {
       // Representação procedural etérea
+      const k = this.visualSize / 64;
       this.gfx.fillStyle(hexColor, 0.85);
-      this.gfx.fillCircle(0, 0, 22);
+      this.gfx.fillCircle(0, 0, 22 * k);
       this.gfx.fillStyle(0xFFFFFF, 0.9);
-      this.gfx.fillCircle(-4, -4, 5);
-      this.gfx.fillCircle(4, -4, 5);
+      this.gfx.fillCircle(-4 * k, -4 * k, 5 * k);
+      this.gfx.fillCircle(4 * k, -4 * k, 5 * k);
     }
 
     this.updateVisualPosition();
@@ -315,7 +318,7 @@ export class Spirit extends Phaser.GameObjects.Container {
     this.healthBar.clear();
     if (this.sprite && this.scene.textures.exists('spirit_redeemed')) {
       this.sprite.setTexture('spirit_redeemed');
-      this.sprite.setScale(64 / Math.max(this.sprite.width, this.sprite.height));
+      this.sprite.setScale(this.visualSize / Math.max(this.sprite.width, this.sprite.height));
     }
 
     // Efeito visual de iluminação estelar
@@ -361,8 +364,8 @@ export class Spirit extends Phaser.GameObjects.Container {
     this.healthBar.clear();
     if (this.purified || this.reachedBed) return;
 
-    const width = this.spiritId === 'arauto' ? 52 : 36;
-    const height = this.spiritId === 'arauto' ? 5 : 4;
+    const width = Math.max(30, Math.round(this.visualSize * 0.6));
+    const height = this.visualSize >= 88 ? 5 : 4;
     const x = -width / 2;
     const y = -this.visualSize / 2 + 2;
 

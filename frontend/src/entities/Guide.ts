@@ -33,6 +33,11 @@ export interface GuideTypeData {
 }
 
 export class Guide extends Phaser.GameObjects.Container {
+  /** Escala visual por nível: Nv1 100% · Nv2 120% · Nv3 150% (base = 80px, 1 célula). */
+  public static readonly LEVEL_SCALE = [1.0, 1.2, 1.5];
+  private static readonly BASE_SIZE = 80;
+  private static readonly SELECT_COLOR = 0xF6E05E;
+
   public guideId: string;
   public guideName: string;
   public col: number;
@@ -47,10 +52,17 @@ export class Guide extends Phaser.GameObjects.Container {
   private silencedTimer: number = 0;
 
   // Renderização
+  private shadow: Phaser.GameObjects.Ellipse;
   private gfx: Phaser.GameObjects.Graphics;
   private auraGfx: Phaser.GameObjects.Graphics;
   private sprite?: Phaser.GameObjects.Sprite;
   private rangeCircle?: Phaser.GameObjects.Graphics;
+
+  // Seletor (anel aos pés + marcador acima da cabeça + círculo de alcance)
+  private selected = false;
+  private selectRingHolder: Phaser.GameObjects.Container;
+  private selectRing: Phaser.GameObjects.Graphics;
+  private selectMarker: Phaser.GameObjects.Graphics;
 
   constructor(scene: Phaser.Scene, col: number, row: number, typeData: GuideTypeData) {
     const x = col * CELL_SIZE + CELL_SIZE / 2;
@@ -65,15 +77,99 @@ export class Guide extends Phaser.GameObjects.Container {
     this.currentLevelData = typeData.levels[0];
     this.totalInvested = this.currentLevelData.cost;
 
-    const shadow = scene.add.ellipse(0, 25, 44, 14, 0x050811, 0.35);
-    this.add(shadow);
+    this.shadow = scene.add.ellipse(0, 25, 44, 14, 0x050811, 0.35);
+    this.add(this.shadow);
+
+    // Anel do seletor: o holder achata em perspectiva, o anel interno gira
+    this.selectRing = scene.add.graphics();
+    this.selectRingHolder = scene.add.container(0, 25, [this.selectRing]);
+    this.selectRingHolder.setScale(1, 0.42);
+    this.selectRingHolder.setVisible(false);
+    this.add(this.selectRingHolder);
+
     this.gfx = scene.add.graphics();
     this.auraGfx = scene.add.graphics();
     this.add([this.auraGfx, this.gfx]);
 
+    this.selectMarker = scene.add.graphics();
+    this.selectMarker.setVisible(false);
+    this.add(this.selectMarker);
+
     this.updateVisuals();
     scene.add.existing(this);
-    this.setDepth(4);
+    // Profundidade por linha: heróis mais abaixo ficam à frente (ilusão de profundidade).
+    // Mantém-se entre 4 e 5, sempre abaixo dos espíritos (6).
+    this.setDepth(4 + y / 10000);
+  }
+
+  private getLevelScale(): number {
+    return Guide.LEVEL_SCALE[this.level - 1] ?? 1;
+  }
+
+  /** Liga/desliga o seletor visual do herói no tabuleiro. */
+  public setSelected(on: boolean) {
+    this.selected = on;
+    if (!this.scene) return;
+    this.selectRingHolder.setVisible(on);
+    this.selectMarker.setVisible(on);
+    if (on) {
+      if (!this.rangeCircle) {
+        this.rangeCircle = this.scene.add.graphics();
+        this.rangeCircle.setDepth(3.5);
+      }
+      this.drawSelector();
+    } else {
+      this.rangeCircle?.destroy();
+      this.rangeCircle = undefined;
+    }
+  }
+
+  public isSelected(): boolean {
+    return this.selected;
+  }
+
+  private drawSelector() {
+    const s = this.getLevelScale();
+    const hexColor = parseInt(this.typeData.color.replace('#', '0x'));
+
+    // Anel tracejado dourado (12 segmentos) aos pés
+    const r = 34 * s;
+    this.selectRing.clear();
+    this.selectRing.lineStyle(4, Guide.SELECT_COLOR, 0.95);
+    const segments = 12;
+    for (let i = 0; i < segments; i++) {
+      const a0 = (i / segments) * Math.PI * 2;
+      const a1 = a0 + (Math.PI * 2) / segments * 0.6;
+      this.selectRing.beginPath();
+      this.selectRing.arc(0, 0, r, a0, a1);
+      this.selectRing.strokePath();
+    }
+    this.selectRing.lineStyle(2, 0xFFFFFF, 0.5);
+    this.selectRing.strokeCircle(0, 0, r - 6);
+    this.selectRingHolder.setY(25 * s);
+
+    // Marcador triangular acima da cabeça
+    this.selectMarker.clear();
+    this.selectMarker.fillStyle(Guide.SELECT_COLOR, 1);
+    this.selectMarker.fillTriangle(-8, 0, 8, 0, 0, 10);
+    this.selectMarker.lineStyle(2, 0x171D2E, 0.9);
+    this.selectMarker.strokeTriangle(-8, 0, 8, 0, 0, 10);
+
+    // Círculo de alcance (no mundo, abaixo dos heróis)
+    if (this.rangeCircle) {
+      const range = this.currentLevelData.range;
+      this.rangeCircle.clear();
+      this.rangeCircle.fillStyle(hexColor, 0.08);
+      this.rangeCircle.fillCircle(this.x, this.y, range);
+      this.rangeCircle.lineStyle(2, hexColor, 0.6);
+      this.rangeCircle.strokeCircle(this.x, this.y, range);
+    }
+  }
+
+  public override destroy(fromScene?: boolean) {
+    this.rangeCircle?.destroy();
+    this.rangeCircle = undefined;
+    super.destroy(fromScene);
   }
 
   public getTextureKey(): string | undefined { return this.sprite?.texture.key; }
@@ -101,11 +197,23 @@ export class Guide extends Phaser.GameObjects.Container {
     this.level++;
     this.currentLevelData = nextData;
     this.updateVisuals();
+    if (this.selected) this.drawSelector();
+
+    // "Pop" de crescimento: passa um pouco do tamanho final e assenta
+    this.scene.tweens.killTweensOf(this);
+    this.setScale(0.85);
+    this.scene.tweens.add({
+      targets: this,
+      scaleX: 1,
+      scaleY: 1,
+      duration: 380,
+      ease: 'Back.easeOut',
+    });
 
     // Pulso visual de iluminação do upgrade
     const flash = this.scene.add.graphics();
     flash.lineStyle(4, 0xF6E05E, 1);
-    flash.strokeCircle(this.x, this.y, 35);
+    flash.strokeCircle(this.x, this.y, 35 * this.getLevelScale());
     flash.setDepth(12);
 
     this.scene.tweens.add({
@@ -136,10 +244,19 @@ export class Guide extends Phaser.GameObjects.Container {
     return this.silencedTimer > 0;
   }
 
+  private spriteBaseScale = 1;
+
   private updateVisuals() {
     this.gfx.clear();
     this.auraGfx.clear();
     const hexColor = parseInt(this.typeData.color.replace('#', '0x'));
+    const s = this.getLevelScale();
+
+    // Sombra, aura e fallback acompanham a escala do nível
+    this.shadow.setScale(s);
+    this.shadow.setY(25 * s);
+    this.auraGfx.setScale(s);
+    this.gfx.setScale(s);
 
     // Aura nos níveis 2 e 3
     if (this.level >= 2) {
@@ -158,7 +275,10 @@ export class Guide extends Phaser.GameObjects.Container {
       } else {
         this.sprite.setTexture(spriteKey);
       }
-      this.sprite.setScale(80 / Math.max(this.sprite.width, this.sprite.height));
+      this.scene.tweens.killTweensOf(this.sprite);
+      this.spriteBaseScale = (Guide.BASE_SIZE * s) / Math.max(this.sprite.width, this.sprite.height);
+      this.sprite.setScale(this.spriteBaseScale);
+      this.sprite.setX(0);
     } else {
       // Fallback procedural estético
       this.gfx.fillStyle(hexColor, 0.95);
@@ -172,11 +292,24 @@ export class Guide extends Phaser.GameObjects.Container {
       this.gfx.lineStyle(1, hexColor, 1);
       this.gfx.strokeRect(-12, 14, 24, 12);
     }
+
+    // Marcador do seletor sempre por cima do herói
+    this.bringToTop(this.selectMarker);
   }
 
   public update(time: number, delta: number) {
     this.sprite?.setY(Math.sin(time / 650 + this.col) * 2);
     const deltaSec = delta / 1000;
+
+    // Animação do seletor: anel gira e pulsa, marcador flutua acima da cabeça
+    if (this.selected) {
+      const s = this.getLevelScale();
+      this.selectRing.rotation += deltaSec * 1.2;
+      const pulse = 1 + Math.sin(time / 220) * 0.05;
+      this.selectRing.setScale(pulse);
+      this.selectMarker.setScale(s);
+      this.selectMarker.setY(-(Guide.BASE_SIZE / 2) * s - 16 + Math.sin(time / 260) * 4);
+    }
 
     if (this.silencedTimer > 0) {
       this.silencedTimer -= deltaSec;
@@ -256,18 +389,20 @@ export class Guide extends Phaser.GameObjects.Container {
     const recoilTarget = this.sprite ?? this.gfx;
     const originalLocalX = recoilTarget.x;
     const originalLocalY = recoilTarget.y;
+    const baseScale = this.sprite ? this.spriteBaseScale : this.getLevelScale();
 
     this.scene.tweens.add({
       targets: recoilTarget,
       x: originalLocalX - Math.cos(angleToTarget) * recoilDist,
       y: originalLocalY - Math.sin(angleToTarget) * recoilDist,
-      scaleX: (this.sprite?.scaleX ?? 1) * 1.12,
-      scaleY: (this.sprite?.scaleY ?? 1) * 1.12,
+      scaleX: baseScale * 1.12,
+      scaleY: baseScale * 1.12,
       duration: 70,
       yoyo: true,
       ease: 'Quad.easeOut',
       onComplete: () => {
         recoilTarget.setPosition(originalLocalX, originalLocalY);
+        recoilTarget.setScale(this.sprite ? this.spriteBaseScale : this.getLevelScale());
       },
     });
   }

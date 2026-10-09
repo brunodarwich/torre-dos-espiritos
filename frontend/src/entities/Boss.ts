@@ -24,7 +24,7 @@ export class Boss extends Spirit {
   protected override initVisuals(config: SpiritConfig) {
     if (config.spriteKey && this.scene.textures.exists(config.spriteKey)) {
       this.sprite = this.scene.add.sprite(0, 0, config.spriteKey);
-      this.sprite.setScale(128 / Math.max(this.sprite.width, this.sprite.height));
+      this.sprite.setScale(this.visualSize / Math.max(this.sprite.width, this.sprite.height));
       this.add(this.sprite);
     } else {
       this.gfx.fillStyle(0x553C9A, 0.95);
@@ -105,7 +105,7 @@ export class Boss extends Spirit {
     this.phase = 2;
     if (this.sprite && this.scene.textures.exists('spirit_boss_phase2')) {
       this.sprite.setTexture('spirit_boss_phase2');
-      this.sprite.setScale(128 / Math.max(this.sprite.width, this.sprite.height));
+      this.sprite.setScale(this.visualSize / Math.max(this.sprite.width, this.sprite.height));
     } else if (!this.sprite) {
       this.gfx.clear();
       this.gfx.fillStyle(0x44337A, 0.95);
@@ -228,10 +228,10 @@ export class Boss extends Spirit {
     this.healthBar.clear();
     if (this.isPurified() || this.hasReachedBed()) return;
 
-    const width = 80;
+    const width = Math.round(this.visualSize * 0.6);
     const height = 7;
     const x = -width / 2;
-    const y = -64;
+    const y = -this.visualSize / 2;
 
     const pct = Math.max(0, this.currentHealth / this.maxHealth);
 

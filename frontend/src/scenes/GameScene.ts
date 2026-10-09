@@ -367,6 +367,7 @@ export class GameScene extends Phaser.Scene {
         this.gridSystem.releaseCell(guide.col, guide.row);
         const index = this.guides.indexOf(guide);
         if (index !== -1) this.guides.splice(index, 1);
+        guide.setSelected(false);
         guide.destroy();
         audioSynth.playClick();
       },
@@ -550,6 +551,7 @@ export class GameScene extends Phaser.Scene {
         essenceReward: spiritDef.essenceReward,
         lightDamage: spiritDef.lightDamage,
         color: spiritDef.color,
+        size: spiritDef.size,
         waypoints,
         maxSlow: spiritDef.maxSlow,
         spriteKey: 'spirit_boss',
@@ -568,6 +570,7 @@ export class GameScene extends Phaser.Scene {
         essenceReward: spiritDef.essenceReward,
         lightDamage: spiritDef.lightDamage,
         color: spiritDef.color,
+        size: spiritDef.size,
         waypoints,
         jumpInterval: spiritDef.jumpInterval,
         jumpDistance: spiritDef.jumpDistance,
@@ -613,6 +616,7 @@ export class GameScene extends Phaser.Scene {
           essenceReward: spiritDef.essenceReward,
           lightDamage: spiritDef.lightDamage,
           color: spiritDef.color,
+          size: spiritDef.size,
           waypoints: minionWaypoints,
           jumpInterval: spiritDef.jumpInterval,
           jumpDistance: spiritDef.jumpDistance,

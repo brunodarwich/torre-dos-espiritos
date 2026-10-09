@@ -505,7 +505,11 @@ export class UIManager {
   }
 
   public inspectGuide(guide: Guide) {
+    if (this.inspectedGuide && this.inspectedGuide !== guide) {
+      this.inspectedGuide.setSelected(false);
+    }
     this.inspectedGuide = guide;
+    guide.setSelected(true);
     const panel = document.getElementById('guide-inspector');
     if (panel) {
       panel.style.display = 'block';
@@ -514,6 +518,7 @@ export class UIManager {
   }
 
   public closeInspector() {
+    this.inspectedGuide?.setSelected(false);
     this.inspectedGuide = null;
     const panel = document.getElementById('guide-inspector');
     if (panel) panel.style.display = 'none';
