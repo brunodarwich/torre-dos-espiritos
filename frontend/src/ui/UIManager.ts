@@ -390,7 +390,7 @@ export class UIManager {
 
     const checkOrientation = () => {
       if (rotateDismissed || !rotatePrompt) return;
-      const isMobile = window.innerWidth <= 820;
+      const isMobile = window.innerWidth <= 900;
       const isPortrait = window.innerHeight > window.innerWidth;
       rotatePrompt.style.display = isMobile && isPortrait ? 'flex' : 'none';
     };

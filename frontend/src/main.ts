@@ -27,4 +27,14 @@ window.addEventListener('DOMContentLoaded', () => {
     screenFlow.beginLoading();
     game = new Phaser.Game(config);
   } else screenFlow.showHome();
+
+  const handleResize = () => {
+    if (game?.scale) {
+      game.scale.refresh();
+    }
+  };
+  window.addEventListener('resize', handleResize);
+  window.addEventListener('orientationchange', () => {
+    setTimeout(handleResize, 150);
+  });
 });

@@ -154,4 +154,48 @@ describe('Drag and Drop Hero Placement Logic', () => {
     const failPurchase = economySystem.spendEssence(cost);
     expect(failPurchase).toBe(false);
   });
+
+  it('correctly maps touch coordinates across mobile and tablet viewports (portrait and landscape)', () => {
+    // 1. Tablet Portrait (iPad 768x1024) -> Canvas 16:9 é 768x432, top=(1024-432)/2 = 296
+    const tabletPortraitCanvas = {
+      left: 0,
+      top: 296,
+      right: 768,
+      bottom: 728,
+      width: 768,
+      height: 432,
+    };
+    const tabletTouch = transformClientToWorld(384, 296 + 216, tabletPortraitCanvas, GAME_WIDTH, GAME_HEIGHT);
+    expect(tabletTouch).not.toBeNull();
+    expect(tabletTouch!.x).toBeCloseTo(GAME_WIDTH / 2, 0);
+    expect(tabletTouch!.y).toBeCloseTo(GAME_HEIGHT / 2, 0);
+
+    // 2. Mobile Landscape (Phone 844x390) -> Canvas 16:9 é 693.33x390, left=(844-693.33)/2 = 75.33
+    const mobileLandscapeCanvas = {
+      left: 75.33,
+      top: 0,
+      right: 75.33 + 693.33,
+      bottom: 390,
+      width: 693.33,
+      height: 390,
+    };
+    const phoneTouch = transformClientToWorld(75.33 + 346.66, 195, mobileLandscapeCanvas, GAME_WIDTH, GAME_HEIGHT);
+    expect(phoneTouch).not.toBeNull();
+    expect(phoneTouch!.x).toBeCloseTo(GAME_WIDTH / 2, 0);
+    expect(phoneTouch!.y).toBeCloseTo(GAME_HEIGHT / 2, 0);
+
+    // 3. Mobile Portrait (Phone 390x844) -> Canvas 16:9 é 390x219.375, top=(844-219.375)/2 = 312.31
+    const mobilePortraitCanvas = {
+      left: 0,
+      top: 312.31,
+      right: 390,
+      bottom: 312.31 + 219.38,
+      width: 390,
+      height: 219.38,
+    };
+    const portraitTouch = transformClientToWorld(195, 312.31 + 109.69, mobilePortraitCanvas, GAME_WIDTH, GAME_HEIGHT);
+    expect(portraitTouch).not.toBeNull();
+    expect(portraitTouch!.x).toBeCloseTo(GAME_WIDTH / 2, 0);
+    expect(portraitTouch!.y).toBeCloseTo(GAME_HEIGHT / 2, 0);
+  });
 });
