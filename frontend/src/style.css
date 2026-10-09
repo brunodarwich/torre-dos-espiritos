@@ -22,6 +22,7 @@
   padding: 0;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 html, body {
@@ -31,6 +32,8 @@ html, body {
   background-color: var(--color-astral-dark);
   font-family: var(--font-ui);
   color: var(--color-text-primary);
+  touch-action: none;
+  overscroll-behavior: none;
 }
 
 #app {
@@ -85,7 +88,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
+  padding: max(12px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) 12px max(20px, env(safe-area-inset-left));
   background: linear-gradient(180deg, rgba(11, 15, 25, 0.95) 0%, rgba(11, 15, 25, 0.6) 80%, rgba(11, 15, 25, 0) 100%);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -627,7 +630,7 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 24px;
+  padding: 10px max(24px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(24px, env(safe-area-inset-left));
   background: linear-gradient(0deg, rgba(11, 15, 25, 0.98) 0%, rgba(11, 15, 25, 0.7) 80%, rgba(11, 15, 25, 0) 100%);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -702,6 +705,7 @@ html, body {
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
   min-width: 96px;
   user-select: none;
+  touch-action: none;
   position: relative;
 }
 
@@ -731,9 +735,13 @@ html, body {
   border-radius: 10px;
   background-size: cover;
   background-position: center 15%;
+  object-fit: cover;
+  object-position: center 15%;
   border: 1.5px solid rgba(255, 255, 255, 0.18);
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5), 0 3px 10px rgba(0, 0, 0, 0.35);
   transition: transform 0.2s ease;
+  pointer-events: none;
+  display: block;
 }
 
 .guide-card:hover .card-thumb {
@@ -770,6 +778,74 @@ html, body {
   align-items: center;
   justify-content: center;
   gap: 2px;
+}
+
+.card-drag-hint {
+  font-size: 9.5px;
+  color: var(--color-text-secondary);
+  opacity: 0.8;
+  margin-top: 2px;
+  letter-spacing: 0.2px;
+  text-transform: uppercase;
+}
+
+.guide-card.dragging {
+  opacity: 0.45;
+  transform: scale(0.96);
+  border-color: var(--color-essence-cyan);
+}
+
+/* Floating Drag Ghost (Avatar arrastado sobre o tabuleiro) */
+.guide-drag-ghost {
+  position: fixed;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background-size: cover;
+  background-position: center 15%;
+  border: 2px solid var(--color-light-mentor);
+  box-shadow: 0 0 20px rgba(246, 224, 94, 0.7), 0 8px 24px rgba(0, 0, 0, 0.7);
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: visible;
+  animation: pulseGhost 0.8s infinite alternate ease-in-out;
+  touch-action: none;
+}
+
+@keyframes pulseGhost {
+  0% { transform: translate(-50%, -50%) scale(1); box-shadow: 0 0 16px rgba(79, 209, 197, 0.6); }
+  100% { transform: translate(-50%, -50%) scale(1.08); box-shadow: 0 0 24px rgba(246, 224, 94, 0.85); }
+}
+
+.guide-drag-ghost .ghost-tag {
+  background: rgba(11, 15, 25, 0.94);
+  border: 1px solid var(--color-essence-cyan);
+  color: var(--color-essence-cyan);
+  font-size: 10px;
+  font-weight: 800;
+  padding: 1px 7px;
+  border-radius: 8px;
+  position: absolute;
+  bottom: -10px;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.guide-drag-ghost.cancel-preview {
+  opacity: 0.55;
+  filter: grayscale(0.7) brightness(0.8);
+  border-color: #E53E3E;
+  box-shadow: 0 0 16px rgba(229, 62, 62, 0.7);
+  animation: none;
+}
+
+.guide-drag-ghost.cancel-preview .ghost-tag {
+  border-color: #E53E3E;
+  color: #FEB2B2;
 }
 
 /* Quick Nav */
@@ -1204,7 +1280,7 @@ html, body {
 /* Mobile Landscape e Telas Compactas (<= 860px ou altura <= 520px) */
 @media (max-width: 860px), (max-height: 520px) {
   .hud-top {
-    padding: 6px 12px;
+    padding: max(6px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) 6px max(12px, env(safe-area-inset-left));
     gap: 8px;
   }
 
@@ -1259,7 +1335,7 @@ html, body {
 
   /* Bottom HUD Compacto */
   .hud-bottom {
-    padding: 6px 12px;
+    padding: 6px max(12px, env(safe-area-inset-right)) max(6px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
     gap: 8px;
   }
 
@@ -1283,26 +1359,38 @@ html, body {
   }
 
   .guide-cards {
-    gap: 8px;
+    gap: 6px;
   }
 
   .guide-card {
-    padding: 4px 8px;
-    gap: 6px;
+    padding: 3px 6px 5px 6px;
+    gap: 2px;
+    min-width: 68px;
     border-radius: 10px;
   }
 
-  .card-info .card-title {
-    font-size: 11px;
+  .card-thumb {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
   }
 
-  .card-info .card-role {
-    display: none;
+  .card-meta {
+    gap: 2px;
+    margin-top: 2px;
+  }
+
+  .card-title {
+    font-size: 10px;
   }
 
   .card-cost {
     font-size: 10px;
-    padding: 2px 5px;
+    padding: 1px 5px;
+  }
+
+  .card-drag-hint {
+    display: none;
   }
 
   .quick-nav {

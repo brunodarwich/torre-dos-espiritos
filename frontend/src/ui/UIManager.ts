@@ -9,9 +9,14 @@ export class UIManager {
   private inspectedGuide: Guide | null = null;
   private bannerTimer?: ReturnType<typeof setTimeout>;
   private balloonTimer?: ReturnType<typeof setTimeout>;
+  private activeGhostEl: HTMLElement | null = null;
 
   // Callbacks para o jogo
   private onSelectGuideTypeCallback?: (type: string | null) => void;
+  private onStartGuideDragCallback?: (type: string) => void;
+  private onMoveGuideDragCallback?: (type: string, clientX: number, clientY: number) => void;
+  private onDropGuideDragCallback?: (type: string, clientX: number, clientY: number) => boolean;
+  private onCancelGuideDragCallback?: () => void;
   private onUpgradeGuideCallback?: (guide: Guide) => void;
   private onSellGuideCallback?: (guide: Guide) => void;
   private onToggleSpeedCallback?: () => void;
@@ -31,6 +36,8 @@ export class UIManager {
     this.events.abort();
     clearTimeout(this.bannerTimer);
     clearTimeout(this.balloonTimer);
+    this.activeGhostEl?.remove();
+    this.activeGhostEl = null;
     document.getElementById('wave-banner')?.classList.remove('active');
     this.closeInspector();
     this.hideBalloon();
@@ -45,6 +52,10 @@ export class UIManager {
 
   public setCallbacks(callbacks: {
     onSelectGuideType?: (type: string | null) => void;
+    onStartGuideDrag?: (type: string) => void;
+    onMoveGuideDrag?: (type: string, clientX: number, clientY: number) => void;
+    onDropGuideDrag?: (type: string, clientX: number, clientY: number) => boolean;
+    onCancelGuideDrag?: () => void;
     onUpgradeGuide?: (guide: Guide) => void;
     onSellGuide?: (guide: Guide) => void;
     onToggleSpeed?: () => void;
@@ -56,6 +67,10 @@ export class UIManager {
     onReturnHome?: () => void;
   }) {
     this.onSelectGuideTypeCallback = callbacks.onSelectGuideType;
+    this.onStartGuideDragCallback = callbacks.onStartGuideDrag;
+    this.onMoveGuideDragCallback = callbacks.onMoveGuideDrag;
+    this.onDropGuideDragCallback = callbacks.onDropGuideDrag;
+    this.onCancelGuideDragCallback = callbacks.onCancelGuideDrag;
     this.onUpgradeGuideCallback = callbacks.onUpgradeGuide;
     this.onSellGuideCallback = callbacks.onSellGuide;
     this.onToggleSpeedCallback = callbacks.onToggleSpeed;
@@ -73,20 +88,154 @@ export class UIManager {
       if (!backdrop || backdrop.style.display !== 'flex') return;
       trapDialogFocus(event, backdrop);
     }, { signal: this.events.signal });
-    // Seleção de guias na barra inferior
+
+    // Limpeza de arrasto em caso de perda de foco
+    window.addEventListener('blur', () => {
+      if (this.activeGhostEl) {
+        this.activeGhostEl.remove();
+        this.activeGhostEl = null;
+      }
+      document.querySelectorAll('.guide-card.dragging').forEach((c) => c.classList.remove('dragging'));
+      this.onCancelGuideDragCallback?.();
+    }, { signal: this.events.signal });
+
+    // Seleção e Arrastar/Soltar (Drag and Drop) de guias na barra inferior
     const guideCards = document.querySelectorAll<HTMLElement>('.guide-card');
     guideCards.forEach((card) => {
-      card.addEventListener('click', () => {
-        const guideId = card.getAttribute('data-guide');
-        if (this.selectedGuideType === guideId) {
-          this.deselectGuideCards();
-          if (this.onSelectGuideTypeCallback) this.onSelectGuideTypeCallback(null);
+      let isDragging = false;
+      let startX = 0;
+      let startY = 0;
+      let activePointerId: number | null = null;
+      const guideId = card.getAttribute('data-guide');
+      if (!guideId) return;
+
+      const isOverCancelArea = (clientX: number, clientY: number): boolean => {
+        const hudBottom = document.querySelector('.hud-bottom') as HTMLElement | null;
+        if (hudBottom) {
+          const rect = hudBottom.getBoundingClientRect();
+          if (
+            clientX >= rect.left &&
+            clientX <= rect.right &&
+            clientY >= rect.top &&
+            clientY <= rect.bottom
+          ) {
+            return true;
+          }
+        }
+        return false;
+      };
+
+      const cleanupDrag = () => {
+        if (this.activeGhostEl) {
+          this.activeGhostEl.remove();
+          this.activeGhostEl = null;
+        }
+        card.classList.remove('dragging');
+        isDragging = false;
+        activePointerId = null;
+      };
+
+      card.addEventListener('pointerdown', (e: PointerEvent) => {
+        if (e.button !== 0) return; // apenas clique primário / toque
+        activePointerId = e.pointerId;
+        startX = e.clientX;
+        startY = e.clientY;
+        isDragging = false;
+        try {
+          card.setPointerCapture(e.pointerId);
+        } catch {
+          // fallback silencioso se pointer capture não estiver disponível
+        }
+      }, { signal: this.events.signal });
+
+      card.addEventListener('pointermove', (e: PointerEvent) => {
+        if (activePointerId !== e.pointerId) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+        const dist = Math.hypot(dx, dy);
+
+        if (!isDragging && dist > 8) {
+          isDragging = true;
+          card.classList.add('dragging');
+
+          // Cria elemento fantasma flutuante (ghost avatar)
+          const ghost = document.createElement('div');
+          ghost.className = 'guide-drag-ghost';
+          ghost.style.backgroundImage = `url('${this.getPortraitUrl(guideId)}')`;
+          const cost = card.getAttribute('data-cost') || '100';
+          ghost.innerHTML = `<span class="ghost-tag">${cost} 💧</span>`;
+          document.body.appendChild(ghost);
+          this.activeGhostEl = ghost;
+
+          this.onStartGuideDragCallback?.(guideId);
+        }
+
+        if (isDragging && this.activeGhostEl) {
+          const isCancel = isOverCancelArea(e.clientX, e.clientY);
+          if (isCancel) {
+            this.activeGhostEl.classList.add('cancel-preview');
+            this.activeGhostEl.style.left = `${e.clientX}px`;
+            this.activeGhostEl.style.top = `${e.clientY}px`;
+            this.onCancelGuideDragCallback?.();
+          } else {
+            this.activeGhostEl.classList.remove('cancel-preview');
+            // No mobile touch, elevamos ligeiramente o avatar acima do polegar para não cobrir o slot
+            const offsetY = e.pointerType === 'touch' ? 36 : 14;
+            const targetY = e.clientY - offsetY;
+            this.activeGhostEl.style.left = `${e.clientX}px`;
+            this.activeGhostEl.style.top = `${targetY}px`;
+            this.onMoveGuideDragCallback?.(guideId, e.clientX, targetY);
+          }
+        }
+      }, { signal: this.events.signal });
+
+      card.addEventListener('pointerup', (e: PointerEvent) => {
+        if (activePointerId !== e.pointerId) return;
+        try {
+          if (card.hasPointerCapture(e.pointerId)) {
+            card.releasePointerCapture(e.pointerId);
+          }
+        } catch {
+          // ignorar
+        }
+
+        if (isDragging) {
+          const isCancel = isOverCancelArea(e.clientX, e.clientY);
+          cleanupDrag();
+          if (isCancel) {
+            this.onCancelGuideDragCallback?.();
+          } else {
+            const offsetY = e.pointerType === 'touch' ? 36 : 14;
+            const targetY = e.clientY - offsetY;
+            const placed = this.onDropGuideDragCallback?.(guideId, e.clientX, targetY);
+            if (placed) {
+              this.deselectGuideCards();
+            }
+          }
         } else {
-          this.deselectGuideCards();
-          card.classList.add('selected');
-          this.selectedGuideType = guideId;
-          audioSynth.playClick();
-          if (this.onSelectGuideTypeCallback) this.onSelectGuideTypeCallback(guideId);
+          cleanupDrag();
+          this.selectOrDeselectGuide(card, guideId);
+        }
+      }, { signal: this.events.signal });
+
+      card.addEventListener('pointercancel', (e: PointerEvent) => {
+        if (activePointerId !== e.pointerId) return;
+        try {
+          if (card.hasPointerCapture(e.pointerId)) {
+            card.releasePointerCapture(e.pointerId);
+          }
+        } catch {
+          // ignorar
+        }
+        cleanupDrag();
+        this.onCancelGuideDragCallback?.();
+      }, { signal: this.events.signal });
+
+      // Acessibilidade via teclado (Enter / Espaço)
+      card.addEventListener('keydown', (e: KeyboardEvent) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          this.selectOrDeselectGuide(card, guideId);
         }
       }, { signal: this.events.signal });
     });
@@ -251,6 +400,28 @@ export class UIManager {
     checkOrientation();
   }
 
+  public getPortraitUrl(guideId: string): string {
+    const portraits: Record<string, string> = {
+      mentor: 'assets/astral/portrait_mentor.png',
+      benzedeira: 'assets/astral/portrait_benzedeira.png',
+      paje: 'assets/astral/portrait_paje.png',
+    };
+    return portraits[guideId] || 'assets/astral/portrait_mentor.png';
+  }
+
+  private selectOrDeselectGuide(card: HTMLElement, guideId: string) {
+    if (this.selectedGuideType === guideId) {
+      this.deselectGuideCards();
+      if (this.onSelectGuideTypeCallback) this.onSelectGuideTypeCallback(null);
+    } else {
+      this.deselectGuideCards();
+      card.classList.add('selected');
+      this.selectedGuideType = guideId;
+      audioSynth.playClick();
+      if (this.onSelectGuideTypeCallback) this.onSelectGuideTypeCallback(guideId);
+    }
+  }
+
   public deselectGuideCards() {
     document.querySelectorAll('.guide-card').forEach((c) => c.classList.remove('selected'));
     this.selectedGuideType = null;
@@ -358,13 +529,7 @@ export class UIManager {
     // Arte do herói no fundo com overlay escuro
     const backdrop = document.getElementById('inspector-art-backdrop');
     if (backdrop) {
-      const portraits: Record<string, string> = {
-        mentor: '/assets/astral/portrait_mentor.png',
-        benzedeira: '/assets/astral/portrait_benzedeira.png',
-        paje: '/assets/astral/portrait_paje.png',
-      };
-      const portraitUrl = portraits[guide.guideId] || '/assets/astral/portrait_mentor.png';
-      backdrop.style.backgroundImage = `url('${portraitUrl}')`;
+      backdrop.style.backgroundImage = `url('${this.getPortraitUrl(guide.guideId)}')`;
     }
 
     const nameEl = document.getElementById('inspector-name');

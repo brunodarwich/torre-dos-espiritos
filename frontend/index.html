@@ -2,22 +2,26 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#0B0F19" />
   <title>Torre dos Espíritos — Tower Defense</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/src/style.css" />
+  <link rel="stylesheet" href="./src/style.css" />
 </head>
 <body>
   <div id="app">
     <!-- Abertura e preparação do sonho -->
     <section id="home-screen" class="cinematic-screen home-screen" aria-labelledby="home-title">
-      <img class="cinematic-art home-art" src="/assets/screens/home/sonho-guardioes-inicial-v1.png" alt="Uma pessoa dorme enquanto seus guardiões astrais protegem o mundo dos sonhos." fetchpriority="high" />
+      <img class="cinematic-art home-art" src="assets/screens/home/sonho-guardioes-inicial-v1.png" alt="Uma pessoa dorme enquanto seus guardiões astrais protegem o mundo dos sonhos." fetchpriority="high" draggable="false" />
       <div class="cinematic-shade"></div>
       <div class="home-topline"><span class="world-label">Uma jornada além do despertar</span><button id="btn-home-audio" class="screen-audio" aria-label="Alternar efeitos sonoros" aria-pressed="true">Som ligado</button></div>
       <div class="home-content">
-        <img class="home-logo" src="/assets/brand/torre-dos-espiritos-logo-v1.png" alt="Torre dos Espíritos" />
+        <img class="home-logo" src="assets/brand/torre-dos-espiritos-logo-v1.png" alt="Torre dos Espíritos" draggable="false" />
         <p class="screen-eyebrow">Defenda a luz. Proteja o sonho.</p>
         <h1 id="home-title">Enquanto você dorme,<br>eles lutam por você.</h1>
         <p class="home-description">Convoque guardiões astrais, detenha as sombras e mantenha a luz do santuário acesa até a aurora.</p>
@@ -30,7 +34,7 @@
           <div class="help-header"><span class="screen-eyebrow">Seu primeiro sonho</span><button id="btn-close-help" class="help-close" aria-label="Fechar instruções">✕</button></div>
           <h2 id="help-title">Como proteger o santuário</h2>
           <ol class="help-steps">
-            <li><strong>Convoque seus guardiões</strong><p>Escolha um card na barra inferior e toque em um espaço livre ao lado do caminho. Cada guardião custa Essência.</p></li>
+            <li><strong>Convoque seus guardiões</strong><p>Arraste um card para o tabuleiro ou toque no card e depois no espaço livre ao lado do caminho. Cada guardião custa Essência.</p></li>
             <li><strong>Combine seus poderes</strong><p>Prisma Solar concentra dano, Véu de Aurora desacelera as sombras e Núcleo de Brasa atinge uma área.</p></li>
             <li><strong>Prepare a próxima horda</strong><p>Selecione um guardião para evoluí-lo. Chamar a horda antes concede Essência extra, mas exige uma defesa pronta.</p></li>
             <li><strong>Preserve a luz até a aurora</strong><p>Sombras que chegam ao núcleo consomem Luz. Sobreviva às hordas e purifique o Colosso do Eclipse para vencer; quando a Luz acaba, o sonho se perde.</p></li>
@@ -41,10 +45,10 @@
     </section>
 
     <section id="loading-screen" class="cinematic-screen loading-screen" aria-labelledby="loading-title" hidden>
-      <img class="cinematic-art loading-art" src="/assets/screens/loading/carregamento-astral-v1.png" alt="Uma ponte iluminada leva ao portal do mundo astral." />
+      <img class="cinematic-art loading-art" src="assets/screens/loading/carregamento-astral-v1.png" alt="Uma ponte iluminada leva ao portal do mundo astral." draggable="false" />
       <div class="cinematic-shade"></div>
       <div class="loading-content">
-        <img class="loading-logo" src="/assets/brand/torre-dos-espiritos-logo-v1.png" alt="Torre dos Espíritos" />
+        <img class="loading-logo" src="assets/brand/torre-dos-espiritos-logo-v1.png" alt="Torre dos Espíritos" draggable="false" />
         <p class="screen-eyebrow">O portal está se abrindo</p>
         <h1 id="loading-title" tabindex="-1">Preparando seu sonho</h1>
         <div class="loading-status"><span>Travessia astral</span><strong id="loading-percent">0%</strong></div>
@@ -64,7 +68,7 @@
       <!-- Barra Superior (Top HUD) -->
       <header class="hud-top">
         <div class="hud-stats">
-          <img class="hud-logo" src="/assets/brand/torre-dos-espiritos-logo-v1.png" alt="Torre dos Espíritos" />
+          <img class="hud-logo" src="assets/brand/torre-dos-espiritos-logo-v1.png" alt="Torre dos Espíritos" draggable="false" />
           <div class="stat-badge stat-light" id="stat-light" title="Luz do Núcleo do Sonho">
             <span class="stat-icon">🕯️</span>
             <span class="stat-value" id="val-light">20</span>
@@ -190,29 +194,32 @@
         </div>
 
         <!-- Cards de Invocação dos 3 Guias (Formato Vertical com Imagens Maiores) -->
-        <div class="guide-cards">
-          <div class="guide-card" id="card-mentor" data-guide="mentor" data-cost="100">
-            <div class="card-thumb" style="background-image: url('/assets/astral/portrait_mentor.png')"></div>
+        <div class="guide-cards" role="toolbar" aria-label="Guardiões Astrais para Invocação">
+          <div class="guide-card" id="card-mentor" data-guide="mentor" data-cost="100" role="button" tabindex="0" aria-label="Invocar Prisma Solar (Custa 100 Essência). Toque para selecionar ou arraste para posicionar no tabuleiro.">
+            <img class="card-thumb" src="assets/astral/portrait_mentor.png" alt="Prisma Solar" draggable="false" />
             <div class="card-meta">
               <span class="card-title">Prisma Solar</span>
               <span class="card-cost">100 💧</span>
             </div>
+            <span class="card-drag-hint" aria-hidden="true">Arraste ou toque</span>
           </div>
 
-          <div class="guide-card" id="card-benzedeira" data-guide="benzedeira" data-cost="125">
-            <div class="card-thumb" style="background-image: url('/assets/astral/portrait_benzedeira.png')"></div>
+          <div class="guide-card" id="card-benzedeira" data-guide="benzedeira" data-cost="125" role="button" tabindex="0" aria-label="Invocar Véu de Aurora (Custa 125 Essência). Toque para selecionar ou arraste para posicionar no tabuleiro.">
+            <img class="card-thumb" src="assets/astral/portrait_benzedeira.png" alt="Véu de Aurora" draggable="false" />
             <div class="card-meta">
               <span class="card-title">Véu de Aurora</span>
               <span class="card-cost">125 💧</span>
             </div>
+            <span class="card-drag-hint" aria-hidden="true">Arraste ou toque</span>
           </div>
 
-          <div class="guide-card" id="card-paje" data-guide="paje" data-cost="150">
-            <div class="card-thumb" style="background-image: url('/assets/astral/portrait_paje.png')"></div>
+          <div class="guide-card" id="card-paje" data-guide="paje" data-cost="150" role="button" tabindex="0" aria-label="Invocar Núcleo de Brasa (Custa 150 Essência). Toque para selecionar ou arraste para posicionar no tabuleiro.">
+            <img class="card-thumb" src="assets/astral/portrait_paje.png" alt="Núcleo de Brasa" draggable="false" />
             <div class="card-meta">
               <span class="card-title">Núcleo de Brasa</span>
               <span class="card-cost">150 💧</span>
             </div>
+            <span class="card-drag-hint" aria-hidden="true">Arraste ou toque</span>
           </div>
         </div>
 
@@ -309,9 +316,9 @@
 
         <!-- Resultado da jornada -->
         <div class="modal-card modal-gameover" id="modal-gameover" data-outcome="win" role="dialog" aria-modal="true" aria-labelledby="gameover-title" tabindex="-1" style="display: none;">
-          <div class="result-art-panel"><img id="gameover-art" src="/assets/screens/results/vitoria-sonho-v1.png" alt="O sonho protegido pelos guardiões astrais." /><div class="result-art-shade"></div><span class="result-art-caption">Santuário do Sonho</span></div>
+          <div class="result-art-panel"><img id="gameover-art" src="assets/screens/results/vitoria-sonho-v1.png" alt="O sonho protegido pelos guardiões astrais." draggable="false" /><div class="result-art-shade"></div><span class="result-art-caption">Santuário do Sonho</span></div>
           <div class="result-content">
-            <img class="result-logo" src="/assets/brand/torre-dos-espiritos-logo-v1.png" alt="Torre dos Espíritos" />
+            <img class="result-logo" src="assets/brand/torre-dos-espiritos-logo-v1.png" alt="Torre dos Espíritos" draggable="false" />
             <div class="gameover-banner"><p id="gameover-eyebrow" class="screen-eyebrow">A aurora chegou</p><h2 id="gameover-title">Sonho protegido</h2><p id="gameover-subtitle">Seus guardiões preservaram a luz até o despertar.</p></div>
             <div class="gameover-stats">
               <div><span>Pontuação</span><strong id="go-score">0</strong></div>
@@ -336,6 +343,6 @@
     </div>
   </div>
 
-  <script type="module" src="/src/main.ts"></script>
+  <script type="module" src="./src/main.ts"></script>
 </body>
 </html>

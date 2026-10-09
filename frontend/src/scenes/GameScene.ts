@@ -14,6 +14,7 @@ import { CombatFXSystem } from '../systems/CombatFXSystem';
 import guidesData from '../data/guides.json';
 import spiritsData from '../data/spirits.json';
 import powerupsData from '../data/powerups.json';
+import { transformClientToWorld } from '../utils/coordinates';
 
 interface WaveTheme {
   name: string;
@@ -308,6 +309,52 @@ export class GameScene extends Phaser.Scene {
         this.pendingCell = null;
         this.gridSystem.clearPreview();
       },
+      onStartGuideDrag: (_type) => {
+        this.pendingCell = null;
+        this.gridSystem.clearPreview();
+      },
+      onMoveGuideDrag: (type, clientX, clientY) => {
+        const worldPt = this.clientToWorld(clientX, clientY);
+        if (!worldPt) {
+          this.gridSystem.clearPreview();
+          return;
+        }
+        const gridPt = this.gridSystem.worldToGrid(worldPt.x, worldPt.y);
+        const guideDef = (guidesData as any)[type];
+        if (!guideDef) return;
+        const range = guideDef.levels[0].range;
+        const hexColor = parseInt(guideDef.color.replace('#', '0x')) || 0xF6E05E;
+        this.gridSystem.drawPlacementPreview(gridPt.col, gridPt.row, range, hexColor);
+      },
+      onDropGuideDrag: (type, clientX, clientY) => {
+        this.gridSystem.clearPreview();
+        const worldPt = this.clientToWorld(clientX, clientY);
+        if (!worldPt) return false;
+
+        const gridPt = this.gridSystem.worldToGrid(worldPt.x, worldPt.y);
+        const guideDef = (guidesData as any)[type];
+        if (!guideDef) return false;
+
+        if (!this.gridSystem.isValidPlacement(gridPt.col, gridPt.row)) {
+          audioSynth.playWhoosh();
+          return false;
+        }
+
+        const cost = guideDef.levels[0].cost;
+        if (this.economySystem.spendEssence(cost)) {
+          this.placeGuide(gridPt.col, gridPt.row, guideDef);
+          this.selectedGuideType = null;
+          this.pendingCell = null;
+          return true;
+        } else {
+          audioSynth.playWhoosh();
+          this.uiManager.showBalloon("Prisma Solar", "Essência insuficiente para invocar este protetor!", "⚠️");
+          return false;
+        }
+      },
+      onCancelGuideDrag: () => {
+        this.gridSystem.clearPreview();
+      },
       onUpgradeGuide: (guide) => {
         const nextData = guide.getNextLevelData();
         if (nextData && this.economySystem.spendEssence(nextData.cost)) {
@@ -379,18 +426,21 @@ export class GameScene extends Phaser.Scene {
     });
   }
 
+  public clientToWorld(clientX: number, clientY: number): { x: number; y: number } | null {
+    const canvas = this.game.canvas;
+    if (!canvas) return null;
+    const rect = canvas.getBoundingClientRect();
+    return transformClientToWorld(clientX, clientY, rect, GAME_WIDTH, GAME_HEIGHT);
+  }
+
   private initInput() {
-    this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
-      if (this.selectedGuideType) {
-        const gridPt = this.gridSystem.worldToGrid(pointer.x, pointer.y);
-        const guideDef = (guidesData as any)[this.selectedGuideType];
-        const range = guideDef ? guideDef.levels[0].range : 160;
-        const hexColor = guideDef ? parseInt(guideDef.color.replace('#', '0x')) : 0xF6E05E;
-        this.gridSystem.drawPlacementPreview(gridPt.col, gridPt.row, range, hexColor);
-      }
-    });
+    let pointerDownPos: { x: number; y: number } | null = null;
+    let isCanvasDragging = false;
 
     this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      pointerDownPos = { x: pointer.x, y: pointer.y };
+      isCanvasDragging = false;
+
       const gridPt = this.gridSystem.worldToGrid(pointer.x, pointer.y);
 
       // Se clicar em um guia já existente no mapa: inspecionar
@@ -403,6 +453,29 @@ export class GameScene extends Phaser.Scene {
         audioSynth.playClick();
         return;
       }
+    });
+
+    this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+      if (this.selectedGuideType) {
+        if (pointerDownPos) {
+          const dist = Phaser.Math.Distance.Between(pointerDownPos.x, pointerDownPos.y, pointer.x, pointer.y);
+          if (dist > 12) {
+            isCanvasDragging = true;
+          }
+        }
+        const gridPt = this.gridSystem.worldToGrid(pointer.x, pointer.y);
+        const guideDef = (guidesData as any)[this.selectedGuideType];
+        const range = guideDef ? guideDef.levels[0].range : 160;
+        const hexColor = guideDef ? parseInt(guideDef.color.replace('#', '0x')) : 0xF6E05E;
+        this.gridSystem.drawPlacementPreview(gridPt.col, gridPt.row, range, hexColor);
+      }
+    });
+
+    this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
+      const gridPt = this.gridSystem.worldToGrid(pointer.x, pointer.y);
+      const wasDragging = isCanvasDragging;
+      pointerDownPos = null;
+      isCanvasDragging = false;
 
       // Se estiver em modo de colocação
       if (this.selectedGuideType) {
@@ -410,6 +483,22 @@ export class GameScene extends Phaser.Scene {
         if (!guideDef) return;
 
         const cost = guideDef.levels[0].cost;
+
+        // Se o usuário arrastou pelo tabuleiro e soltou na célula: posiciona imediatamente
+        if (wasDragging) {
+          if (this.gridSystem.isValidPlacement(gridPt.col, gridPt.row)) {
+            if (this.economySystem.spendEssence(cost)) {
+              this.placeGuide(gridPt.col, gridPt.row, guideDef);
+              this.pendingCell = null;
+              this.selectedGuideType = null;
+              this.uiManager.deselectGuideCards();
+              this.gridSystem.clearPreview();
+            } else {
+              this.uiManager.showBalloon("Prisma Solar", "Essência insuficiente para invocar este protetor!", "⚠️");
+            }
+          }
+          return;
+        }
 
         // Primeiro toque na célula: seleciona e mostra preview
         if (!this.pendingCell || this.pendingCell.col !== gridPt.col || this.pendingCell.row !== gridPt.row) {
