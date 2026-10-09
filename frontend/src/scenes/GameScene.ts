@@ -117,12 +117,15 @@ export class GameScene extends Phaser.Scene {
     this.economySystem = new EconomySystem();
     this.waveManager = new WaveManager();
     this.combatFX = new CombatFXSystem(this);
+    const spawnPt = this.gridSystem.getSpawnPoint();
+    this.combatFX.initPortalRift(spawnPt.x, spawnPt.y);
 
     // 3. Conexão com a Camada UI
     this.initUI();
     this.uiManager.updateWaveInfo(0, this.waveManager.getTotalWaves(), 'Prepare sua defesa');
     this.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       this.uiManager.dispose();
+      this.combatFX.destroy();
       this.devController?.abort();
       document.getElementById('astral-dev-panel')?.remove();
       if (this.qaMode) delete (window as any).__ASTRAL_QA__;
@@ -286,6 +289,11 @@ export class GameScene extends Phaser.Scene {
       duration: 1200,
       ease: 'Sine.easeInOut',
     });
+
+    // 4. Efeitos climáticos e sonoros progressivos por horda
+    const spawnPt = this.gridSystem.getSpawnPoint();
+    this.combatFX.triggerWaveTransitionFX(waveNum, spawnPt.x, spawnPt.y);
+    audioSynth.playWaveSurge(waveNum);
   }
 
   private initUI() {
@@ -445,14 +453,33 @@ export class GameScene extends Phaser.Scene {
       const gridPt = this.gridSystem.worldToGrid(pointer.x, pointer.y);
 
       // Se clicar em um guia já existente no mapa: inspecionar
-      const existing = this.gridSystem.getEntityAt(gridPt.col, gridPt.row);
-      if (existing instanceof Guide) {
+      let clickedGuide = this.gridSystem.getEntityAt(gridPt.col, gridPt.row);
+      if (!(clickedGuide instanceof Guide)) {
+        clickedGuide = this.guides.find(
+          (g) => Phaser.Math.Distance.Between(pointer.x, pointer.y, g.x, g.y) <= 32
+        );
+      }
+
+      if (clickedGuide instanceof Guide) {
         this.selectedGuideType = null;
         this.uiManager.deselectGuideCards();
         this.gridSystem.clearPreview();
-        this.uiManager.inspectGuide(existing);
+        this.uiManager.inspectGuide(clickedGuide);
         audioSynth.playClick();
         return;
+      }
+
+      // Se clicar fora de qualquer guia no mapa: deseleciona o herói ativo!
+      if (this.uiManager.hasInspectedGuide()) {
+        this.uiManager.closeInspector();
+      }
+
+      // Se havia uma célula pendente para confirmação e clicou fora, cancela
+      if (this.pendingCell && (this.pendingCell.col !== gridPt.col || this.pendingCell.row !== gridPt.row)) {
+        this.pendingCell = null;
+        if (!this.selectedGuideType) {
+          this.gridSystem.clearPreview();
+        }
       }
     });
 
@@ -541,6 +568,8 @@ export class GameScene extends Phaser.Scene {
     const waypoints = this.gridSystem.getWaypoints();
     const spiritDef = (spiritsData as any)[spiritId];
     if (!spiritDef) return;
+
+    this.combatFX.pulsePortalRift(this.currentWaveNumber);
 
     if (spiritId === 'boss') {
       const boss = new Boss(this, {
@@ -794,6 +823,23 @@ export class GameScene extends Phaser.Scene {
 
     // Atualiza Gerenciador de Hordas
     this.waveManager.update(deltaSec, this.spirits.length);
+
+    // Atualiza FX dinâmicos de ambiência da horda (partículas e vórtice do portal)
+    this.combatFX.updateAtmosphere(deltaSec, this.currentWaveNumber);
+
+    // Alerta visual e sonoro quando espíritos se aproximam perigosamente do Leito/Núcleo
+    const bedPt = this.gridSystem.getBedPoint();
+    for (const s of this.spirits) {
+      if (s.active && !s.isPurified() && !s.hasReachedBed()) {
+        const distToBed = Phaser.Math.Distance.Between(s.x, s.y, bedPt.x, bedPt.y);
+        if (distToBed <= 140) {
+          if (this.combatFX.triggerBedAlarm(bedPt.x, bedPt.y, this.gameTime)) {
+            audioSynth.playAlarmPulse();
+          }
+          break;
+        }
+      }
+    }
 
     // Atualiza Guias
     for (const guide of this.guides) {

@@ -1,13 +1,13 @@
 {
   "project": {
     "name": "Torre dos Espíritos — Tower Defense",
-    "summary": "Marco 5 Concluído! Empacotamento Android Capacitor com APK compilado com sucesso (35.18 MB), 24 testes pytest de backend e 16 testes Vitest de frontend 100% aprovados.",
-    "version": "1.0.0",
-    "last_updated": "2026-10-08",
+    "summary": "Deseleção ao clicar fora no mapa e FX intensificados por horda entregues com sucesso. 27 testes Vitest aprovados e build compilado.",
+    "version": "1.0.1",
+    "last_updated": "2026-10-09",
     "metrics": {
-      "total_tasks": 31,
-      "completed_tasks": 29,
-      "progress_percentage": 93.5
+      "total_tasks": 32,
+      "completed_tasks": 30,
+      "progress_percentage": 93.8
     }
   },
   "milestones": [
@@ -540,6 +540,27 @@
       "audit_confirmed": true,
       "created_at": "2026-10-08",
       "completed_at": "2026-10-08"
+    },
+    {
+      "id": "TASK-032",
+      "title": "Deseleção de herói ao clicar fora no mapa e FX intensos por horda",
+      "description": "Deseleção tátil ao tocar em células vazias ou fundo do mapa, fechando o painel de inspeção. Sistema de FX progressivo por hordas com partículas ambientais em 3 atos, pulsação/vórtice na fenda, abalos sísmicos crescentes, áudio surge e alarme de aproximação ao leito. 27 testes Vitest 100% aprovados.",
+      "status": "done",
+      "milestone": "m4_frontend_ui",
+      "tier": "tier2_fast",
+      "indicators": [
+        "Deseleção tátil de protetores ao clicar em qualquer ponto vazio do mapa ou caminho",
+        "Fechamento automático do painel e remoção imediata dos anéis de alcance",
+        "Ambiência escalável com partículas dinâmicas em 3 atos (Crepúsculo, Tempestade e Eclipse)",
+        "Vórtice giratório da fenda e pulso expansivo no spawn de espíritos",
+        "Tremores de tela e surge de áudio procedural que intensificam da horda 1 à 10",
+        "Alarme visual e sonoro quando espíritos se aproximam perigosamente do leito",
+        "Suporte total à configuração de acessibilidade 'Reduzir Partículas'",
+        "27 testes Vitest aprovados e compilação de produção (build) 100% bem-sucedida"
+      ],
+      "audit_confirmed": true,
+      "created_at": "2026-10-09",
+      "completed_at": "2026-10-09"
     }
   ]
 }

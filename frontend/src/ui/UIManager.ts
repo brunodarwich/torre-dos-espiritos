@@ -90,14 +90,16 @@ export class UIManager {
     }, { signal: this.events.signal });
 
     // Limpeza de arrasto em caso de perda de foco
-    window.addEventListener('blur', () => {
-      if (this.activeGhostEl) {
-        this.activeGhostEl.remove();
-        this.activeGhostEl = null;
-      }
-      document.querySelectorAll('.guide-card.dragging').forEach((c) => c.classList.remove('dragging'));
-      this.onCancelGuideDragCallback?.();
-    }, { signal: this.events.signal });
+    if (typeof window !== 'undefined') {
+      window.addEventListener('blur', () => {
+        if (this.activeGhostEl) {
+          this.activeGhostEl.remove();
+          this.activeGhostEl = null;
+        }
+        document.querySelectorAll('.guide-card.dragging').forEach((c) => c.classList.remove('dragging'));
+        this.onCancelGuideDragCallback?.();
+      }, { signal: this.events.signal });
+    }
 
     // Seleção e Arrastar/Soltar (Drag and Drop) de guias na barra inferior
     const guideCards = document.querySelectorAll<HTMLElement>('.guide-card');
@@ -287,7 +289,16 @@ export class UIManager {
     }, { signal: this.events.signal });
 
     // Inspetor de Torre
-    document.getElementById('btn-close-inspector')?.addEventListener('click', () => {
+    const inspectorPanel = document.getElementById('guide-inspector');
+    inspectorPanel?.addEventListener('pointerdown', (e) => {
+      e.stopPropagation();
+    }, { signal: this.events.signal });
+    inspectorPanel?.addEventListener('click', (e) => {
+      e.stopPropagation();
+    }, { signal: this.events.signal });
+
+    document.getElementById('btn-close-inspector')?.addEventListener('click', (e) => {
+      e.stopPropagation();
       this.closeInspector();
     }, { signal: this.events.signal });
 
@@ -522,6 +533,14 @@ export class UIManager {
     this.inspectedGuide = null;
     const panel = document.getElementById('guide-inspector');
     if (panel) panel.style.display = 'none';
+  }
+
+  public hasInspectedGuide(): boolean {
+    return this.inspectedGuide !== null;
+  }
+
+  public getInspectedGuide(): Guide | null {
+    return this.inspectedGuide;
   }
 
   private updateInspectorContent() {

@@ -214,6 +214,70 @@ export class AudioSynth {
     osc.start(now);
     osc.stop(now + 0.05);
   }
+
+  /**
+   * Som de Tensão e Impacto Cósmico de Transição de Horda
+   * Escala de tom e gravidade conforme o número da horda avança.
+   */
+  public playWaveSurge(waveNumber: number) {
+    if (!this.enabled) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const subOsc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    // Horda 1 começa em ~180Hz, Horda 10 desce para ~65Hz (sub-grave épico)
+    const baseFreq = Math.max(65, 200 - waveNumber * 14);
+    osc.type = waveNumber >= 8 ? 'sawtooth' : 'triangle';
+    osc.frequency.setValueAtTime(baseFreq * 1.5, now);
+    osc.frequency.exponentialRampToValueAtTime(baseFreq, now + 0.4);
+
+    subOsc.type = 'sine';
+    subOsc.frequency.setValueAtTime(baseFreq * 0.75, now);
+    subOsc.frequency.exponentialRampToValueAtTime(baseFreq * 0.5, now + 0.5);
+
+    const volume = Math.min(0.18, 0.08 + waveNumber * 0.01);
+    gain.gain.setValueAtTime(volume, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+
+    osc.connect(gain);
+    subOsc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    subOsc.start(now);
+    osc.stop(now + 0.65);
+    subOsc.stop(now + 0.65);
+  }
+
+  /**
+   * Pulso sonoro de perigo iminente (quando espíritos chegam perto do leito/núcleo)
+   */
+  public playAlarmPulse() {
+    if (!this.enabled) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    const now = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(440, now);
+    osc.frequency.setValueAtTime(660, now + 0.08);
+
+    gain.gain.setValueAtTime(0.05, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.2);
+  }
 }
 
 export const audioSynth = new AudioSynth();
