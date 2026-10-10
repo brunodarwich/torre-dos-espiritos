@@ -313,7 +313,12 @@ export class Guide extends Phaser.GameObjects.Container {
   }
 
   public update(time: number, delta: number) {
-    this.sprite?.setY(Math.sin(time / 650 + this.col) * 2);
+    const isAttacking = Boolean(this.sprite?.anims?.isPlaying && this.sprite.anims.currentAnim?.key.endsWith('_attack'));
+    if (!isAttacking) {
+      this.sprite?.setY(Math.sin(time / 650 + this.col) * 2);
+    } else {
+      this.sprite?.setY(0);
+    }
     const deltaSec = delta / 1000;
 
     // Animação do seletor: anel gira e pulsa, marcador flutua acima da cabeça

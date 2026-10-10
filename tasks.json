@@ -565,16 +565,17 @@
     {
       "id": "TASK-033",
       "title": "Animações em Looping de Espera (3 frames) e Ataque Fluido (4 frames)",
-      "description": "Geração de 63 quadros individuais e 9 spritesheets padronizados (3584x512) para os 3 heróis (Prisma Solar, Véu de Aurora e Núcleo de Brasa) nos 3 níveis. Looping contínuo de espera (Idle de 3 quadros com respiração e pulso astral) e animação fluida de ataque (4 quadros com antecipação, disparo de raio/faixas/plasma, follow-through e retorno à base). Integração reativa no BootScene e Guide.ts, 31 testes Vitest aprovados e preview interativo em hero_animations_preview.html.",
+      "description": "Geração das imagens reais para o fluxo de animação com modelos de arte (generate_image), extração de 63 quadros individuais e 9 spritesheets padronizados (3584x512) para os 3 heróis nos 3 níveis. Looping contínuo de espera (Idle de 3 quadros com respiração e pulso solar/aurora/magma) e animação fluida de ataque (4 quadros com vórtices de wind-up, disparo de raio estelar, corte de lâmina crescente e punho vulcânico, follow-through e retorno suave à base). Pés rigorosamente ancorados na linha de base com zero jitter. Integração reativa no BootScene e Guide.ts, 31 testes Vitest aprovados e preview interativo em hero_animations_preview.html.",
       "status": "done",
       "milestone": "m2_design_arte",
       "tier": "tier2_fast",
       "indicators": [
         "63 frames PNG com canal alfa real e 9 spritesheets gerados com sucesso",
+        "Imagens reais do fluxo de animação geradas e preservadas em source_flows/",
         "Looping contínuo de espera (Idle de 3 quadros a 4 FPS) para as 9 variantes",
         "Sequência fluida de ataque (Attack de 4 quadros a 10 FPS) com retorno ao Idle",
         "Pés rigorosamente alinhados na linha de base com zero deslocamento indesejado",
-        "Integração nativa no Phaser 3 via BootScene.ts e Guide.ts",
+        "Integração nativa no Phaser 3 via BootScene.ts e Guide.ts (com trava de bobbing durante ataque)",
         "Página de teste e visualização interativa em public/guardian-art/hero_animations_preview.html",
         "31 testes Vitest aprovados e compilação de produção (build) 100% concluída"
       ],

@@ -1,23 +1,20 @@
-"""Build expressive animation loops (Idle 3-frames and Attack 4-frames) for all 3 heroes and 3 levels.
+"""Build expressive, high-fidelity animation loops for all 3 heroes and 3 levels.
 
-Features REAL anatomical and secondary movement:
-1. Prisma Solar:
-   - Articulated right arm raising in cosmic invocation pose
-   - Orbital crystal shards translating through realistic 3D elliptical orbits
-   - Faceted solar prism flare igniting in open palm
-   - Distinct wind-up, forward thrust attack, and recovery arc
+Features REAL generated keyframes and animation flow:
+1. Prisma Solar (Mentor):
+   - Idle: Stance -> Breath rise & crystal flare -> Settle
+   - Attack: Wind-up vortex raise -> Radiant beam thrust -> Follow-through -> Recovery
+   - Evolution: Lv1 base, Lv2 orbital crystals, Lv3 radiant crown blades
 
-2. Véu de Aurora:
-   - Elegant weaving arm gestures
-   - Dynamic fluid aurora ribbon waves rendered with mathematical bezier sweeps
-   - Astral energy crown pulsing behind helmet (Lv 3)
-   - Whipping ribbon crescent slash attack
+2. Véu de Aurora (Benzedeira):
+   - Idle: Serene rest -> Breath & billowing jade ribbons -> Gentle settle
+   - Attack: Spiraling ribbon coil wind-up -> Expansive crescent wave slash -> Sweep -> Graceful recovery
+   - Evolution: Lv1 dual ribbons, Lv2 quad ribbons, Lv3 celestial crown & multi-ribbons
 
-3. Núcleo de Brasa:
-   - Rock-solid basalt anatomy (no rubber warping!)
-   - Heavy basalt fist articulating upwards and settling with mass
-   - Living furnace flames and flying volcanic embers erupting from chest fissures
-   - Ground-shattering magma punch and shockwave attack
+3. Núcleo de Brasa (Pajé):
+   - Idle: Basalt rest -> Molten furnace flare & fissure sparks -> Settle
+   - Attack: Heavy fist wind-up with volcanic flames -> Ground-shattering magma punch -> Dissipation tremor -> Basalt recovery
+   - Evolution: Lv1 stocky golem, Lv2 molten collar, Lv3 plasma crest & superheated fissures
 
 Generates:
 - 63 high-res individual PNG frames in frontend/public/assets/astral/heroes/
@@ -26,6 +23,8 @@ Generates:
 """
 import json
 import math
+import os
+import shutil
 from pathlib import Path
 
 import cv2
@@ -33,8 +32,12 @@ import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 
 ROOT = Path(__file__).resolve().parents[1]
+SOURCE_FLOWS_DIR = ROOT / 'public/guardian-art/source_flows'
 SRC_DIR = ROOT / 'frontend/public/assets/astral'
 OUT_HEROES_DIR = SRC_DIR / 'heroes'
+
+TARGET_FRAME_SIZE = 512
+BASELINE_Y = 448  # Consistent ground anchor line
 
 HERO_CONFIG = {
     'mentor': {
@@ -58,472 +61,277 @@ HERO_CONFIG = {
 }
 
 
-def extract_character_bounds(img_rgba):
-    """Find the bounding box, center, and key anatomical anchor lines."""
-    arr = np.array(img_rgba)
-    alpha = arr[:, :, 3]
-    coords = cv2.findNonZero(alpha)
-    if coords is None:
-        return 0, 0, 512, 512, 256, 256
-    bx, by, bw, bh = cv2.boundingRect(coords)
-    cx = bx + bw // 2
-    cy = by + int(bh * 0.45)
-    return bx, by, bw, bh, cx, cy
+def extract_alpha_clean(bgr, threshold=10, feather=16):
+    """Extract alpha from pure white background with soft defringing."""
+    diff = 255.0 - np.min(bgr, axis=2).astype(np.float32)
+    alpha = np.clip((diff - threshold) * (255.0 / feather), 0, 255).astype(np.uint8)
+
+    # Defringe: remove white color bleed from foreground edges
+    alpha_norm = (alpha.astype(np.float32) / 255.0)[:, :, np.newaxis]
+    bgr_f = bgr.astype(np.float32)
+    fg = np.clip((bgr_f - (1.0 - alpha_norm) * 255.0) / np.maximum(alpha_norm, 0.001), 0, 255).astype(np.uint8)
+
+    b, g, r = cv2.split(fg)
+    rgba = cv2.merge([r, g, b, alpha])
+    return Image.fromarray(rgba)
 
 
-def create_radial_glow(size, center, radius, color, max_alpha=200):
-    """Generate a smooth radial glow surface with Gaussian falloff."""
-    w, h = size
-    cx, cy = center
-    y, x = np.ogrid[:h, :w]
-    dist_sq = (x - cx) ** 2 + (y - cy) ** 2
-    r_sq = max(1.0, float(radius ** 2))
-    alpha = np.exp(-dist_sq / (2 * (radius * 0.45) ** 2)) * max_alpha
-    alpha = np.clip(alpha, 0, 255).astype(np.uint8)
+def standardize_frame(img_rgba, target_height=380, baseline_y=BASELINE_Y, center_x=256, is_airborne=False):
+    """Place character inside a standard 512x512 canvas with consistent ground baseline."""
+    bbox = img_rgba.getbbox()
+    if not bbox:
+        return Image.new('RGBA', (TARGET_FRAME_SIZE, TARGET_FRAME_SIZE), (0, 0, 0, 0))
 
-    r = np.full((h, w), color[0], dtype=np.uint8)
-    g = np.full((h, w), color[1], dtype=np.uint8)
-    b = np.full((h, w), color[2], dtype=np.uint8)
-    return Image.fromarray(np.dstack((r, g, b, alpha)))
+    cropped = img_rgba.crop(bbox)
+    orig_w, orig_h = cropped.size
 
+    scale = target_height / float(orig_h)
+    # Don't let it become excessively wide
+    if orig_w * scale > 460:
+        scale = 460.0 / float(orig_w)
 
-def rotate_limb(img_rgba, pivot, angle_deg, mask_box):
-    """
-    Isolate and articulate a character limb (arm/hand) around a pivot point (shoulder/elbow).
-    - mask_box: (min_x, min_y, max_x, max_y) area containing the limb
-    - pivot: (px, py) rotation axis
-    - angle_deg: angle in degrees
-    """
-    arr = np.array(img_rgba)
-    h, w, _ = arr.shape
-    x1, y1, x2, y2 = mask_box
+    new_w = max(1, int(round(orig_w * scale)))
+    new_h = max(1, int(round(orig_h * scale)))
+    resized = cropped.resize((new_w, new_h), Image.Resampling.LANCZOS)
 
-    # Create feathered mask for the limb
-    mask = np.zeros((h, w), dtype=np.float32)
-    mask[y1:y2, x1:x2] = 1.0
-    mask = cv2.GaussianBlur(mask, (21, 21), 0)
+    canvas = Image.new('RGBA', (TARGET_FRAME_SIZE, TARGET_FRAME_SIZE), (0, 0, 0, 0))
+    pos_x = center_x - new_w // 2
+    
+    # If airborne (e.g. flying slash or elevated pose), float 25px above ground
+    y_anchor = baseline_y - (25 if is_airborne else 0)
+    pos_y = y_anchor - new_h
 
-    # Rotation matrix around pivot
-    M = cv2.getRotationMatrix2D(pivot, angle_deg, 1.0)
-    rotated = cv2.warpAffine(arr, M, (w, h), flags=cv2.INTER_CUBIC, borderMode=cv2.BORDER_CONSTANT)
-
-    # Alpha blending: apply rotation only where mask is active
-    mask_3d = np.repeat(mask[:, :, np.newaxis], 4, axis=2)
-    composite = (rotated * mask_3d + arr * (1.0 - mask_3d)).astype(np.uint8)
-    return Image.fromarray(composite)
+    canvas.alpha_composite(resized, (pos_x, pos_y))
+    return canvas
 
 
-# ==============================================================================
-# 1. PRISMA SOLAR (MENTOR) — EXPRESSIVE ANIMATIONS
-# ==============================================================================
+def add_mentor_evolution_accents(frame, level):
+    """Add level 2/3 progression features: orbital crystals, radiant crown."""
+    if level == 1:
+        return frame
 
-def draw_orbital_crystals(canvas, center, orbit_radius, angle_offset, count, color, accent, size=(12, 28)):
-    """Draw shards of crystal translating through real 3D elliptical orbits."""
-    draw = ImageDraw.Draw(canvas)
-    cx, cy = center
-    rx, ry = orbit_radius
-
-    for i in range(count):
-        # Evenly spaced angles around orbit
-        theta = angle_offset + (2 * math.pi * i) / count
-        # Elliptical projection (tilted perspective)
-        px = cx + rx * math.cos(theta)
-        py = cy + ry * math.sin(theta)
-        depth = math.sin(theta)  # -1 (back) to +1 (front)
-
-        # Perspective scale & opacity based on 3D depth
-        shard_scale = 0.75 + 0.35 * (depth + 1.0) / 2.0
-        shard_alpha = int(140 + 115 * (depth + 1.0) / 2.0)
-        sw = int(size[0] * shard_scale)
-        sh = int(size[1] * shard_scale)
-
-        # Faceted diamond crystal polygon
-        pts = [
-            (px, py - sh // 2),
-            (px + sw // 2, py),
-            (px, py + sh // 2),
-            (px - sw // 2, py)
-        ]
-        shard_col = accent if depth > 0 else color
-        draw.polygon(pts, fill=(*shard_col, shard_alpha), outline=(255, 255, 255, shard_alpha))
-
-        # Core facet line
-        draw.line([(px, py - sh // 2), (px, py + sh // 2)], fill=(255, 255, 255, shard_alpha), width=1)
-
-
-def draw_solar_prism_star(canvas, center, radius, color, accent):
-    """Draw radiant 4-pointed faceted solar star flare in the open palm."""
-    draw = ImageDraw.Draw(canvas)
-    cx, cy = center
-    r_long = radius
-    r_short = radius * 0.28
-
-    pts = [
-        (cx, cy - r_long),
-        (cx + r_short, cy - r_short),
-        (cx + r_long, cy),
-        (cx + r_short, cy + r_short),
-        (cx, cy + r_long),
-        (cx - r_short, cy + r_short),
-        (cx - r_long, cy),
-        (cx - r_short, cy - r_short),
-    ]
-    draw.polygon(pts, fill=(255, 255, 255, 245), outline=(*accent, 255))
-    draw.ellipse([cx - r_short, cy - r_short, cx + r_short, cy + r_short], fill=(*accent, 255))
-
-
-def generate_mentor_frames(base_img, level):
-    """Generate expressive Idle (3 frames) and Attack (4 frames) for Prisma Solar."""
-    bx, by, bw, bh, cx, cy = extract_character_bounds(base_img)
-    shoulder_pivot = (cx + int(bw * 0.16), by + int(bh * 0.32))
-    hand_box = (cx, by + int(bh * 0.20), cx + int(bw * 0.52), by + int(bh * 0.65))
-
+    res = frame.copy()
+    draw = ImageDraw.Draw(res)
     cfg = HERO_CONFIG['mentor']
     color, accent = cfg['color'], cfg['accent']
-    crystal_count = 0 if level == 1 else (3 if level == 2 else 6)
 
-    # --- IDLE FRAMES ---
-    # Frame 1: Base Rest (Arm resting down, crystals in base orbit)
-    f1 = base_img.copy()
-    if crystal_count > 0:
-        draw_orbital_crystals(f1, (cx, cy - 10), (int(bw * 0.48), int(bh * 0.18)),
-                              angle_offset=0.0, count=crystal_count, color=color, accent=accent)
-    glow1 = create_radial_glow((512, 512), (cx, cy), radius=38 + level * 6, color=color, max_alpha=45)
-    f1 = Image.alpha_composite(glow1, f1)
+    cx, cy = 256, 210
 
-    # Frame 2: Articulated Raising (Right arm lifts up, hand opens, crystals rotate +60 deg)
-    f2_body = rotate_limb(base_img, shoulder_pivot, angle_deg=-14.0, mask_box=hand_box)
-    palm_pos_f2 = (shoulder_pivot[0] + int(bw * 0.20), shoulder_pivot[1] - int(bh * 0.08))
-    if crystal_count > 0:
-        draw_orbital_crystals(f2_body, (cx, cy - 12), (int(bw * 0.50), int(bh * 0.20)),
-                              angle_offset=1.05, count=crystal_count, color=color, accent=accent)
-    draw_solar_prism_star(f2_body, palm_pos_f2, radius=14 + level * 4, color=color, accent=accent)
-    glow2 = create_radial_glow((512, 512), palm_pos_f2, radius=42 + level * 8, color=accent, max_alpha=120)
-    f2 = Image.alpha_composite(glow2, f2_body)
+    if level >= 2:
+        # Orbital crystal shards
+        count = 3 if level == 2 else 6
+        rx, ry = 95, 35
+        for i in range(count):
+            theta = (2 * math.pi * i) / count
+            px = int(cx + rx * math.cos(theta))
+            py = int(cy + ry * math.sin(theta))
+            depth = math.sin(theta)
+            shard_w = 8 if level == 2 else 11
+            shard_h = 20 if level == 2 else 26
+            col = accent if depth > 0 else color
+            pts = [(px, py - shard_h//2), (px + shard_w//2, py), (px, py + shard_h//2), (px - shard_w//2, py)]
+            draw.polygon(pts, fill=(*col, 220), outline=(255, 255, 255, 230))
 
-    # Frame 3: Apex Float (Arm at apex with gentle flare, crystals at +120 deg)
-    f3_body = rotate_limb(base_img, shoulder_pivot, angle_deg=-8.0, mask_box=hand_box)
-    palm_pos_f3 = (shoulder_pivot[0] + int(bw * 0.18), shoulder_pivot[1] - int(bh * 0.04))
-    if crystal_count > 0:
-        draw_orbital_crystals(f3_body, (cx, cy - 10), (int(bw * 0.49), int(bh * 0.19)),
-                              angle_offset=2.10, count=crystal_count, color=color, accent=accent)
-    draw_solar_prism_star(f3_body, palm_pos_f3, radius=10 + level * 3, color=color, accent=accent)
-    glow3 = create_radial_glow((512, 512), palm_pos_f3, radius=35 + level * 6, color=color, max_alpha=80)
-    f3 = Image.alpha_composite(glow3, f3_body)
+    if level == 3:
+        # Radiant crown rays behind head
+        head_cy = 150
+        for angle in [-40, -20, 0, 20, 40]:
+            rad = math.radians(angle - 90)
+            x1 = int(cx + 30 * math.cos(rad))
+            y1 = int(head_cy + 30 * math.sin(rad))
+            x2 = int(cx + 65 * math.cos(rad))
+            y2 = int(head_cy + 65 * math.sin(rad))
+            draw.line([(x1, y1), (x2, y2)], fill=(*accent, 220), width=3)
 
-    # --- ATTACK FRAMES ---
-    # Frame 1: Real Wind-Up (Arm drawn back behind shoulder +24 deg, concentrated charge)
-    f1_atk_body = rotate_limb(base_img, shoulder_pivot, angle_deg=22.0, mask_box=hand_box)
-    charge_pos = (shoulder_pivot[0] - int(bw * 0.05), shoulder_pivot[1] + int(bh * 0.02))
-    charge_glow = create_radial_glow((512, 512), charge_pos, radius=45 + level * 10, color=accent, max_alpha=220)
-    draw_solar_prism_star(f1_atk_body, charge_pos, radius=18 + level * 5, color=color, accent=accent)
-    f1_atk = Image.alpha_composite(f1_atk_body, charge_glow)
-
-    # Frame 2: Forward Thrust & Piercing Beam (Arm fully extended forward -28 deg, laser erupts)
-    f2_atk_body = rotate_limb(base_img, shoulder_pivot, angle_deg=-28.0, mask_box=hand_box)
-    muzzle_pos = (shoulder_pivot[0] + int(bw * 0.28), shoulder_pivot[1] - int(bh * 0.12))
-    beam_target = (muzzle_pos[0] + 160 + level * 30, muzzle_pos[1] - 15)
-
-    f2_fx = Image.new('RGBA', (512, 512), (0, 0, 0, 0))
-    draw_fx = ImageDraw.Draw(f2_fx)
-    # Piercing Beam Core
-    bw_line = 5 + level * 3
-    draw_fx.line([muzzle_pos, beam_target], fill=(*color, 160), width=bw_line + 14)
-    draw_fx.line([muzzle_pos, beam_target], fill=(*accent, 230), width=bw_line + 6)
-    draw_fx.line([muzzle_pos, beam_target], fill=(255, 255, 255, 255), width=max(2, bw_line))
-    draw_solar_prism_star(f2_fx, muzzle_pos, radius=24 + level * 6, color=color, accent=accent)
-    f2_atk = Image.alpha_composite(f2_atk_body, f2_fx)
-
-    # Frame 3: Follow-Through / Recoil Shockwave
-    f3_atk_body = rotate_limb(base_img, shoulder_pivot, angle_deg=-18.0, mask_box=hand_box)
-    recoil_glow = create_radial_glow((512, 512), muzzle_pos, radius=55 + level * 10, color=color, max_alpha=130)
-    f3_atk = Image.alpha_composite(f3_atk_body, recoil_glow)
-
-    # Frame 4: Recovery (Arm lowering back to baseline -6 deg)
-    f4_atk_body = rotate_limb(base_img, shoulder_pivot, angle_deg=-5.0, mask_box=hand_box)
-    settle_glow = create_radial_glow((512, 512), (cx, cy), radius=30 + level * 4, color=color, max_alpha=50)
-    f4_atk = Image.alpha_composite(f4_atk_body, settle_glow)
-
-    return [f1, f2, f3], [f1_atk, f2_atk, f3_atk, f4_atk]
+    return res
 
 
-# ==============================================================================
-# 2. VÉU DE AURORA (BENZEDEIRA) — EXPRESSIVE ANIMATIONS
-# ==============================================================================
+def add_benzedeira_evolution_accents(frame, level):
+    """Add level 2/3 progression features: extra aurora waves, stardust crown."""
+    if level == 1:
+        return frame
 
-def draw_flowing_aurora_ribbons(canvas, origins, phase_offset, amplitude, color, accent, level):
-    """Draw animated fluid jade aurora ribbons with dynamic S-curves and stardust."""
-    draw = ImageDraw.Draw(canvas)
-    for idx, (ox, oy, direction) in enumerate(origins):
-        pts = []
-        steps = 18
-        length = 110 + level * 25
-        ribbon_w = 7 + level * 2
-
-        for s in range(steps):
-            t = s / steps
-            x = ox + (direction * length * t)
-            # Dynamic wave math: sine + harmonic S-curve
-            wave_y = math.sin(t * math.pi * 2 + phase_offset + idx * 1.5) * amplitude * (1.0 - t * 0.25)
-            y = oy + wave_y
-            pts.append((x, y))
-
-        # Draw ribbon gradient layers
-        for p1, p2 in zip(pts[:-1], pts[1:]):
-            draw.line([p1, p2], fill=(*color, 175), width=ribbon_w + 4)
-            draw.line([p1, p2], fill=(*accent, 235), width=ribbon_w)
-            draw.line([p1, p2], fill=(255, 255, 255, 200), width=max(1, ribbon_w - 4))
-
-        # Sparkling stardust along ribbon crest
-        crest_pt = pts[int(steps * 0.55)]
-        draw.ellipse([crest_pt[0] - 3, crest_pt[1] - 3, crest_pt[0] + 3, crest_pt[1] + 3], fill=(255, 255, 255, 240))
-
-
-def generate_benzedeira_frames(base_img, level):
-    """Generate expressive Idle (3 frames) and Attack (4 frames) for Véu de Aurora."""
-    bx, by, bw, bh, cx, cy = extract_character_bounds(base_img)
-    shoulder_left = (cx - int(bw * 0.16), by + int(bh * 0.35))
-    shoulder_right = (cx + int(bw * 0.16), by + int(bh * 0.35))
-    left_arm_box = (bx, by + int(bh * 0.20), cx, by + int(bh * 0.65))
-    right_arm_box = (cx, by + int(bh * 0.20), bx + bw, by + int(bh * 0.65))
-
+    res = frame.copy()
+    draw = ImageDraw.Draw(res)
     cfg = HERO_CONFIG['benzedeira']
     color, accent = cfg['color'], cfg['accent']
 
-    ribbon_origins = [
-        (cx - int(bw * 0.22), by + int(bh * 0.42), -1.0),
-        (cx + int(bw * 0.22), by + int(bh * 0.42), 1.0)
-    ]
+    cx, cy = 256, 220
+
     if level >= 2:
-        ribbon_origins.append((cx - int(bw * 0.18), by + int(bh * 0.55), -0.85))
+        # Extra trailing aurora light arcs
+        draw.arc([cx - 110, cy - 60, cx + 110, cy + 60], start=-30, end=70, fill=(*accent, 160), width=5)
+        draw.arc([cx - 100, cy - 50, cx + 100, cy + 50], start=110, end=210, fill=(*color, 160), width=5)
+
     if level == 3:
-        ribbon_origins.append((cx + int(bw * 0.18), by + int(bh * 0.55), 0.85))
+        # Stardust halo
+        head_cy = 160
+        for i in range(8):
+            ang = (i / 8) * math.pi * 2
+            px = int(cx + 50 * math.cos(ang))
+            py = int(head_cy + 40 * math.sin(ang))
+            draw.ellipse([px - 2, py - 2, px + 2, py + 2], fill=(255, 255, 255, 240))
 
-    # --- IDLE FRAMES ---
-    # Frame 1: Serene Rest
-    f1 = base_img.copy()
-    draw_flowing_aurora_ribbons(f1, ribbon_origins, phase_offset=0.0, amplitude=14.0,
-                                color=color, accent=accent, level=level)
-    glow1 = create_radial_glow((512, 512), (cx, cy), radius=40 + level * 6, color=color, max_alpha=40)
-    f1 = Image.alpha_composite(glow1, f1)
-
-    # Frame 2: Cosmic Weaving Gesture (Left arm raises, right extends, ribbons billow upward)
-    f2_step1 = rotate_limb(base_img, shoulder_left, angle_deg=-16.0, mask_box=left_arm_box)
-    f2_body = rotate_limb(f2_step1, shoulder_right, angle_deg=12.0, mask_box=right_arm_box)
-    draw_flowing_aurora_ribbons(f2_body, ribbon_origins, phase_offset=2.1, amplitude=24.0,
-                                color=color, accent=accent, level=level)
-    glow2 = create_radial_glow((512, 512), (cx, cy - 8), radius=50 + level * 8, color=accent, max_alpha=95)
-    f2 = Image.alpha_composite(glow2, f2_body)
-
-    # Frame 3: Cascading S-Curve Wave (Arms sweeping gently down, ribbons in descending ripple)
-    f3_step1 = rotate_limb(base_img, shoulder_left, angle_deg=-6.0, mask_box=left_arm_box)
-    f3_body = rotate_limb(f3_step1, shoulder_right, angle_deg=5.0, mask_box=right_arm_box)
-    draw_flowing_aurora_ribbons(f3_body, ribbon_origins, phase_offset=4.2, amplitude=18.0,
-                                color=color, accent=accent, level=level)
-    glow3 = create_radial_glow((512, 512), (cx, cy), radius=44 + level * 6, color=color, max_alpha=60)
-    f3 = Image.alpha_composite(glow3, f3_body)
-
-    # --- ATTACK FRAMES ---
-    # Frame 1: Tensioned Arc (Both arms pulled back in sweeping curve)
-    f1_atk1 = rotate_limb(base_img, shoulder_left, angle_deg=18.0, mask_box=left_arm_box)
-    f1_atk_body = rotate_limb(f1_atk1, shoulder_right, angle_deg=-18.0, mask_box=right_arm_box)
-    draw_flowing_aurora_ribbons(f1_atk_body, ribbon_origins, phase_offset=1.0, amplitude=12.0,
-                                color=color, accent=accent, level=level)
-    f1_atk = Image.alpha_composite(f1_atk_body, create_radial_glow((512, 512), (cx, cy), radius=45, color=accent, max_alpha=160))
-
-    # Frame 2: Whip Crescent Slash (Both arms whip forward, crescent shockwave releases)
-    f2_atk1 = rotate_limb(base_img, shoulder_left, angle_deg=-25.0, mask_box=left_arm_box)
-    f2_atk_body = rotate_limb(f2_atk1, shoulder_right, angle_deg=25.0, mask_box=right_arm_box)
-
-    f2_fx = Image.new('RGBA', (512, 512), (0, 0, 0, 0))
-    draw_fx = ImageDraw.Draw(f2_fx)
-    # Crescent jade blade arc
-    arc_cx = cx + int(bw * 0.45)
-    arc_cy = cy - int(bh * 0.05)
-    rw = 55 + level * 18
-    rh = 80 + level * 20
-    draw_fx.arc([arc_cx - rw, arc_cy - rh, arc_cx + rw, arc_cy + rh], start=-90, end=90, fill=(*accent, 255), width=6 + level * 2)
-    draw_fx.arc([arc_cx - rw - 6, arc_cy - rh - 6, arc_cx + rw + 6, arc_cy + rh + 6], start=-90, end=90, fill=(*color, 180), width=10 + level * 2)
-    f2_atk = Image.alpha_composite(f2_atk_body, f2_fx)
-
-    # Frame 3: Follow-Through Wave Dissipation
-    f3_atk = Image.alpha_composite(base_img, create_radial_glow((512, 512), (arc_cx, arc_cy), radius=60 + level * 10, color=color, max_alpha=120))
-
-    # Frame 4: Recovery (Returning to serene posture)
-    f4_atk = Image.alpha_composite(base_img, create_radial_glow((512, 512), (cx, cy), radius=35, color=color, max_alpha=40))
-
-    return [f1, f2, f3], [f1_atk, f2_atk, f3_atk, f4_atk]
+    return res
 
 
-# ==============================================================================
-# 3. NÚCLEO DE BRASA (PAJE) — EXPRESSIVE ANIMATIONS
-# ==============================================================================
+def add_paje_evolution_accents(frame, level):
+    """Add level 2/3 progression features: molten collar, plasma spikes."""
+    if level == 1:
+        return frame
 
-def draw_furnace_flames(canvas, chest_center, flame_height, color, accent, secondary):
-    """Draw stylized living volcanic fire tongues erupting from basalt chest fissures."""
-    draw = ImageDraw.Draw(canvas)
-    cx, cy = chest_center
-
-    # 3 distinct flame tongues
-    tongues = [
-        (cx - 10, cy, flame_height * 0.75, -5),
-        (cx, cy - 2, flame_height, 0),
-        (cx + 10, cy, flame_height * 0.82, 6)
-    ]
-    for fx, fy, fh, lean in tongues:
-        tip_x = fx + lean
-        tip_y = fy - fh
-        w = 12
-
-        # Outer magma flame
-        pts_outer = [(fx - w, fy), (tip_x, tip_y), (fx + w, fy)]
-        draw.polygon(pts_outer, fill=(*secondary, 220))
-
-        # Inner hot amber core
-        pts_inner = [(fx - w * 0.5, fy), (tip_x, tip_y + fh * 0.25), (fx + w * 0.5, fy)]
-        draw.polygon(pts_inner, fill=(*accent, 255))
-
-    # Dancing volcanic embers
-    embers = [(cx - 16, cy - flame_height - 10), (cx + 14, cy - flame_height - 15), (cx + 2, cy - flame_height - 24)]
-    for ex, ey in embers:
-        draw.ellipse([ex - 2, ey - 2, ex + 2, ey + 2], fill=(255, 235, 150, 250))
-
-
-def generate_paje_frames(base_img, level):
-    """Generate expressive Idle (3 frames) and Attack (4 frames) for Núcleo de Brasa."""
-    bx, by, bw, bh, cx, cy = extract_character_bounds(base_img)
-    shoulder_fist = (cx + int(bw * 0.18), by + int(bh * 0.36))
-    fist_box = (cx, by + int(bh * 0.25), bx + bw, by + int(bh * 0.70))
-    chest_core = (cx, by + int(bh * 0.44))
-
+    res = frame.copy()
+    draw = ImageDraw.Draw(res)
     cfg = HERO_CONFIG['paje']
     color, accent, secondary = cfg['color'], cfg['accent'], cfg['secondary']
 
-    # --- IDLE FRAMES ---
-    # Frame 1: Solid Basalt Stance (Grounded, low magma glow)
-    f1 = base_img.copy()
-    draw_furnace_flames(f1, chest_core, flame_height=14 + level * 4, color=color, accent=accent, secondary=secondary)
-    glow1 = create_radial_glow((512, 512), chest_core, radius=35 + level * 6, color=color, max_alpha=60)
-    f1 = Image.alpha_composite(glow1, f1)
+    cx, cy = 256, 260
 
-    # Frame 2: Heavy Fist Lift & Active Furnace (Basalt arm articulates up -18 deg, flames leap high)
-    f2_body = rotate_limb(base_img, shoulder_fist, angle_deg=-18.0, mask_box=fist_box)
-    draw_furnace_flames(f2_body, chest_core, flame_height=32 + level * 8, color=color, accent=accent, secondary=secondary)
-    glow2 = create_radial_glow((512, 512), chest_core, radius=52 + level * 10, color=accent, max_alpha=140)
-    f2 = Image.alpha_composite(glow2, f2_body)
+    if level >= 2:
+        # Molten collar around core
+        draw.ellipse([cx - 30, cy - 30, cx + 30, cy + 30], outline=(*accent, 200), width=3)
+        # Embers
+        for ox, oy in [(-35, -40), (35, -45), (-15, -70), (20, -75)]:
+            draw.ellipse([cx + ox - 2, cy + oy - 2, cx + ox + 2, cy + oy + 2], fill=(255, 235, 120, 240))
 
-    # Frame 3: Mechanical Weight Settle (Fist lowers with mass, flames recede)
-    f3_body = rotate_limb(base_img, shoulder_fist, angle_deg=-7.0, mask_box=fist_box)
-    draw_furnace_flames(f3_body, chest_core, flame_height=20 + level * 5, color=color, accent=accent, secondary=secondary)
-    glow3 = create_radial_glow((512, 512), chest_core, radius=40 + level * 6, color=color, max_alpha=85)
-    f3 = Image.alpha_composite(glow3, f3_body)
+    if level == 3:
+        # Plasma arcs rising behind shoulders
+        draw.arc([cx - 80, cy - 110, cx - 30, cy - 30], start=-80, end=30, fill=(*accent, 220), width=4)
+        draw.arc([cx + 30, cy - 110, cx + 80, cy - 30], start=150, end=260, fill=(*accent, 220), width=4)
 
-    # --- ATTACK FRAMES ---
-    # Frame 1: Basalt Wind-Up (Fist raised high +28 deg, furnace superheated)
-    f1_atk_body = rotate_limb(base_img, shoulder_fist, angle_deg=28.0, mask_box=fist_box)
-    draw_furnace_flames(f1_atk_body, chest_core, flame_height=42 + level * 10, color=color, accent=accent, secondary=secondary)
-    charge_glow = create_radial_glow((512, 512), chest_core, radius=55 + level * 10, color=accent, max_alpha=230)
-    f1_atk = Image.alpha_composite(f1_atk_body, charge_glow)
-
-    # Frame 2: Volcanic Plasma Smash (Heavy forward slam -32 deg, magma shockwave erupts)
-    f2_atk_body = rotate_limb(base_img, shoulder_fist, angle_deg=-32.0, mask_box=fist_box)
-    fist_impact_pos = (shoulder_fist[0] + int(bw * 0.28), shoulder_fist[1] + int(bh * 0.12))
-
-    f2_fx = Image.new('RGBA', (512, 512), (0, 0, 0, 0))
-    draw_fx = ImageDraw.Draw(f2_fx)
-    # Magma ball core & fiery rings
-    r_magma = 22 + level * 8
-    draw_fx.ellipse([fist_impact_pos[0] - r_magma, fist_impact_pos[1] - r_magma,
-                     fist_impact_pos[0] + r_magma, fist_impact_pos[1] + r_magma], fill=(*accent, 255))
-    draw_fx.ellipse([fist_impact_pos[0] - r_magma * 1.5, fist_impact_pos[1] - r_magma * 1.5,
-                     fist_impact_pos[0] + r_magma * 1.5, fist_impact_pos[1] + r_magma * 1.5], outline=(*secondary, 220), width=5 + level)
-    # Flying volcanic rock shards
-    for ox, oy in [(-18, -25), (25, -15), (32, 22), (10, 30)]:
-        sp_x, sp_y = fist_impact_pos[0] + ox, fist_impact_pos[1] + oy
-        draw_fx.polygon([(sp_x - 4, sp_y), (sp_x, sp_y - 6), (sp_x + 4, sp_y), (sp_x, sp_y + 4)], fill=(255, 230, 100, 255))
-    f2_atk = Image.alpha_composite(f2_atk_body, f2_fx)
-
-    # Frame 3: Tremor Follow-Through
-    f3_atk = Image.alpha_composite(base_img, create_radial_glow((512, 512), fist_impact_pos, radius=65 + level * 10, color=color, max_alpha=120))
-
-    # Frame 4: Recovery (Basalt plates settle back)
-    f4_atk = Image.alpha_composite(base_img, create_radial_glow((512, 512), chest_core, radius=35, color=color, max_alpha=50))
-
-    return [f1, f2, f3], [f1_atk, f2_atk, f3_atk, f4_atk]
+    return res
 
 
-# ==============================================================================
-# PIPELINE EXECUTION
-# ==============================================================================
-
-def assemble_spritesheet(frames, frame_size=(512, 512)):
-    """Assemble list of frames into a single horizontal strip spritesheet."""
-    w, h = frame_size
-    sheet = Image.new('RGBA', (w * len(frames), h), (0, 0, 0, 0))
-    for i, frame in enumerate(frames):
-        sheet.alpha_composite(frame, (i * w, 0))
-    return sheet
-
-
-def main():
+def process_all_heroes():
     OUT_HEROES_DIR.mkdir(parents=True, exist_ok=True)
     manifest = {'heroes': {}}
 
-    print('Gerando animações expressivas (poses anatômicas reais e elementos vivos)...')
+    print('=== Processing High-Fidelity Animation Flows ===')
 
-    generators = {
-        'mentor': generate_mentor_frames,
-        'benzedeira': generate_benzedeira_frames,
-        'paje': generate_paje_frames,
+    # 1. PRISMA SOLAR (MENTOR)
+    print('Processing Prisma Solar...')
+    m_idle_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'mentor_idle_flow_1791594433917.jpg'))
+    m_idle_1 = standardize_frame(extract_alpha_clean(m_idle_bgr[:, :460]), target_height=380)
+    m_idle_2 = standardize_frame(extract_alpha_clean(m_idle_bgr[:, 460:910]), target_height=380)
+    m_idle_3 = standardize_frame(extract_alpha_clean(m_idle_bgr[:, 910:]), target_height=380)
+
+    m_w_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'mentor_attack_windup_1791594663996.jpg'))
+    m_b_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'mentor_attack_beam_1791594628648.jpg'))
+    m_sheet_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'mentor_spritesheet_flow_1791594328991.jpg'))
+    m_r_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'mentor_attack_recovery_1791594698024.jpg'))
+
+    m_atk_1 = standardize_frame(extract_alpha_clean(m_w_bgr), target_height=390)
+    m_atk_2 = standardize_frame(extract_alpha_clean(m_b_bgr), target_height=385, center_x=240)
+    m_atk_3 = standardize_frame(extract_alpha_clean(m_sheet_bgr[:, 628:1078]), target_height=375, center_x=245)
+    m_atk_4 = standardize_frame(extract_alpha_clean(m_r_bgr), target_height=380)
+
+    mentor_base_frames = {
+        'idle_1': m_idle_1, 'idle_2': m_idle_2, 'idle_3': m_idle_3,
+        'atk_1': m_atk_1, 'atk_2': m_atk_2, 'atk_3': m_atk_3, 'atk_4': m_atk_4,
     }
 
-    for hero_key in ('mentor', 'benzedeira', 'paje'):
-        manifest['heroes'][hero_key] = {'name': HERO_CONFIG[hero_key]['name'], 'levels': {}}
+    # 2. VÉU DE AURORA (BENZEDEIRA)
+    print('Processing Véu de Aurora...')
+    b_idle_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'benzedeira_idle_flow_1791594462240.jpg'))
+    b_idle_1 = standardize_frame(extract_alpha_clean(b_idle_bgr[:, :400]), target_height=380)
+    b_idle_2 = standardize_frame(extract_alpha_clean(b_idle_bgr[:, 400:910]), target_height=380)
+    b_idle_3 = standardize_frame(extract_alpha_clean(b_idle_bgr[:, 910:]), target_height=380)
+
+    b_w_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'benzedeira_attack_windup_1791594733430.jpg'))
+    b_s_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'benzedeira_attack_slash_1791594768610.jpg'))
+    b_sheet_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'benzedeira_spritesheet_flow_1791594383730.jpg'))
+
+    b_atk_1 = standardize_frame(extract_alpha_clean(b_w_bgr), target_height=380)
+    b_atk_2 = standardize_frame(extract_alpha_clean(b_s_bgr), target_height=390, is_airborne=True, center_x=240)
+    b_atk_3 = standardize_frame(extract_alpha_clean(b_sheet_bgr[:, 688:1091]), target_height=380, center_x=245)
+    b_atk_4 = standardize_frame(extract_alpha_clean(b_sheet_bgr[:, 1091:]), target_height=380, is_airborne=True)
+
+    benzedeira_base_frames = {
+        'idle_1': b_idle_1, 'idle_2': b_idle_2, 'idle_3': b_idle_3,
+        'atk_1': b_atk_1, 'atk_2': b_atk_2, 'atk_3': b_atk_3, 'atk_4': b_atk_4,
+    }
+
+    # 3. NÚCLEO DE BRASA (PAJÉ)
+    print('Processing Núcleo de Brasa...')
+    p_idle_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'paje_idle_flow_1791594491617.jpg'))
+    p_idle_1 = standardize_frame(extract_alpha_clean(p_idle_bgr[:, :470]), target_height=365)
+    p_idle_2 = standardize_frame(extract_alpha_clean(p_idle_bgr[:, 470:910]), target_height=365)
+    p_idle_3 = standardize_frame(extract_alpha_clean(p_idle_bgr[:, 910:]), target_height=365)
+
+    p_sheet_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'paje_spritesheet_flow_1791594407933.jpg'))
+    p_atk_1 = standardize_frame(extract_alpha_clean(p_sheet_bgr[:, 336:658]), target_height=395)
+    p_atk_2 = standardize_frame(extract_alpha_clean(p_sheet_bgr[:, 658:1039]), target_height=370, center_x=250)
+    
+    # Ground dissipation frame: slam impact with expanding shockwave ring
+    p_impact_raw = extract_alpha_clean(p_sheet_bgr[:, 658:1039])
+    p_atk_3 = standardize_frame(p_impact_raw, target_height=365, center_x=250)
+    draw_p3 = ImageDraw.Draw(p_atk_3)
+    draw_p3.ellipse([140, 420, 370, 460], outline=(237, 137, 54, 200), width=6)
+    draw_p3.ellipse([100, 410, 410, 470], outline=(255, 210, 70, 160), width=3)
+
+    p_atk_4 = standardize_frame(extract_alpha_clean(p_sheet_bgr[:, 1039:]), target_height=365)
+
+    paje_base_frames = {
+        'idle_1': p_idle_1, 'idle_2': p_idle_2, 'idle_3': p_idle_3,
+        'atk_1': p_atk_1, 'atk_2': p_atk_2, 'atk_3': p_atk_3, 'atk_4': p_atk_4,
+    }
+
+    all_heroes = [
+        ('mentor', HERO_CONFIG['mentor']['name'], mentor_base_frames, add_mentor_evolution_accents),
+        ('benzedeira', HERO_CONFIG['benzedeira']['name'], benzedeira_base_frames, add_benzedeira_evolution_accents),
+        ('paje', HERO_CONFIG['paje']['name'], paje_base_frames, add_paje_evolution_accents),
+    ]
+
+    for hero_id, hero_name, base_frames, accent_fn in all_heroes:
+        manifest['heroes'][hero_id] = {'name': hero_name, 'levels': {}}
 
         for level in (1, 2, 3):
-            src_file = SRC_DIR / f'{hero_key}_lvl{level}.png'
-            assert src_file.exists(), f'Arquivo base ausente: {src_file}'
-            base_img = Image.open(src_file).convert('RGBA')
+            # 7 frames list
+            frame_keys = ['idle_1', 'idle_2', 'idle_3', 'atk_1', 'atk_2', 'atk_3', 'atk_4']
+            processed_frames = []
+            files_dict = {}
 
-            gen_fn = generators[hero_key]
-            idle_frames, attack_frames = gen_fn(base_img, level)
+            # Create 3584x512 spritesheet
+            spritesheet = Image.new('RGBA', (TARGET_FRAME_SIZE * 7, TARGET_FRAME_SIZE), (0, 0, 0, 0))
 
-            # Save individual frames
-            frame_paths = {}
-            for idx, frame in enumerate(idle_frames, start=1):
-                fname = f'{hero_key}_lvl{level}_idle_{idx}.png'
-                frame.save(OUT_HEROES_DIR / fname)
-                frame_paths[f'idle_{idx}'] = f'assets/astral/heroes/{fname}'
+            for idx, fkey in enumerate(frame_keys):
+                frame = base_frames[fkey]
+                final_frame = accent_fn(frame, level)
+                processed_frames.append(final_frame)
 
-            for idx, frame in enumerate(attack_frames, start=1):
-                fname = f'{hero_key}_lvl{level}_atk_{idx}.png'
-                frame.save(OUT_HEROES_DIR / fname)
-                frame_paths[f'atk_{idx}'] = f'assets/astral/heroes/{fname}'
+                # Save individual frame PNG
+                filename = f'{hero_id}_lvl{level}_{fkey}.png'
+                out_path = OUT_HEROES_DIR / filename
+                final_frame.save(out_path, format='PNG', optimize=True)
+                files_dict[fkey] = f'assets/astral/heroes/{filename}'
 
-            # Assemble unified 7-frame horizontal spritesheet
-            all_frames = idle_frames + attack_frames
-            sheet = assemble_spritesheet(all_frames, (512, 512))
-            sheet_name = f'{hero_key}_lvl{level}_sheet.png'
-            sheet.save(OUT_HEROES_DIR / sheet_name)
-            sheet.save(SRC_DIR / sheet_name)
+                # Paste into spritesheet
+                spritesheet.alpha_composite(final_frame, (idx * TARGET_FRAME_SIZE, 0))
 
-            manifest['heroes'][hero_key]['levels'][level] = {
-                'spritesheet': f'assets/astral/heroes/{sheet_name}',
+            # Save spritesheet in both heroes/ and astral/
+            sheet_filename = f'{hero_id}_lvl{level}_sheet.png'
+            sheet_heroes_path = OUT_HEROES_DIR / sheet_filename
+            sheet_astral_path = SRC_DIR / sheet_filename
+
+            spritesheet.save(sheet_heroes_path, format='PNG', optimize=True)
+            shutil.copy2(sheet_heroes_path, sheet_astral_path)
+            print(f'Saved {sheet_filename} ({sheet_heroes_path.stat().st_size // 1024} KB)')
+
+            manifest['heroes'][hero_id]['levels'][str(level)] = {
+                'spritesheet': f'assets/astral/heroes/{sheet_filename}',
                 'frames_count': 7,
                 'idle_frames': [0, 1, 2],
                 'attack_frames': [3, 4, 5, 6],
                 'frame_width': 512,
                 'frame_height': 512,
-                'individual_files': frame_paths,
+                'individual_files': files_dict,
             }
-            hero_name = HERO_CONFIG[hero_key]["name"]
-            print(f'[OK] {hero_name} Nv.{level}: Poses expressivas geradas (3 Idle + 4 Ataque + Spritesheet)')
 
+    # Save manifest
     manifest_path = OUT_HEROES_DIR / 'animations_manifest.json'
     manifest_path.write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding='utf-8')
-    print(f'\nManifesto salvo em {manifest_path}')
-    print('Todas as 9 variantes atualizadas com sucesso!')
+    print('Updated animations_manifest.json')
 
 
 if __name__ == '__main__':
-    main()
+    process_all_heroes()
