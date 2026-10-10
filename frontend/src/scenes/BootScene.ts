@@ -30,6 +30,12 @@ export class BootScene extends Phaser.Scene {
       for (const level of [1, 2, 3]) {
         const key = `${id}_lvl${level}`;
         this.load.image(key, `${root}${key}.png`);
+        if (typeof (this.load as any).spritesheet === 'function') {
+          (this.load as any).spritesheet(`${key}_sheet`, `${root}heroes/${key}_sheet.png`, {
+            frameWidth: 512,
+            frameHeight: 512,
+          });
+        }
       }
     }
     for (const key of ['spirit_larva', 'spirit_zombeteiro', 'spirit_obsessor', 'spirit_sombra',
@@ -45,6 +51,37 @@ export class BootScene extends Phaser.Scene {
     // Phaser's loaderror covers HTTP failures, but not all image/JSON decode failures.
     // Every newly queued file must have completed processing before entering the game.
     if (this.loadFailed || this.pendingFiles.size > 0) { screenFlow.failLoading(); return; }
+
+    // Criação das animações de Idle (loop de 3 frames) e Attack (sequência fluida de 4 frames)
+    if (this.anims && typeof this.anims.create === 'function') {
+      for (const id of ['mentor', 'benzedeira', 'paje']) {
+        for (const level of [1, 2, 3]) {
+          const key = `${id}_lvl${level}`;
+          const sheetKey = `${key}_sheet`;
+          if (this.textures?.exists(sheetKey)) {
+            // Idle: 3 frames (0, 1, 2) em loop infinito
+            if (!this.anims.exists(`${key}_idle`)) {
+              this.anims.create({
+                key: `${key}_idle`,
+                frames: this.anims.generateFrameNumbers(sheetKey, { start: 0, end: 2 }),
+                frameRate: 4,
+                repeat: -1,
+              });
+            }
+            // Attack: 4 frames (3, 4, 5, 6) em sequência de disparo
+            if (!this.anims.exists(`${key}_attack`)) {
+              this.anims.create({
+                key: `${key}_attack`,
+                frames: this.anims.generateFrameNumbers(sheetKey, { start: 3, end: 6 }),
+                frameRate: 10,
+                repeat: 0,
+              });
+            }
+          }
+        }
+      }
+    }
+
     const enter = () => this.scene.start('GameScene');
     const query = new URLSearchParams(location.search);
     if (import.meta.env.DEV && (query.get('qa') === '1' || query.get('artPreview') === '1')) {

@@ -1,0 +1,253 @@
+{
+  "heroes": {
+    "mentor": {
+      "name": "Prisma Solar",
+      "levels": {
+        "1": {
+          "spritesheet": "assets/astral/heroes/mentor_lvl1_sheet.png",
+          "frames_count": 7,
+          "idle_frames": [
+            0,
+            1,
+            2
+          ],
+          "attack_frames": [
+            3,
+            4,
+            5,
+            6
+          ],
+          "frame_width": 512,
+          "frame_height": 512,
+          "individual_files": {
+            "idle_1": "assets/astral/heroes/mentor_lvl1_idle_1.png",
+            "idle_2": "assets/astral/heroes/mentor_lvl1_idle_2.png",
+            "idle_3": "assets/astral/heroes/mentor_lvl1_idle_3.png",
+            "atk_1": "assets/astral/heroes/mentor_lvl1_atk_1.png",
+            "atk_2": "assets/astral/heroes/mentor_lvl1_atk_2.png",
+            "atk_3": "assets/astral/heroes/mentor_lvl1_atk_3.png",
+            "atk_4": "assets/astral/heroes/mentor_lvl1_atk_4.png"
+          }
+        },
+        "2": {
+          "spritesheet": "assets/astral/heroes/mentor_lvl2_sheet.png",
+          "frames_count": 7,
+          "idle_frames": [
+            0,
+            1,
+            2
+          ],
+          "attack_frames": [
+            3,
+            4,
+            5,
+            6
+          ],
+          "frame_width": 512,
+          "frame_height": 512,
+          "individual_files": {
+            "idle_1": "assets/astral/heroes/mentor_lvl2_idle_1.png",
+            "idle_2": "assets/astral/heroes/mentor_lvl2_idle_2.png",
+            "idle_3": "assets/astral/heroes/mentor_lvl2_idle_3.png",
+            "atk_1": "assets/astral/heroes/mentor_lvl2_atk_1.png",
+            "atk_2": "assets/astral/heroes/mentor_lvl2_atk_2.png",
+            "atk_3": "assets/astral/heroes/mentor_lvl2_atk_3.png",
+            "atk_4": "assets/astral/heroes/mentor_lvl2_atk_4.png"
+          }
+        },
+        "3": {
+          "spritesheet": "assets/astral/heroes/mentor_lvl3_sheet.png",
+          "frames_count": 7,
+          "idle_frames": [
+            0,
+            1,
+            2
+          ],
+          "attack_frames": [
+            3,
+            4,
+            5,
+            6
+          ],
+          "frame_width": 512,
+          "frame_height": 512,
+          "individual_files": {
+            "idle_1": "assets/astral/heroes/mentor_lvl3_idle_1.png",
+            "idle_2": "assets/astral/heroes/mentor_lvl3_idle_2.png",
+            "idle_3": "assets/astral/heroes/mentor_lvl3_idle_3.png",
+            "atk_1": "assets/astral/heroes/mentor_lvl3_atk_1.png",
+            "atk_2": "assets/astral/heroes/mentor_lvl3_atk_2.png",
+            "atk_3": "assets/astral/heroes/mentor_lvl3_atk_3.png",
+            "atk_4": "assets/astral/heroes/mentor_lvl3_atk_4.png"
+          }
+        }
+      }
+    },
+    "benzedeira": {
+      "name": "Véu de Aurora",
+      "levels": {
+        "1": {
+          "spritesheet": "assets/astral/heroes/benzedeira_lvl1_sheet.png",
+          "frames_count": 7,
+          "idle_frames": [
+            0,
+            1,
+            2
+          ],
+          "attack_frames": [
+            3,
+            4,
+            5,
+            6
+          ],
+          "frame_width": 512,
+          "frame_height": 512,
+          "individual_files": {
+            "idle_1": "assets/astral/heroes/benzedeira_lvl1_idle_1.png",
+            "idle_2": "assets/astral/heroes/benzedeira_lvl1_idle_2.png",
+            "idle_3": "assets/astral/heroes/benzedeira_lvl1_idle_3.png",
+            "atk_1": "assets/astral/heroes/benzedeira_lvl1_atk_1.png",
+            "atk_2": "assets/astral/heroes/benzedeira_lvl1_atk_2.png",
+            "atk_3": "assets/astral/heroes/benzedeira_lvl1_atk_3.png",
+            "atk_4": "assets/astral/heroes/benzedeira_lvl1_atk_4.png"
+          }
+        },
+        "2": {
+          "spritesheet": "assets/astral/heroes/benzedeira_lvl2_sheet.png",
+          "frames_count": 7,
+          "idle_frames": [
+            0,
+            1,
+            2
+          ],
+          "attack_frames": [
+            3,
+            4,
+            5,
+            6
+          ],
+          "frame_width": 512,
+          "frame_height": 512,
+          "individual_files": {
+            "idle_1": "assets/astral/heroes/benzedeira_lvl2_idle_1.png",
+            "idle_2": "assets/astral/heroes/benzedeira_lvl2_idle_2.png",
+            "idle_3": "assets/astral/heroes/benzedeira_lvl2_idle_3.png",
+            "atk_1": "assets/astral/heroes/benzedeira_lvl2_atk_1.png",
+            "atk_2": "assets/astral/heroes/benzedeira_lvl2_atk_2.png",
+            "atk_3": "assets/astral/heroes/benzedeira_lvl2_atk_3.png",
+            "atk_4": "assets/astral/heroes/benzedeira_lvl2_atk_4.png"
+          }
+        },
+        "3": {
+          "spritesheet": "assets/astral/heroes/benzedeira_lvl3_sheet.png",
+          "frames_count": 7,
+          "idle_frames": [
+            0,
+            1,
+            2
+          ],
+          "attack_frames": [
+            3,
+            4,
+            5,
+            6
+          ],
+          "frame_width": 512,
+          "frame_height": 512,
+          "individual_files": {
+            "idle_1": "assets/astral/heroes/benzedeira_lvl3_idle_1.png",
+            "idle_2": "assets/astral/heroes/benzedeira_lvl3_idle_2.png",
+            "idle_3": "assets/astral/heroes/benzedeira_lvl3_idle_3.png",
+            "atk_1": "assets/astral/heroes/benzedeira_lvl3_atk_1.png",
+            "atk_2": "assets/astral/heroes/benzedeira_lvl3_atk_2.png",
+            "atk_3": "assets/astral/heroes/benzedeira_lvl3_atk_3.png",
+            "atk_4": "assets/astral/heroes/benzedeira_lvl3_atk_4.png"
+          }
+        }
+      }
+    },
+    "paje": {
+      "name": "Núcleo de Brasa",
+      "levels": {
+        "1": {
+          "spritesheet": "assets/astral/heroes/paje_lvl1_sheet.png",
+          "frames_count": 7,
+          "idle_frames": [
+            0,
+            1,
+            2
+          ],
+          "attack_frames": [
+            3,
+            4,
+            5,
+            6
+          ],
+          "frame_width": 512,
+          "frame_height": 512,
+          "individual_files": {
+            "idle_1": "assets/astral/heroes/paje_lvl1_idle_1.png",
+            "idle_2": "assets/astral/heroes/paje_lvl1_idle_2.png",
+            "idle_3": "assets/astral/heroes/paje_lvl1_idle_3.png",
+            "atk_1": "assets/astral/heroes/paje_lvl1_atk_1.png",
+            "atk_2": "assets/astral/heroes/paje_lvl1_atk_2.png",
+            "atk_3": "assets/astral/heroes/paje_lvl1_atk_3.png",
+            "atk_4": "assets/astral/heroes/paje_lvl1_atk_4.png"
+          }
+        },
+        "2": {
+          "spritesheet": "assets/astral/heroes/paje_lvl2_sheet.png",
+          "frames_count": 7,
+          "idle_frames": [
+            0,
+            1,
+            2
+          ],
+          "attack_frames": [
+            3,
+            4,
+            5,
+            6
+          ],
+          "frame_width": 512,
+          "frame_height": 512,
+          "individual_files": {
+            "idle_1": "assets/astral/heroes/paje_lvl2_idle_1.png",
+            "idle_2": "assets/astral/heroes/paje_lvl2_idle_2.png",
+            "idle_3": "assets/astral/heroes/paje_lvl2_idle_3.png",
+            "atk_1": "assets/astral/heroes/paje_lvl2_atk_1.png",
+            "atk_2": "assets/astral/heroes/paje_lvl2_atk_2.png",
+            "atk_3": "assets/astral/heroes/paje_lvl2_atk_3.png",
+            "atk_4": "assets/astral/heroes/paje_lvl2_atk_4.png"
+          }
+        },
+        "3": {
+          "spritesheet": "assets/astral/heroes/paje_lvl3_sheet.png",
+          "frames_count": 7,
+          "idle_frames": [
+            0,
+            1,
+            2
+          ],
+          "attack_frames": [
+            3,
+            4,
+            5,
+            6
+          ],
+          "frame_width": 512,
+          "frame_height": 512,
+          "individual_files": {
+            "idle_1": "assets/astral/heroes/paje_lvl3_idle_1.png",
+            "idle_2": "assets/astral/heroes/paje_lvl3_idle_2.png",
+            "idle_3": "assets/astral/heroes/paje_lvl3_idle_3.png",
+            "atk_1": "assets/astral/heroes/paje_lvl3_atk_1.png",
+            "atk_2": "assets/astral/heroes/paje_lvl3_atk_2.png",
+            "atk_3": "assets/astral/heroes/paje_lvl3_atk_3.png",
+            "atk_4": "assets/astral/heroes/paje_lvl3_atk_4.png"
+          }
+        }
+      }
+    }
+  }
+}

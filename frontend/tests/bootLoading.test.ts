@@ -13,6 +13,7 @@ vi.mock('phaser', () => {
     emit(name: string, ...args: unknown[]) { for (const fn of this.handlers.get(name) ?? []) fn(...args); }
     image(key: string) { this.emit('addfile', key, 'image'); }
     json(key: string) { this.emit('addfile', key, 'json'); }
+    spritesheet(key: string) { this.emit('addfile', key, 'spritesheet'); }
   }
   return { default: {
     Scene: class { load = new Events(); events = new Events(); scene = { start: vi.fn() }; },

@@ -266,14 +266,29 @@ export class Guide extends Phaser.GameObjects.Container {
       this.auraGfx.strokeCircle(0, 0, 36);
     }
 
-    // Sprite ou representação artística
-    const spriteKey = `${this.guideId}_lvl${this.level}`;
-    if (this.scene.textures.exists(spriteKey)) {
+    // Sprite ou representação artística (spritesheet animado ou estático)
+    const baseKey = `${this.guideId}_lvl${this.level}`;
+    const sheetKey = `${baseKey}_sheet`;
+    const idleAnimKey = `${baseKey}_idle`;
+
+    if (this.scene.textures.exists(sheetKey) && this.scene.anims?.exists(idleAnimKey)) {
       if (!this.sprite) {
-        this.sprite = this.scene.add.sprite(0, 0, spriteKey);
+        this.sprite = this.scene.add.sprite(0, 0, sheetKey, 0);
         this.add(this.sprite);
       } else {
-        this.sprite.setTexture(spriteKey);
+        this.sprite.setTexture(sheetKey, 0);
+      }
+      this.scene.tweens.killTweensOf(this.sprite);
+      this.spriteBaseScale = (Guide.BASE_SIZE * s) / Math.max(this.sprite.width, this.sprite.height);
+      this.sprite.setScale(this.spriteBaseScale);
+      this.sprite.setX(0);
+      this.sprite.play(idleAnimKey);
+    } else if (this.scene.textures.exists(baseKey)) {
+      if (!this.sprite) {
+        this.sprite = this.scene.add.sprite(0, 0, baseKey);
+        this.add(this.sprite);
+      } else {
+        this.sprite.setTexture(baseKey);
       }
       this.scene.tweens.killTweensOf(this.sprite);
       this.spriteBaseScale = (Guide.BASE_SIZE * s) / Math.max(this.sprite.width, this.sprite.height);
@@ -380,6 +395,18 @@ export class Guide extends Phaser.GameObjects.Container {
         slowDuration: this.currentLevelData.slowDuration,
         dotDamage: this.currentLevelData.dotDamage,
         dotDuration: this.currentLevelData.dotDuration,
+      });
+    }
+
+    // Animação fluida de ataque (4 quadros) e retorno suave ao looping de espera (Idle)
+    const atkAnimKey = `${this.guideId}_lvl${this.level}_attack`;
+    const idleAnimKey = `${this.guideId}_lvl${this.level}_idle`;
+    if (this.sprite && this.scene.anims?.exists(atkAnimKey)) {
+      this.sprite.play(atkAnimKey);
+      this.sprite.once('animationcomplete', (anim: Phaser.Animations.Animation) => {
+        if (anim.key === atkAnimKey && this.sprite && this.scene?.anims?.exists(idleAnimKey)) {
+          this.sprite.play(idleAnimKey);
+        }
       });
     }
 

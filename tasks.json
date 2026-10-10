@@ -1,13 +1,13 @@
 {
   "project": {
     "name": "Torre dos Espíritos — Tower Defense",
-    "summary": "Deseleção ao clicar fora no mapa e FX intensificados por horda entregues com sucesso. 27 testes Vitest aprovados e build compilado.",
+    "summary": "Animações de looping de espera (3 frames) e ataque fluido (4 frames) dos 3 heróis e 3 níveis entregues com sucesso. 31 testes Vitest aprovados e build compilado.",
     "version": "1.0.1",
     "last_updated": "2026-10-09",
     "metrics": {
-      "total_tasks": 32,
-      "completed_tasks": 30,
-      "progress_percentage": 93.8
+      "total_tasks": 33,
+      "completed_tasks": 31,
+      "progress_percentage": 93.9
     }
   },
   "milestones": [
@@ -557,6 +557,26 @@
         "Alarme visual e sonoro quando espíritos se aproximam perigosamente do leito",
         "Suporte total à configuração de acessibilidade 'Reduzir Partículas'",
         "27 testes Vitest aprovados e compilação de produção (build) 100% bem-sucedida"
+      ],
+      "audit_confirmed": true,
+      "created_at": "2026-10-09",
+      "completed_at": "2026-10-09"
+    },
+    {
+      "id": "TASK-033",
+      "title": "Animações em Looping de Espera (3 frames) e Ataque Fluido (4 frames)",
+      "description": "Geração de 63 quadros individuais e 9 spritesheets padronizados (3584x512) para os 3 heróis (Prisma Solar, Véu de Aurora e Núcleo de Brasa) nos 3 níveis. Looping contínuo de espera (Idle de 3 quadros com respiração e pulso astral) e animação fluida de ataque (4 quadros com antecipação, disparo de raio/faixas/plasma, follow-through e retorno à base). Integração reativa no BootScene e Guide.ts, 31 testes Vitest aprovados e preview interativo em hero_animations_preview.html.",
+      "status": "done",
+      "milestone": "m2_design_arte",
+      "tier": "tier2_fast",
+      "indicators": [
+        "63 frames PNG com canal alfa real e 9 spritesheets gerados com sucesso",
+        "Looping contínuo de espera (Idle de 3 quadros a 4 FPS) para as 9 variantes",
+        "Sequência fluida de ataque (Attack de 4 quadros a 10 FPS) com retorno ao Idle",
+        "Pés rigorosamente alinhados na linha de base com zero deslocamento indesejado",
+        "Integração nativa no Phaser 3 via BootScene.ts e Guide.ts",
+        "Página de teste e visualização interativa em public/guardian-art/hero_animations_preview.html",
+        "31 testes Vitest aprovados e compilação de produção (build) 100% concluída"
       ],
       "audit_confirmed": true,
       "created_at": "2026-10-09",
