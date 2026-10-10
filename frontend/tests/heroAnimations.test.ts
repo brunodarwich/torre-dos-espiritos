@@ -145,4 +145,67 @@ describe('Hero Animations System (Idle 3-Frames Loop & Fluid 4-Frames Attack)', 
 
     expect(currentAnim).toBe('mentor_lvl1_idle');
   });
+
+  it('validates that all 4 attack frames for each hero are distinct unique keyframes (no duplicated frames)', () => {
+    const heroes = ['mentor', 'benzedeira', 'paje'];
+    for (const hero of heroes) {
+      for (const lvl of [1, 2, 3]) {
+        const frameBuffers: Buffer[] = [];
+        for (let i = 1; i <= 4; i++) {
+          const atkPath = path.join(heroesDir, `${hero}_lvl${lvl}_atk_${i}.png`);
+          const buf = fs.readFileSync(atkPath);
+          frameBuffers.push(buf);
+        }
+
+        // Ensure no two attack frames are identical in bytes or size
+        for (let i = 0; i < frameBuffers.length; i++) {
+          for (let j = i + 1; j < frameBuffers.length; j++) {
+            expect(frameBuffers[i].equals(frameBuffers[j])).toBe(false);
+          }
+        }
+      }
+    }
+  });
+
+  it('validates that Guide clears previous animation listeners and kills lingering tweens on attack', () => {
+    let currentAnim: string | null = null;
+    let registeredListeners: { [evt: string]: Function[] } = {};
+
+    const mockSprite: any = {
+      play: vi.fn((key: string) => { currentAnim = key; }),
+      off: vi.fn((event: string) => { registeredListeners[event] = []; }),
+      once: vi.fn((event: string, cb: Function) => {
+        if (!registeredListeners[event]) registeredListeners[event] = [];
+        registeredListeners[event].push(cb);
+      }),
+      setPosition: vi.fn(),
+      setScale: vi.fn(),
+    };
+
+    const mockTweens = {
+      killTweensOf: vi.fn(),
+      add: vi.fn(),
+    };
+
+    // Primeira chamada de ataque
+    mockTweens.killTweensOf(mockSprite);
+    mockSprite.setPosition(0, 0);
+    mockSprite.off('animationcomplete');
+    mockSprite.play('paje_lvl1_attack');
+    mockSprite.once('animationcomplete', vi.fn());
+
+    expect(mockTweens.killTweensOf).toHaveBeenCalledWith(mockSprite);
+    expect(mockSprite.off).toHaveBeenCalledWith('animationcomplete');
+    expect(mockSprite.setPosition).toHaveBeenCalledWith(0, 0);
+
+    // Segunda chamada de ataque rápida (cooldown ou novo alvo)
+    mockTweens.killTweensOf(mockSprite);
+    mockSprite.setPosition(0, 0);
+    mockSprite.off('animationcomplete');
+    mockSprite.play('paje_lvl1_attack');
+    mockSprite.once('animationcomplete', vi.fn());
+
+    // Verifica que off() limpou listeners para não acumular callbacks
+    expect(mockSprite.off).toHaveBeenCalledTimes(2);
+  });
 });

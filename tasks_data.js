@@ -1,7 +1,7 @@
 window.TASKS_DATA = {
   "project": {
     "name": "Torre dos Espíritos — Tower Defense",
-    "summary": "Animações de looping de espera (3 frames) e ataque fluido (4 frames) dos 3 heróis e 3 níveis entregues com sucesso. 31 testes Vitest aprovados e build compilado.",
+    "summary": "Animações de looping de espera (3 frames) e ataque fluido (4 frames) dos 3 heróis e 3 níveis com escala anatômica consistente e baseline unificada. 33 testes Vitest aprovados e build compilado.",
     "version": "1.0.1",
     "last_updated": "2026-10-09",
     "metrics": {
@@ -577,7 +577,7 @@ window.TASKS_DATA = {
         "Pés rigorosamente alinhados na linha de base com zero deslocamento indesejado",
         "Integração nativa no Phaser 3 via BootScene.ts e Guide.ts (com trava de bobbing durante ataque)",
         "Página de teste e visualização interativa em public/guardian-art/hero_animations_preview.html",
-        "31 testes Vitest aprovados e compilação de produção (build) 100% concluída"
+        "33 testes Vitest aprovados e compilação de produção (build) 100% concluída"
       ],
       "audit_confirmed": true,
       "created_at": "2026-10-09",

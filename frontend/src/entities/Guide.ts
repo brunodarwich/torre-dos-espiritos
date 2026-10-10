@@ -316,8 +316,6 @@ export class Guide extends Phaser.GameObjects.Container {
     const isAttacking = Boolean(this.sprite?.anims?.isPlaying && this.sprite.anims.currentAnim?.key.endsWith('_attack'));
     if (!isAttacking) {
       this.sprite?.setY(Math.sin(time / 650 + this.col) * 2);
-    } else {
-      this.sprite?.setY(0);
     }
     const deltaSec = delta / 1000;
 
@@ -403,12 +401,19 @@ export class Guide extends Phaser.GameObjects.Container {
       });
     }
 
+    const recoilTarget = this.sprite ?? this.gfx;
+    this.scene.tweens.killTweensOf(recoilTarget);
+    recoilTarget.setPosition(0, 0);
+    const baseScale = this.sprite ? this.spriteBaseScale : this.getLevelScale();
+    recoilTarget.setScale(baseScale);
+
     // Animação fluida de ataque (4 quadros) e retorno suave ao looping de espera (Idle)
     const atkAnimKey = `${this.guideId}_lvl${this.level}_attack`;
     const idleAnimKey = `${this.guideId}_lvl${this.level}_idle`;
     if (this.sprite && this.scene.anims?.exists(atkAnimKey)) {
+      this.sprite.off(Phaser.Animations.Events.ANIMATION_COMPLETE);
       this.sprite.play(atkAnimKey);
-      this.sprite.once('animationcomplete', (anim: Phaser.Animations.Animation) => {
+      this.sprite.once(Phaser.Animations.Events.ANIMATION_COMPLETE, (anim: Phaser.Animations.Animation) => {
         if (anim.key === atkAnimKey && this.sprite && this.scene?.anims?.exists(idleAnimKey)) {
           this.sprite.play(idleAnimKey);
         }
@@ -418,23 +423,19 @@ export class Guide extends Phaser.GameObjects.Container {
     // Recoil dinâmico na direção oposta ao alvo e pulso estelar
     const angleToTarget = Phaser.Math.Angle.Between(this.x, this.y, target.x, target.y);
     const recoilDist = 3;
-    const recoilTarget = this.sprite ?? this.gfx;
-    const originalLocalX = recoilTarget.x;
-    const originalLocalY = recoilTarget.y;
-    const baseScale = this.sprite ? this.spriteBaseScale : this.getLevelScale();
 
     this.scene.tweens.add({
       targets: recoilTarget,
-      x: originalLocalX - Math.cos(angleToTarget) * recoilDist,
-      y: originalLocalY - Math.sin(angleToTarget) * recoilDist,
+      x: -Math.cos(angleToTarget) * recoilDist,
+      y: -Math.sin(angleToTarget) * recoilDist,
       scaleX: baseScale * 1.12,
       scaleY: baseScale * 1.12,
       duration: 70,
       yoyo: true,
       ease: 'Quad.easeOut',
       onComplete: () => {
-        recoilTarget.setPosition(originalLocalX, originalLocalY);
-        recoilTarget.setScale(this.sprite ? this.spriteBaseScale : this.getLevelScale());
+        recoilTarget.setPosition(0, 0);
+        recoilTarget.setScale(baseScale);
       },
     });
   }

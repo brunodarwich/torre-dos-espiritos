@@ -76,31 +76,21 @@ def extract_alpha_clean(bgr, threshold=10, feather=16):
     return Image.fromarray(rgba)
 
 
-def standardize_frame(img_rgba, target_height=380, baseline_y=BASELINE_Y, center_x=256, is_airborne=False):
-    """Place character inside a standard 512x512 canvas with consistent ground baseline."""
-    bbox = img_rgba.getbbox()
-    if not bbox:
-        return Image.new('RGBA', (TARGET_FRAME_SIZE, TARGET_FRAME_SIZE), (0, 0, 0, 0))
+def place_flow_frame(rgba_crop, scale, ground_y_crop, baseline_y=BASELINE_Y, center_x=256, y_offset=0):
+    """Place flow frame on standard 512x512 canvas anchored by ground baseline with unified scale."""
+    w, h = rgba_crop.size
+    new_w = max(1, int(round(w * scale)))
+    new_h = max(1, int(round(h * scale)))
+    resized = rgba_crop.resize((new_w, new_h), Image.Resampling.LANCZOS)
 
-    cropped = img_rgba.crop(bbox)
-    orig_w, orig_h = cropped.size
+    arr = np.array(resized)
+    ys, xs = np.where(arr[:, :, 3] > 30)
+    fg_cx = (xs.min() + xs.max()) / 2.0 if len(xs) > 0 else new_w / 2.0
 
-    scale = target_height / float(orig_h)
-    # Don't let it become excessively wide
-    if orig_w * scale > 460:
-        scale = 460.0 / float(orig_w)
-
-    new_w = max(1, int(round(orig_w * scale)))
-    new_h = max(1, int(round(orig_h * scale)))
-    resized = cropped.resize((new_w, new_h), Image.Resampling.LANCZOS)
+    pos_x = int(round(center_x - fg_cx))
+    pos_y = int(round((baseline_y - y_offset) - ground_y_crop * scale))
 
     canvas = Image.new('RGBA', (TARGET_FRAME_SIZE, TARGET_FRAME_SIZE), (0, 0, 0, 0))
-    pos_x = center_x - new_w // 2
-    
-    # If airborne (e.g. flying slash or elevated pose), float 25px above ground
-    y_anchor = baseline_y - (25 if is_airborne else 0)
-    pos_y = y_anchor - new_h
-
     canvas.alpha_composite(resized, (pos_x, pos_y))
     return canvas
 
@@ -211,19 +201,19 @@ def process_all_heroes():
     # 1. PRISMA SOLAR (MENTOR)
     print('Processing Prisma Solar...')
     m_idle_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'mentor_idle_flow_1791594433917.jpg'))
-    m_idle_1 = standardize_frame(extract_alpha_clean(m_idle_bgr[:, :460]), target_height=380)
-    m_idle_2 = standardize_frame(extract_alpha_clean(m_idle_bgr[:, 460:910]), target_height=380)
-    m_idle_3 = standardize_frame(extract_alpha_clean(m_idle_bgr[:, 910:]), target_height=380)
+    m_scale_idle = 380.0 / 640.0
+    m_ground_idle = 712
+    m_idle_1 = place_flow_frame(extract_alpha_clean(m_idle_bgr[:, :460]), m_scale_idle, m_ground_idle)
+    m_idle_2 = place_flow_frame(extract_alpha_clean(m_idle_bgr[:, 460:910]), m_scale_idle, m_ground_idle)
+    m_idle_3 = place_flow_frame(extract_alpha_clean(m_idle_bgr[:, 910:]), m_scale_idle, m_ground_idle)
 
-    m_w_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'mentor_attack_windup_1791594663996.jpg'))
-    m_b_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'mentor_attack_beam_1791594628648.jpg'))
     m_sheet_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'mentor_spritesheet_flow_1791594328991.jpg'))
-    m_r_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'mentor_attack_recovery_1791594698024.jpg'))
-
-    m_atk_1 = standardize_frame(extract_alpha_clean(m_w_bgr), target_height=390)
-    m_atk_2 = standardize_frame(extract_alpha_clean(m_b_bgr), target_height=385, center_x=240)
-    m_atk_3 = standardize_frame(extract_alpha_clean(m_sheet_bgr[:, 628:1078]), target_height=375, center_x=245)
-    m_atk_4 = standardize_frame(extract_alpha_clean(m_r_bgr), target_height=380)
+    m_scale_atk = 0.77
+    m_ground_atk = 642
+    m_atk_1 = place_flow_frame(extract_alpha_clean(m_sheet_bgr[:, :340]), m_scale_atk, m_ground_atk)
+    m_atk_2 = place_flow_frame(extract_alpha_clean(m_sheet_bgr[:, 340:625]), m_scale_atk, m_ground_atk)
+    m_atk_3 = place_flow_frame(extract_alpha_clean(m_sheet_bgr[:, 625:975]), m_scale_atk, m_ground_atk)
+    m_atk_4 = place_flow_frame(extract_alpha_clean(m_sheet_bgr[:, 975:]), m_scale_atk, m_ground_atk)
 
     mentor_base_frames = {
         'idle_1': m_idle_1, 'idle_2': m_idle_2, 'idle_3': m_idle_3,
@@ -233,18 +223,19 @@ def process_all_heroes():
     # 2. VÉU DE AURORA (BENZEDEIRA)
     print('Processing Véu de Aurora...')
     b_idle_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'benzedeira_idle_flow_1791594462240.jpg'))
-    b_idle_1 = standardize_frame(extract_alpha_clean(b_idle_bgr[:, :400]), target_height=380)
-    b_idle_2 = standardize_frame(extract_alpha_clean(b_idle_bgr[:, 400:910]), target_height=380)
-    b_idle_3 = standardize_frame(extract_alpha_clean(b_idle_bgr[:, 910:]), target_height=380)
+    b_scale_idle = 380.0 / 618.0
+    b_ground_idle = 694
+    b_idle_1 = place_flow_frame(extract_alpha_clean(b_idle_bgr[:, :400]), b_scale_idle, b_ground_idle)
+    b_idle_2 = place_flow_frame(extract_alpha_clean(b_idle_bgr[:, 400:910]), b_scale_idle, b_ground_idle)
+    b_idle_3 = place_flow_frame(extract_alpha_clean(b_idle_bgr[:, 910:]), b_scale_idle, b_ground_idle)
 
-    b_w_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'benzedeira_attack_windup_1791594733430.jpg'))
-    b_s_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'benzedeira_attack_slash_1791594768610.jpg'))
     b_sheet_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'benzedeira_spritesheet_flow_1791594383730.jpg'))
-
-    b_atk_1 = standardize_frame(extract_alpha_clean(b_w_bgr), target_height=380)
-    b_atk_2 = standardize_frame(extract_alpha_clean(b_s_bgr), target_height=390, is_airborne=True, center_x=240)
-    b_atk_3 = standardize_frame(extract_alpha_clean(b_sheet_bgr[:, 688:1091]), target_height=380, center_x=245)
-    b_atk_4 = standardize_frame(extract_alpha_clean(b_sheet_bgr[:, 1091:]), target_height=380, is_airborne=True)
+    b_scale_atk = 0.748
+    b_ground_atk = 638
+    b_atk_1 = place_flow_frame(extract_alpha_clean(b_sheet_bgr[:, :340]), b_scale_atk, b_ground_atk)
+    b_atk_2 = place_flow_frame(extract_alpha_clean(b_sheet_bgr[:, 340:690]), b_scale_atk, b_ground_atk)
+    b_atk_3 = place_flow_frame(extract_alpha_clean(b_sheet_bgr[:, 690:1090]), b_scale_atk, b_ground_atk)
+    b_atk_4 = place_flow_frame(extract_alpha_clean(b_sheet_bgr[:, 1090:]), b_scale_atk, b_ground_atk)
 
     benzedeira_base_frames = {
         'idle_1': b_idle_1, 'idle_2': b_idle_2, 'idle_3': b_idle_3,
@@ -254,22 +245,19 @@ def process_all_heroes():
     # 3. NÚCLEO DE BRASA (PAJÉ)
     print('Processing Núcleo de Brasa...')
     p_idle_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'paje_idle_flow_1791594491617.jpg'))
-    p_idle_1 = standardize_frame(extract_alpha_clean(p_idle_bgr[:, :470]), target_height=365)
-    p_idle_2 = standardize_frame(extract_alpha_clean(p_idle_bgr[:, 470:910]), target_height=365)
-    p_idle_3 = standardize_frame(extract_alpha_clean(p_idle_bgr[:, 910:]), target_height=365)
+    p_scale_idle = 365.0 / 452.0
+    p_ground_idle = 613
+    p_idle_1 = place_flow_frame(extract_alpha_clean(p_idle_bgr[:, :470]), p_scale_idle, p_ground_idle)
+    p_idle_2 = place_flow_frame(extract_alpha_clean(p_idle_bgr[:, 470:910]), p_scale_idle, p_ground_idle)
+    p_idle_3 = place_flow_frame(extract_alpha_clean(p_idle_bgr[:, 910:]), p_scale_idle, p_ground_idle)
 
     p_sheet_bgr = cv2.imread(str(SOURCE_FLOWS_DIR / 'paje_spritesheet_flow_1791594407933.jpg'))
-    p_atk_1 = standardize_frame(extract_alpha_clean(p_sheet_bgr[:, 336:658]), target_height=395)
-    p_atk_2 = standardize_frame(extract_alpha_clean(p_sheet_bgr[:, 658:1039]), target_height=370, center_x=250)
-    
-    # Ground dissipation frame: slam impact with expanding shockwave ring
-    p_impact_raw = extract_alpha_clean(p_sheet_bgr[:, 658:1039])
-    p_atk_3 = standardize_frame(p_impact_raw, target_height=365, center_x=250)
-    draw_p3 = ImageDraw.Draw(p_atk_3)
-    draw_p3.ellipse([140, 420, 370, 460], outline=(237, 137, 54, 200), width=6)
-    draw_p3.ellipse([100, 410, 410, 470], outline=(255, 210, 70, 160), width=3)
-
-    p_atk_4 = standardize_frame(extract_alpha_clean(p_sheet_bgr[:, 1039:]), target_height=365)
+    p_scale_atk = 0.96
+    p_ground_atk = 572
+    p_atk_1 = place_flow_frame(extract_alpha_clean(p_sheet_bgr[:, :350]), p_scale_atk, p_ground_atk)
+    p_atk_2 = place_flow_frame(extract_alpha_clean(p_sheet_bgr[:, 350:660]), p_scale_atk, p_ground_atk)
+    p_atk_3 = place_flow_frame(extract_alpha_clean(p_sheet_bgr[:, 660:1040]), p_scale_atk, p_ground_atk)
+    p_atk_4 = place_flow_frame(extract_alpha_clean(p_sheet_bgr[:, 1040:]), p_scale_atk, p_ground_atk)
 
     paje_base_frames = {
         'idle_1': p_idle_1, 'idle_2': p_idle_2, 'idle_3': p_idle_3,
